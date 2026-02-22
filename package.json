@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test:db": "ts-node src/scripts/test-db.ts",
-    "test:scan": "ts-node src/scripts/manual-scan.ts"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +15,6 @@
     "@types/winston": "^2.4.4",
     "axios": "^1.13.5",
     "dotenv": "^17.3.1",
-    "express": "^4.22.1",
     "mongoose": "^9.2.1",
     "node-cron": "^4.2.1",
     "telegraf": "^4.16.3",
@@ -32,6 +28,7 @@
     "@types/node": "^25.3.0",
     "@types/node-cron": "^3.0.11",
     "@vercel/node": "^3.2.29",
+    "express": "^4.22.1",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
