@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+
+# Build
+dist/
+
+# Logs
+logs/
+*.log
+
+# Temp/Debug Files
+*-summary.txt
+*-results.txt
+*_output.txt
+*_utf8.txt
+discovery_results.txt
+discovery_v2_results.txt
+search_results.txt
+verify_output.txt
+test_output.txt
+list_indices_output.txt
+test-hybrid-scan.ts
+test-search.ts
+test-more-api.ts
+discover-screeners.ts
+discover-v2.ts
+fix-db-indices.ts
+list-indices.ts
+verify-fix.ts
+test-yahoo-api.ts
+manual-scan.ts
+
+# OS files
+.DS_Store
+Thumbs.db
