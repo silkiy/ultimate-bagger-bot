@@ -10,24 +10,6 @@
             "schedule": "45 8 * * 1-5"
         }
     ],
-    "routes": [
-        {
-            "src": "/api/webhook",
-            "dest": "/api/webhook.ts"
-        },
-        {
-            "src": "/api/cron",
-            "dest": "/api/cron.ts"
-        },
-        {
-            "src": "/api/health",
-            "dest": "/api/health.ts"
-        },
-        {
-            "src": "/",
-            "dest": "/public/index.html"
-        }
-    ],
     "functions": {
         "api/*.ts": {
             "memory": 1024,
