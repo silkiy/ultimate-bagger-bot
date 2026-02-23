@@ -32,6 +32,7 @@ list-indices.ts
 verify-fix.ts
 test-yahoo-api.ts
 manual-scan.ts
+*.txt
 
 # OS files
 .DS_Store
