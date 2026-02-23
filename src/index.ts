@@ -63,7 +63,13 @@ async function main() {
         marketData
     );
     telegramInterface.init();
-    await telegramInterface.launch();
+
+    // Only launch polling if explicitly requested (prevents cloud webhook reset)
+    if (process.env.USE_POLLING === 'true') {
+        await telegramInterface.launch();
+    } else {
+        logger.info('ℹ️ Polling mode disabled (Set USE_POLLING=true to enable)');
+    }
 
     // 6. Scheduler
     const scheduler = new Scheduler(runScanner, messaging);

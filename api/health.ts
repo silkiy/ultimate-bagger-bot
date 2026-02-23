@@ -5,12 +5,20 @@ import mongoose from 'mongoose';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
-        const { marketData, userRepo } = await bootstrap();
+        const { marketData, userRepo, messaging } = await bootstrap();
+
+        const bot = messaging.getBotInstance();
+        const webhookInfo = await bot.telegram.getWebhookInfo();
 
         const health = {
             status: 'OK',
             timestamp: new Date().toISOString(),
             database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+            telegram: {
+                webhook: webhookInfo.url,
+                pendingUpdates: webhookInfo.pending_update_count,
+                lastError: webhookInfo.last_error_message
+            },
             environment: process.env.NODE_ENV,
             features: {
                 marketDiscovery: !!marketData.fetchTopActiveSymbols,
