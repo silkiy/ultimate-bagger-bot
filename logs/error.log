@@ -19,3 +19,33 @@
 2026-02-22 19:46:33 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
 2026-02-22 19:46:51 [[31merror[39m] : Error fetching top active symbols: yahooFinance.screener called with invalid options.
 2026-02-22 19:46:52 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
+2026-02-22 19:56:33 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:33 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:34 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:34 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:34 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
+2026-02-22 19:56:50 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
+2026-02-22 20:00:47 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:23 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:23 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:24 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:24 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:18 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:18 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:19 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:19 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted

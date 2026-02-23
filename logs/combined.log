@@ -1355,3 +1355,549 @@
 2026-02-22 19:49:09 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
 2026-02-22 19:49:09 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
 2026-02-22 19:49:09 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:50:09 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:50:11 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:50:11 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:50:11 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:50:11 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:50:11 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:50:20 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:50:22 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:50:22 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:50:22 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:50:22 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:50:22 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:50:27 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:50:29 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:50:29 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:50:29 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:50:29 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:50:29 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:51:24 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:51:26 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:51:26 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:51:26 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:51:26 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:51:26 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:52:08 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:52:10 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:52:10 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:52:10 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:52:10 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:52:10 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:52:32 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:52:33 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:52:33 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:52:33 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:52:33 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:52:33 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:54:16 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:54:18 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:54:18 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:54:18 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:54:18 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:54:18 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:55:02 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:55:04 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:55:04 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:55:04 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:55:04 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:55:04 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:56:20 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:56:22 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:56:22 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:56:22 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:56:22 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:56:22 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 19:56:29 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 19:56:30 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 19:56:30 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 19:56:32 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 19:56:32 [[32minfo[39m] : 📋 Total Universe: 70 (DB: 10, Dynamic: 60)
+2026-02-22 19:56:32 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 19:56:32 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 19:56:32 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 19:56:32 [[32minfo[39m] : 🔬 Analyzing 70 tickers from Yahoo Finance...
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 19:56:32 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 19:56:33 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:33 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:33 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 19:56:34 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:34 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 19:56:34 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 19:56:34 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 19:56:34 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
+2026-02-22 19:56:46 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 19:56:47 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 19:56:47 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 19:56:48 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 19:56:48 [[32minfo[39m] : 📋 Total Universe: 70 (DB: 10, Dynamic: 60)
+2026-02-22 19:56:48 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 19:56:48 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 19:56:48 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 19:56:48 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 19:56:48 [[32minfo[39m] : 🔬 Analyzing 70 tickers from Yahoo Finance...
+2026-02-22 19:56:48 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 19:56:49 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 19:56:50 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 19:56:50 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 19:56:50 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 19:56:50 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 19:56:50 [[31merror[39m] : Scanner Use Case Error: Plan executor error during findAndModify :: caused by :: E11000 duplicate key error collection: ultimate-bagger-bot.institutionaltickers index: config.symbol_1 dup key: { config.symbol: "BBCA.JK" }
+2026-02-22 19:58:49 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 19:58:50 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 19:58:50 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 19:58:50 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 19:58:50 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 19:58:50 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 20:00:23 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 20:00:24 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 20:00:24 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 20:00:25 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 20:00:25 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 20:00:25 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 20:00:43 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 20:00:43 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 20:00:44 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 20:00:45 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 20:00:45 [[32minfo[39m] : 📋 Total Universe: 70 (DB: 10, Dynamic: 60)
+2026-02-22 20:00:45 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 20:00:45 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 20:00:45 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 20:00:45 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 20:00:45 [[32minfo[39m] : 🔬 Analyzing 70 tickers from Yahoo Finance...
+2026-02-22 20:00:45 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:00:45 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:00:45 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:00:45 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 20:00:46 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 20:00:47 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 20:00:47 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 20:00:47 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 20:00:47 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 20:00:56 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 20:00:57 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 20:00:58 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 20:00:58 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 20:00:58 [[32minfo[39m] : 📋 Total Universe: 79 (DB: 19, Dynamic: 60)
+2026-02-22 20:00:58 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 20:00:58 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 20:00:58 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 20:00:58 [[32minfo[39m] : 🔬 Analyzing 79 tickers from Yahoo Finance...
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:00:58 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 20:00:59 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 20:01:00 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 20:01:00 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 20:01:00 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 20:01:00 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 20:02:19 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 20:02:19 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 20:02:20 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 20:02:21 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 20:02:21 [[32minfo[39m] : 📋 Total Universe: 79 (DB: 19, Dynamic: 60)
+2026-02-22 20:02:21 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 20:02:21 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 20:02:21 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 20:02:21 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 20:02:21 [[32minfo[39m] : 🔬 Analyzing 79 tickers from Yahoo Finance...
+2026-02-22 20:02:21 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:02:21 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:02:21 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:02:21 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 20:02:22 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 20:02:23 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:23 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 20:02:23 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 20:02:24 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:24 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 20:02:24 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 20:02:24 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 20:02:33 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 20:02:33 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 20:02:34 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 20:02:34 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 20:02:34 [[32minfo[39m] : 📋 Total Universe: 79 (DB: 19, Dynamic: 60)
+2026-02-22 20:02:34 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 20:02:34 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 20:02:34 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 20:02:34 [[32minfo[39m] : 🔬 Analyzing 79 tickers from Yahoo Finance...
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:02:34 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 20:02:35 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 20:02:36 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 20:02:36 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 20:02:36 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 20:02:36 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 20:06:15 [[32minfo[39m] : 🏛️ Initializing Institutional Hybrid Quant Engine
+2026-02-22 20:06:17 [[32minfo[39m] : ✅ MongoDB connected successfully
+2026-02-22 20:06:17 [[32minfo[39m] : 🤖 Telegram Bot handlers initialized (Interactive V2)
+2026-02-22 20:06:17 [[32minfo[39m] : ✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).
+2026-02-22 20:06:17 [[32minfo[39m] : 🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)
+2026-02-22 20:06:17 [[32minfo[39m] : 🌐 Institutional API running on port 3000
+2026-02-22 20:25:15 [[32minfo[39m] : 🚀 Starting Compounding Optimization Engine (V7.0)
+2026-02-22 20:25:15 [[32minfo[39m] : 📡 Discovering IDX tickers (Hybrid Mode)...
+2026-02-22 20:25:16 [[33mwarn[39m] : ⚠️ Trending symbols fetch failed: FailedYahooValidationError: Failed Yahoo Schema validation
+2026-02-22 20:25:16 [[32minfo[39m] : ✅ Hybrid Discovery complete: 70 tickers found (72 core, 0 trending, 0 screener)
+2026-02-22 20:25:16 [[32minfo[39m] : 📋 Total Universe: 79 (DB: 19, Dynamic: 60)
+2026-02-22 20:25:16 [[32minfo[39m] : 🔥 Portfolio Heat: 0.0000
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 Fetching Market Index (^JKSE)...
+2026-02-22 20:25:17 [[32minfo[39m] : ✅ Index Data Received: 100 records
+2026-02-22 20:25:17 [[32minfo[39m] : 🌐 Market Regime: BEAR
+2026-02-22 20:25:17 [[32minfo[39m] : 🔬 Analyzing 79 tickers from Yahoo Finance...
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BBCA.JK: Score 0.00, Signal: HOLD, Price: Rp7225, AvgVol: 323.4M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ASII.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 67.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BBRI.JK: Score 0.00, Signal: HOLD, Price: Rp3840, AvgVol: 270.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BMRI.JK: Score 0.00, Signal: HOLD, Price: Rp5125, AvgVol: 249.6M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] TLKM.JK: Score 0.00, Signal: HOLD, Price: Rp3480, AvgVol: 175.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] PGAS.JK: Score 0.00, Signal: HOLD, Price: Rp2190, AvgVol: 58.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] UNTR.JK: Score 0.00, Signal: HOLD, Price: Rp30725, AvgVol: 10.1M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ADRO.JK: Score 0.00, Signal: HOLD, Price: Rp2300, AvgVol: 157.9M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] KLBF.JK: Score 0.00, Signal: HOLD, Price: Rp1055, AvgVol: 55.9M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] BBNI.JK: Score 0.00, Signal: HOLD, Price: Rp4470, AvgVol: 74.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] INDF.JK: Score 0.00, Signal: HOLD, Price: Rp6650, AvgVol: 16.0M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ICBP.JK: Score 0.00, Signal: HOLD, Price: Rp8025, AvgVol: 11.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ITMG.JK: Score 0.00, Signal: HOLD, Price: Rp22475, AvgVol: 1.6M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] PTBA.JK: Score 0.00, Signal: HOLD, Price: Rp2620, AvgVol: 27.8M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] INCO.JK: Score 0.00, Signal: HOLD, Price: Rp6900, AvgVol: 32.5M
+2026-02-22 20:25:17 [[32minfo[39m] : 📊 [Ranking] ANTM.JK: Score 0.00, Signal: HOLD, Price: Rp4220, AvgVol: 255.6M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] TPIA.JK: Score 0.00, Signal: HOLD, Price: Rp6725, AvgVol: 10.7M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] AMRT.JK: Score 0.00, Signal: HOLD, Price: Rp1815, AvgVol: 45.2M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] UNVR.JK: Score 0.00, Signal: HOLD, Price: Rp2240, AvgVol: 37.2M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] BRPT.JK: Score 0.00, Signal: HOLD, Price: Rp2020, AvgVol: 151.0M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] ARTO.JK: Score 0.00, Signal: HOLD, Price: Rp1635, AvgVol: 8.0M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] CPIN.JK: Score 0.00, Signal: HOLD, Price: Rp4330, AvgVol: 8.7M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] JPFA.JK: Score 0.00, Signal: HOLD, Price: Rp2380, AvgVol: 28.4M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] MDKA.JK: Score 0.00, Signal: HOLD, Price: Rp3590, AvgVol: 120.1M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] TKIM.JK: Score 0.00, Signal: HOLD, Price: Rp7300, AvgVol: 2.1M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] SMGR.JK: Score 0.57, Signal: BUY, Price: Rp3070, AvgVol: 21.0M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] INKP.JK: Score 0.00, Signal: HOLD, Price: Rp9800, AvgVol: 13.6M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] HRUM.JK: Score 0.00, Signal: HOLD, Price: Rp1210, AvgVol: 46.9M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] AKRA.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 27.6M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] JSMR.JK: Score 0.00, Signal: HOLD, Price: Rp3760, AvgVol: 7.1M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] INTP.JK: Score 0.00, Signal: HOLD, Price: Rp6550, AvgVol: 1.3M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] MAPI.JK: Score 0.00, Signal: HOLD, Price: Rp1315, AvgVol: 25.4M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] MEDC.JK: Score 0.00, Signal: HOLD, Price: Rp1730, AvgVol: 151.3M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] GJTL.JK: Score 0.00, Signal: HOLD, Price: Rp1095, AvgVol: 5.4M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] AUTO.JK: Score 0.00, Signal: HOLD, Price: Rp2710, AvgVol: 4.1M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] MYOR.JK: Score 0.00, Signal: HOLD, Price: Rp2230, AvgVol: 13.5M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] GGRM.JK: Score 0.00, Signal: HOLD, Price: Rp16300, AvgVol: 1.5M
+2026-02-22 20:25:18 [[31merror[39m] : Error fetching historical data for NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:18 [[31merror[39m] : ❌ Skip NCEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] CUAN.JK: Score 0.00, Signal: HOLD, Price: Rp1735, AvgVol: 159.6M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] DSSA.JK: Score 0.00, Signal: HOLD, Price: Rp87000, AvgVol: 1.8M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] BRMS.JK: Score 0.00, Signal: HOLD, Price: Rp1060, AvgVol: 547.0M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] BREN.JK: Score 0.00, Signal: HOLD, Price: Rp8050, AvgVol: 17.4M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] PANI.JK: Score 0.00, Signal: HOLD, Price: Rp10425, AvgVol: 16.7M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] CMRY.JK: Score 0.00, Signal: HOLD, Price: Rp5325, AvgVol: 4.2M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] FILM.JK: Score 0.00, Signal: HOLD, Price: Rp7500, AvgVol: 4.7M
+2026-02-22 20:25:18 [[32minfo[39m] : 📊 [Ranking] TBIG.JK: Score 0.00, Signal: HOLD, Price: Rp1770, AvgVol: 3.4M
+2026-02-22 20:25:19 [[31merror[39m] : Error fetching historical data for MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:19 [[31merror[39m] : ❌ Skip MTEK.JK: No data found, symbol may be delisted
+2026-02-22 20:25:19 [[32minfo[39m] : 📊 [Ranking] HEAL.JK: Score 0.00, Signal: HOLD, Price: Rp1310, AvgVol: 6.4M
+2026-02-22 20:25:19 [[32minfo[39m] : 📊 [Ranking] MIKA.JK: Score 0.00, Signal: HOLD, Price: Rp2310, AvgVol: 3.9M
+2026-02-22 20:25:19 [[32minfo[39m] : 🏆 Top 3 Ranked Assets: SMGR.JK, BBCA.JK, BBRI.JK
+2026-02-22 20:25:38 [[32minfo[39m] : 🔍 Manual Analysis requested for SMGR.JK
+2026-02-22 20:25:38 [[32minfo[39m] : 📝 Symbol SMGR.JK not in DB. Running analysis with default config.

@@ -11,15 +11,20 @@ const consoleFormat = printf(({ level, message, timestamp, ...metadata }) => {
     return msg;
 });
 
+const transports: any[] = [
+    new winston.transports.Console(),
+];
+
+if (ENV.NODE_ENV !== 'production') {
+    transports.push(new winston.transports.File({ filename: 'logs/error.log', level: 'error' }));
+    transports.push(new winston.transports.File({ filename: 'logs/combined.log' }));
+}
+
 export const logger = winston.createLogger({
     level: ENV.LOG_LEVEL,
     format: combine(
         timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         ENV.NODE_ENV === 'production' ? json() : combine(colorize(), consoleFormat)
     ),
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/combined.log' }),
-    ],
+    transports
 });

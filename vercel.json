@@ -18,6 +18,14 @@
         {
             "src": "/api/cron",
             "dest": "/api/cron.ts"
+        },
+        {
+            "src": "/api/health",
+            "dest": "/api/health.ts"
+        },
+        {
+            "src": "/",
+            "dest": "/public/index.html"
         }
     ],
     "functions": {

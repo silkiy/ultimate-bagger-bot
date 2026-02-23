@@ -3,12 +3,16 @@ import { ENV } from './env';
 import { logger } from '../logging/WinstonLogger';
 
 export const connectDatabase = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        return;
+    }
+
     try {
         await mongoose.connect(ENV.MONGODB_URI);
         logger.info('✅ MongoDB connected successfully');
-    } catch (error) {
+    } catch (error: any) {
         logger.error('❌ MongoDB connection error:', error);
-        process.exit(1);
+        throw new Error(`Database connection failed: ${error.message}`);
     }
 };
 
