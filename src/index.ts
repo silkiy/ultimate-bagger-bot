@@ -63,6 +63,7 @@ async function main() {
         marketData
     );
     telegramInterface.init();
+    await telegramInterface.launch();
 
     // 6. Scheduler
     const scheduler = new Scheduler(runScanner, messaging);

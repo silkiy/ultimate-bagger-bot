@@ -883,8 +883,11 @@ export class TelegramInterface {
             }
         });
 
-        this.bot.launch();
-        logger.info('🤖 Telegram Bot handlers initialized (Interactive V2)');
+    }
+
+    async launch() {
+        await this.bot.launch();
+        logger.info('🤖 Telegram Bot started in Polling Mode');
     }
 }
 
