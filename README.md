@@ -1,20 +1,17 @@
-# 🏛️ Ultimate Bagger Quant Bot (V7) - Institutional Edition
+# 🏛️ Ultimate Bagger Quant Bot (v8.5) — Elite Suite
 
-**Ultimate Bagger V7** adalah platform trading kuantitatif *semi-automatic* kelas institusi. Dirancang dengan **Clean Architecture**, sistem ini menggabungkan algoritma Ichimoku tingkat lanjut dengan lapisan kendali manusia (*Hybrid Control*) dan protokol perlindungan modal yang sangat disiplin (*Capital Preservation Layer*).
+**Ultimate Bagger v8.5 "Elite Suite"** adalah platform trading kuantitatif *professional-grade* kelas institusi. Dirancang untuk bursa saham Indonesia (IDX), sistem ini menggabungkan analisis teknikal presisi, pelacakan modal besar (*Smart Money*), dan rotasi sektor dinamis dalam satu ekosistem Telegram yang elegan.
 
 ---
 
 ## 🚀 Fitur Utama
 
--   **Hybrid Control Engine**: Sinyal BUY memerlukan konfirmasi manual via Telegram, sementara SELL dieksekusi otomatis untuk proteksi modal.
--   **Institutional Risk Engine**: Manejemen posisi berbasis volatilitas (ATR) dengan pelacakan *drawdown* real-time.
--   **Capital Preservation Layer**:
-    -   *Equity Curve Control*: Pengurangan resiko otomatis saat *drawdown*.
-    -   *Regime Allocation*: Alokasi modal cerdas (Bull/Sideways/Bear).
-    -   *Streak Protection*: Pengetatan syarat sinyal setelah kerugian beruntun.
--   **Compounding Optimization (V7.0)**: Algoritma cerdas untuk pertumbuhan geometris maksimal melalui *adaptive scaling*, *profit locking*, dan *asset ranking*.
--   **Clean Architecture (4-Layer)**: Struktur kode profesional yang modular, *testable*, dan independen terhadap *framework*.
--   **Professional Dashboard**: Laporan status portofolio, riwayat trade, dan analisis sinyal mendalam lewat Telegram.
+-   **Institutional Alpha Engine**: Deteksi akumulasi institusi (*Quiet Buying*) dan lonjakan volume instan (*Fast Money*).
+-   **Sector Wisdom (v8.5)**: Analisis rotasi sektor real-time untuk menemukan pimpinan pasar (*Leading Sectors*) setiap hari.
+-   **Hybrid Control (Human-in-the-Loop)**: Sinyal beli memerlukan konfirmasi manual via Telegram, sementara pengamanan modal (*Trailing Stop*) bekerja 24/7 secara otomatis.
+-   **Multi-Dimensional Accuracy**: Sinyal trading divalidasi menggunakan bobot gabungan Ichimoku, ADX, dan intensitas Smart Money.
+-   **Evening Market Pulse**: Rangkuman otomatis performa IHSG, breakout harian, dan tren akumulasi setiap pukul 19:00 WIB.
+-   **Capital Preservation Layer**: Manajemen posisi berbasis volatilitas (ATR) dengan penghentian perdagangan otomatis saat *drawdown* sistem terjadi.
 
 ---
 
@@ -22,22 +19,25 @@
 
 ```text
 src/
-├── core/           # Domain Logic (Strategy, Risk, Math, Entities)
-├── application/    # Use Cases (Scanner, Backtest, Decisions)
-├── infrastructure/ # External Services (MongoDB, Yahoo, Telegram)
-└── presentation/   # Interfaces (Interactive Bot, API Controller)
+├── core/           # Logic Inti (Strategy v7, Smart Money, Math, Entities)
+├── application/    # Use Cases (Scanner, Sector Rotation, Morning/Evening Pulse)
+├── infrastructure/ # External Services (MongoDB, Yahoo Finance, Scheduler)
+└── presentation/   # Interfaces (Professional Telegram Bot, REST API)
 ```
 
 ---
 
-## 🕹️ Perintah Telegram (Interaktif)
+## 🕹️ Navigasi & Command (Elite Suite)
 
 | Perintah | Deskripsi |
 | :--- | :--- |
-| `/scan` | Jalankan pemindaian pasar manual segera. |
-| `/analyze <TICKER>` | Laporan analisis mendalam (Cloud, Volume, Risk Score). |
-| `/status` | Portfolio dashboard: Growth, Drawdown, Heat, & Positions. |
-| `/backtest <TICKER>` | Simulasi historis performa strategi V7. |
+| `/scan` | Discovery umum Top Active IDX & Ranking pasar. |
+| `/hot` | **Fast Money**: Scan saham dengan volume melonjak instan. |
+| `/smart` | **Smart Money**: Lacak akumulasi diam-diam modal besar. |
+| `/sector` | **Market Heatmap**: Analisis rotasi & kekuatan sektoral. |
+| `/analyze` | Audit mendalam: Sinyal V8, Pola Candle, & Financial Health. |
+| `/signals` | *Low Noise Mode*: Hanya tampilkan sinyal BUY yang lolos 100% filter. |
+| `/back` | Kembali ke Dashboard Utama (Dashboard Navigation). |
 
 ---
 

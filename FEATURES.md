@@ -102,7 +102,7 @@ Maximizes geometric portfolio growth through adaptive risk scaling and capital e
 
 ---
 
-## 🧪 12. QuantPerformanceLab (V7.2)
+## 🧪 12. QuantPerformanceLab (v7.2)
 Advanced research suite for strategy validation and optimization.
 - **Institutional Metrics**: Professional performance analysis including CAGR, Sharpe Ratio, Sortino Ratio, and Recovery Factor.
 - **Monte Carlo Simulator**: 500-run simulation suite to determine statistical drawdown probabilities (95% CI).
@@ -112,10 +112,35 @@ Advanced research suite for strategy validation and optimization.
 
 ---
 
-## 📈 8. Technical Summary
+## 🏛️ 13. Institutional Alpha Suite (v8.5)
+Advanced market discovery tools for detecting institutional presence.
+- **Smart Money Tracking**: Uses Money Flow Multiplier logic to detect "Quiet Accumulation" (Price stability + Volume surge) and assigns an Intensity Score (-100 to 100).
+- **Sector Wisdom (Heatmap)**: Aggregates momentum and institutional intensity of constituents across all IDX sectors to identify leading market segments.
+- **Fast Money (Hotlist)**: Real-time volume surge scanner that identifies stocks experiencing immediate participation breakouts (>2.0x average volume).
+- **Multi-Dimensional Logic**: Signal validation now integrates ADX (Trend Strength) and Smart Money Intensity for institutional-grade reliability.
+
+---
+
+## 🕒 14. Automated Market Intelligence (v13.0)
+Daily automated reporting system for institutional-style market recaps.
+- **Evening Market Pulse**: Automated daily report at 19:00 WIB covering IHSG regime, top breakouts, smart money accumulation, and leading sectors.
+- **Morning Discovery**: Automated market-wide scan at 10:00 WIB to identify early participation trends.
+- **Broadcast System**: Multi-user notification engine that ensures all approved traders receive mission-critical alerts.
+
+---
+
+## 🔄 15. Elite Suite Navigation & UX (v8.5)
+Professional-grade interface refinements for seamless operation.
+- **Unified Main Menu**: Redesigned `/start` interface categorizing features into Discovery, Analysis, and Management.
+- **Universal `/back` Navigation**: Persistent escape routes in every command message, allowing users to return to the institutional dashboard with one click.
+- **Refined Signal Alerts**: Enriched signal reports including candlestick patterns (Hammer, Marubozu), ADX strength, and institutional intensity metrics.
+
+---
+
+## 📈 16. Technical Summary
 - **Language**: TypeScript 5.x
-- **Runtime**: Node.js 18+
+- **Runtime**: Node.js 18+ / Vercel Serverless
 - **Database**: MongoDB (Mongoose)
-- **Validation**: Zod
-- **Scheduler**: node-cron
-- **Logging**: Winston 
+- **Market Data**: Yahoo Finance v3 (Refined for IDX)
+- **Validation**: Zod & Strict Type Safety
+- **Observability**: Winston Structured Logging
