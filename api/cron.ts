@@ -7,15 +7,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Vercel Crons automatically include a header 'x-vercel-cron'
 
     try {
+        const startTime = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+        const startTs = Date.now();
+
         const { runScanner, messaging } = await bootstrap();
 
-        logger.info('⏰ Starting Scheduled Market Scan (Cron)...');
+        logger.info(`⏰ Starting Scheduled Market Scan (Cron) at ${startTime}`);
 
         const report = await runScanner.execute();
 
+        const endTime = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+        const durationSec = Math.floor((Date.now() - startTs) / 1000);
+
         const message = `🏁 <b>Scheduled Scan Complete</b>\n` +
             `📊 Analyzed: ${report.totalScanned} stocks\n` +
-            `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})`;
+            `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})\n\n` +
+            `🕒 Start: ${startTime}\n` +
+            `🕒 End: ${endTime}\n` +
+            `⏱️ Duration: ${durationSec}s`;
 
         await messaging.broadcast(message);
 
