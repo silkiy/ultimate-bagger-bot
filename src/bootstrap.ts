@@ -12,6 +12,7 @@ import { HandleTradingDecision } from './application/use-cases/HandleTradingDeci
 import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 import { TrackSmartMoney } from './application/use-cases/TrackSmartMoney';
 import { AnalyzeSectorRotation } from './application/use-cases/AnalyzeSectorRotation';
+import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -26,6 +27,7 @@ export interface AppContainer {
     calculateHotlist: CalculateHotlist;
     trackSmartMoney: TrackSmartMoney;
     analyzeSector: AnalyzeSectorRotation;
+    generateEveningSummary: GenerateEveningSummary;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
     marketData: YahooFinanceProvider;
@@ -56,6 +58,12 @@ export async function bootstrap(): Promise<AppContainer> {
     const calculateHotlist = new CalculateHotlist(marketData);
     const trackSmartMoney = new TrackSmartMoney(marketData);
     const analyzeSector = new AnalyzeSectorRotation(marketData);
+    const generateEveningSummary = new GenerateEveningSummary(
+        marketData,
+        calculateHotlist,
+        trackSmartMoney,
+        analyzeSector
+    );
 
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
@@ -83,6 +91,7 @@ export async function bootstrap(): Promise<AppContainer> {
         calculateHotlist,
         trackSmartMoney,
         analyzeSector,
+        generateEveningSummary,
         tickerRepo,
         userRepo,
         marketData,

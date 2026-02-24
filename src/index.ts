@@ -22,6 +22,7 @@ import { HandleTradingDecision } from './application/use-cases/HandleTradingDeci
 import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 import { TrackSmartMoney } from './application/use-cases/TrackSmartMoney';
 import { AnalyzeSectorRotation } from './application/use-cases/AnalyzeSectorRotation';
+import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
 
 // Presentation
 import { QuantController } from './presentation/api/QuantController';
@@ -51,6 +52,12 @@ async function main() {
     const calculateHotlist = new CalculateHotlist(marketData);
     const trackSmartMoney = new TrackSmartMoney(marketData);
     const analyzeSector = new AnalyzeSectorRotation(marketData);
+    const generateEveningSummary = new GenerateEveningSummary(
+        marketData,
+        calculateHotlist,
+        trackSmartMoney,
+        analyzeSector
+    );
 
     // 4. API & Interface Initialization
     const quantController = new QuantController(runScanner, executeBacktest, tickerRepo);
@@ -81,7 +88,7 @@ async function main() {
     }
 
     // 6. Scheduler
-    const scheduler = new Scheduler(runScanner, messaging);
+    const scheduler = new Scheduler(runScanner, messaging, generateEveningSummary);
     scheduler.setup();
 
     logger.info('🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)');

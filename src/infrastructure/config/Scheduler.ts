@@ -1,12 +1,14 @@
 import cron from 'node-cron';
 import { RunScanner } from '../../application/use-cases/RunScanner';
+import { GenerateEveningSummary } from '../../application/use-cases/GenerateEveningSummary';
 import { IMessagingService } from '../../core/domain/interfaces/ExternalServices';
 import { logger } from '../logging/WinstonLogger';
 
 export class Scheduler {
     constructor(
         private runScanner: RunScanner,
-        private messenger: IMessagingService
+        private messenger: IMessagingService,
+        private eveningSummary: GenerateEveningSummary
     ) { }
 
     setup() {
@@ -22,7 +24,23 @@ export class Scheduler {
             await this.performScheduledScan('AFTERNOON (Jelang Closing)');
         }, { timezone: 'Asia/Jakarta' });
 
-        logger.info('✅ Scheduler ready. Dual daily scans active (10:00 & 15:45 WIB).');
+        // ─── Evening Summary: 19:00 WIB ──────────────────────────────────────
+        cron.schedule('0 19 * * 1-5', async () => {
+            logger.info('🔔 [Evening-Summary] Triggered at 19:00 WIB');
+            await this.performEveningSummary();
+        }, { timezone: 'Asia/Jakarta' });
+
+        logger.info('✅ Scheduler ready. Daily scans (10:00 & 15:45) + Evening Pulse (19:00) active.');
+    }
+
+    private async performEveningSummary() {
+        try {
+            const summary = await this.eveningSummary.execute();
+            await this.messenger.broadcast(summary);
+            logger.info('✅ Evening summary broadcasted successfully.');
+        } catch (err: any) {
+            logger.error('[Evening Summary] Failed:', err.message);
+        }
     }
 
     private async performScheduledScan(periodName: string) {

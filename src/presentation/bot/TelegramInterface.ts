@@ -92,26 +92,19 @@ export class TelegramInterface {
                 `👋 Selamat datang, <b>${ctx.from.first_name}</b>! ${statusEmoji}\n` +
                 `🏛️ <b>ULTIMATE BAGGER BOT v8.5</b>\n` +
                 `<i>Institutional Quant Engine — Elite Suite</i>\n\n` +
-                `📡 <b>MARKET SCANNER</b>\n` +
-                `├ /scan - Full Market Discovery (Top Active)\n` +
-                `├ /hot - ⚡ <b>FAST MONEY</b> (Volume Surge)\n` +
-                `├ /smart - 🏛️ <b>SMART MONEY</b> (Accumulation)\n` +
-                `├ /signals - Entry/Exit Actionable Only\n` +
-                `└ /quote [SYMBOL] - Real-time Price Info\n\n` +
-                `🔬 <b>SMART ANALYSIS</b>\n` +
-                `├ /analyze [SYMBOL] - Institutional Analysis\n` +
-                `├ /backtest [SYMBOL] - Historical Strategy Test\n` +
-                `└ /search [KEYWORD] - Find IDX Symbol\n\n` +
-                `📂 <b>WATCHLIST & PORTFOLIO</b>\n` +
-                `├ /portfolio - Active Positions & P/L\n` +
-                `├ /list - Your Private Watchlist\n` +
-                `├ /add [SYMBOL] - Track new asset\n` +
-                `└ /remove [SYMBOL] - Stop tracking\n\n` +
-                `👤 <b>ACCOUNT</b>\n` +
-                `├ /myprofile - Balance & Risk Settings\n` +
-                `└ /setcapital [N] - Update Initial Capital\n` +
-                (isAdmin ? `\n🔒 <b>ADMIN CONTROL</b>\n├ /users - User Management\n├ /approve @user - Activate Access\n└ /block ID - Revoke Access\n` : '') +
-                `\n👉 Ketik /help untuk penjelasan detail indikator.`,
+                `🎯 <b>DISCOVERY (Pencarian Saham)</b>\n` +
+                `├ /scan - Discovery Umum (Top Active)\n` +
+                `├ /hot - ⚡ <b>Fast Money</b> (Volume Breakout)\n` +
+                `└ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n\n` +
+                `🔬 <b>ANALYSIS (Deep Insights)</b>\n` +
+                `├ /analyze [SYM] - Deep Tech & Fund\n` +
+                `├ /sector - 🧭 <b>Market Heatmap</b> (Rotasi)\n` +
+                `└ /signals - Entry Saham Pilihan Saja\n\n` +
+                `📂 <b>MANAGEMENT (Watchlist)</b>\n` +
+                `├ /list - Lihat Daftar Pantau Anda\n` +
+                `└ /portfolio - Aktif Positions & P/L\n\n` +
+                (isAdmin ? `🔒 <b>ADMIN</b>: /users, /approve\n` : '') +
+                `📖 <b>Informasi detail indikator & command:</b> /help`,
                 { parse_mode: 'HTML' }
             );
         });
@@ -269,26 +262,25 @@ export class TelegramInterface {
 
         // ─── /help ────────────────────────────────────────────────────────────
         this.bot.command('help', (ctx) => ctx.reply(
-            '📖 <b>Panduan Ultimate Bagger Bot v7.5</b>\n\n' +
-            '🤖 <b>Strategi Core:</b>\n' +
-            'Bot menggunakan sistem <b>Hybrid Ichimoku V7</b> yang dikombinasikan dengan:\n' +
-            '• <b>ADX Filter</b>: Menghindari sideways (Strong Trend > 20).\n' +
-            '• <b>Weekly Conf</b>: Entry hanya searah trend mingguan.\n' +
-            '• <b>Volume Spike</b>: Konfirmasi partisipasi big player.\n\n' +
-            '📡 <b>Perintah Utama:</b>\n' +
-            '• <code>/scan</code> — Fast Market Discovery di Top Active IDX.\n' +
-            '• <code>/hot</code> — <b>FAST MONEY.</b> Mencari saham dengan volume melonjak (>200%) secara instan.\n' +
-            '• <code>/smart</code> — <b>SMART MONEY.</b> Deteksi akumulasi institusi (Quiet buying/Absorption).\n' +
-            '• <code>/signals</code> — Khusus menampilkan saham yang benar-benar siap eksekusi (Pass All Filters).\n' +
-            '• <code>/analyze [SYMBOL]</code> — Analisis teknikal, fundamental, & institutional flow.\n\n' +
-            '🔬 <b>Penjelasan Indikator:</b>\n' +
-            '• <b>ADX > 20</b>: Menunjukkan tren sedang kuat (Trending).\n' +
-            '• <b>Smart Money Score</b>: Skor intensitas akumulasi modal besar (-100 ke 100).\n' +
-            '• <b>Pola Candle</b>: Deteksi Hammer, Engulfing, Marubozu untuk konfirmasi entry.\n' +
-            '• <b>Ichimoku Breakthrough</b>: Konfirmasi harga menembus awan Kumo (Bullish Change).\n\n' +
-            '📂 <b>Manajemen Watchlist:</b>\n' +
-            '• Gunakan <code>/add</code> untuk memasukkan saham ke monitoring harian.\n' +
-            '• Saham di watchlist akan secara otomatis mengirim notifikasi jika muncul sinyal BUY/SELL di jam penutupan.',
+            '📖 <b>Panduan Ultimate Bagger Bot v8.5</b>\n\n' +
+            '🤖 <b>STRATEGI UTAMA</b>\n' +
+            'Sistem <b>Hybrid Ichimoku V7</b> yang mendeteksi breakout harga searah trend mingguan, dikombinasikan dengan filter <b>ADX > 20</b> untuk akurasi tinggi.\n\n' +
+            '📡 <b>PENCARIAN (DISCOVERY)</b>\n' +
+            '• <code>/scan</code> — Scan seluruh market (Top Active) untuk mencari peluang baru.\n' +
+            '• <code>/hot</code> — <b>FAST MONEY.</b> Mencari saham dengan volume melonjak tajam (Breakout Volume).\n' +
+            '• <code>/smart</code> — <b>SMART MONEY.</b> Deteksi akumulasi diam-diam oleh institusi/bandar.\n' +
+            '• <code>/sector</code> — <b>MARKET HEATMAP.</b> Melihat rotasi sektor & mencari pimpinan pasar hari ini.\n\n' +
+            '🔬 <b>ANALISIS & OPERASI</b>\n' +
+            '• <code>/analyze [SYM]</code> — Laporan lengkap Teknikal, Fundamental, & Flow Institusi.\n' +
+            '• <code>/signals</code> — Khusus menampilkan saham yang sudah lolos 100% kriteria filter BUY.\n' +
+            '• <code>/backtest [SYM]</code> — Uji performa sinyal bot pada data historis setahun terakhir.\n' +
+            '• <code>/quote [SYM]</code> — Cek harga real-time & perubahan intraday.\n\n' +
+            '📑 <b>MANAJEMEN WATCHLIST</b>\n' +
+            '• <code>/add [SYM]</code> — Masukkan saham ke daftar pantau otomatis.\n' +
+            '• <code>/list</code> — Lihat list saham yang sedang Anda pantau.\n' +
+            '• <code>/remove [SYM]</code> — Berhenti memantau saham tersebut.\n' +
+            '• <b>Notifikasi</b>: Saham di watchlist akan otomatis mengirim sinyal jika terjadi perubahan status trend.\n\n' +
+            '💡 <i>Setiap fitur dirancang untuk memberikan "Edge" (keunggulan) institusional bagi trader ritel Jakarta.</i>',
             { parse_mode: 'HTML' }
         ));
 

@@ -10,7 +10,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const startTime = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
         const startTs = Date.now();
 
-        const { runScanner, messaging } = await bootstrap();
+        const { runScanner, messaging, generateEveningSummary } = await bootstrap();
+
+        const nowWib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+        const hourWib = new Date(nowWib).getHours();
+
+        if (hourWib >= 18 && hourWib <= 20) {
+            // It's Evening! (Handling 18:00 - 20:59 as window for 19:00 cron)
+            logger.info(`🌚 Triggering Evening Market Summary at ${startTime}`);
+            const summary = await generateEveningSummary.execute();
+            await messaging.broadcast(summary);
+
+            return res.status(200).json({ success: true, type: 'EVENING_SUMMARY' });
+        }
 
         logger.info(`⏰ Starting Scheduled Market Scan (Cron) at ${startTime}`);
 
@@ -30,6 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         return res.status(200).json({
             success: true,
+            type: 'MARKET_SCAN',
             totalScanned: report.totalScanned,
             buySignals: report.buySignals.length
         });
