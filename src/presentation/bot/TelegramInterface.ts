@@ -72,41 +72,17 @@ export class TelegramInterface {
             return next();
         });
 
-        // ─── /start ───────────────────────────────────────────────────────────
+        // ─── /start & /back ──────────────────────────────────────────────────
         this.bot.start(async (ctx) => {
             const telegramId = ctx.from.id.toString();
             const user = await this.userRepo.findByTelegramId(telegramId);
-            if (!user) {
-                return ctx.reply(
-                    `👋 Halo, <b>${ctx.from.first_name}</b>!\n\n` +
-                    `🏛️ <b>Ultimate Bagger Bot V7.2</b>\n` +
-                    `Institutional Quant Engine untuk IDX\n\n` +
-                    `Kamu belum terdaftar. Gunakan:\n` +
-                    `👉 /register — Daftar akun baru`,
-                    { parse_mode: 'HTML' }
-                );
-            }
-            const statusEmoji = user.status === 'APPROVED' ? '✅' : user.status === 'PENDING' ? '⏳' : '🚫';
-            const isAdmin = this.isAdmin(telegramId);
-            return ctx.reply(
-                `👋 Selamat datang, <b>${ctx.from.first_name}</b>! ${statusEmoji}\n` +
-                `🏛️ <b>ULTIMATE BAGGER BOT v8.5</b>\n` +
-                `<i>Institutional Quant Engine — Elite Suite</i>\n\n` +
-                `🎯 <b>DISCOVERY (Pencarian Saham)</b>\n` +
-                `├ /scan - Discovery Umum (Top Active)\n` +
-                `├ /hot - ⚡ <b>Fast Money</b> (Volume Breakout)\n` +
-                `└ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n\n` +
-                `🔬 <b>ANALYSIS (Deep Insights)</b>\n` +
-                `├ /analyze [SYM] - Deep Tech & Fund\n` +
-                `├ /sector - 🧭 <b>Market Heatmap</b> (Rotasi)\n` +
-                `└ /signals - Entry Saham Pilihan Saja\n\n` +
-                `📂 <b>MANAGEMENT (Watchlist)</b>\n` +
-                `├ /list - Lihat Daftar Pantau Anda\n` +
-                `└ /portfolio - Aktif Positions & P/L\n\n` +
-                (isAdmin ? `🔒 <b>ADMIN</b>: /users, /approve\n` : '') +
-                `📖 <b>Informasi detail indikator & command:</b> /help`,
-                { parse_mode: 'HTML' }
-            );
+            await this.sendMainMenu(ctx, user);
+        });
+
+        this.bot.command('back', async (ctx) => {
+            const telegramId = ctx.from.id.toString();
+            const user = await this.userRepo.findByTelegramId(telegramId);
+            await this.sendMainMenu(ctx, user);
         });
 
         // ─── /register ────────────────────────────────────────────────────────
@@ -240,7 +216,8 @@ export class TelegramInterface {
                 `Watchlist: <b>${tickers.length} saham</b>\n` +
                 `Bergabung: ${new Date(user.registeredAt).toLocaleDateString('id-ID')}\n\n` +
                 `Ubah modal: <code>/setcapital [NOMINAL]</code>\n` +
-                `Contoh: <code>/setcapital 15000000</code>`,
+                `Contoh: <code>/setcapital 15000000</code>\n\n` +
+                `🔙 Kembali: /back`,
                 { parse_mode: 'HTML' }
             );
         });
@@ -255,7 +232,7 @@ export class TelegramInterface {
             }
             await this.userRepo.setCapital(telegramId, amount);
             await ctx.reply(
-                `✅ Modal diperbarui: <b>Rp ${amount.toLocaleString('id-ID')}</b>`,
+                `✅ Modal diperbarui: <b>Rp ${amount.toLocaleString('id-ID')}</b>\n\n🔙 Kembali: /back`,
                 { parse_mode: 'HTML' }
             );
         });
@@ -280,7 +257,8 @@ export class TelegramInterface {
             '• <code>/list</code> — Lihat list saham yang sedang Anda pantau.\n' +
             '• <code>/remove [SYM]</code> — Berhenti memantau saham tersebut.\n' +
             '• <b>Notifikasi</b>: Saham di watchlist akan otomatis mengirim sinyal jika terjadi perubahan status trend.\n\n' +
-            '💡 <i>Setiap fitur dirancang untuk memberikan "Edge" (keunggulan) institusional bagi trader ritel Jakarta.</i>',
+            '💡 <i>Setiap fitur dirancang untuk memberikan "Edge" (keunggulan) institusional bagi trader ritel Jakarta.</i>\n\n' +
+            '🔙 Kembali: /back',
             { parse_mode: 'HTML' }
         ));
 
@@ -308,7 +286,7 @@ export class TelegramInterface {
                     }
                 });
 
-                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk cek validasi Ichimoku.`;
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk cek validasi Ichimoku.\n\n🔙 Kembali: /back`;
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
                 logger.error('Hot command error:', err);
@@ -341,7 +319,7 @@ export class TelegramInterface {
 
                 msg += `\n🤫 <b>QUIET:</b> Volume melonjak tapi harga belum breakout (Akumulasi).\n`;
                 msg += `🔥 <b>ACTIVE:</b> Tekanan beli institusi sangat kuat.\n`;
-                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk detail chart Ichimoku.`;
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk detail chart Ichimoku.\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -391,7 +369,7 @@ export class TelegramInterface {
                     msg += '\n';
                 }
 
-                msg += `👉 /scan — Lihat seluruh peringkat pasar & eksekusi`;
+                msg += `👉 /scan — Lihat seluruh peringkat pasar & eksekusi\n\n🔙 Kembali: /back`;
 
                 await ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined, msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -518,7 +496,7 @@ export class TelegramInterface {
                         filtMsg += `   ↳ Ditolak karena: confidence rendah (&lt;60%) atau bukan Top-3 ranking\n`;
                         filtMsg += `   ↳ Gunakan /analyze ${item.symbol} untuk detail\n\n`;
                     });
-                    filtMsg += `<i>💡 Filter ini melindungi modal dari sinyal berkualitas rendah.</i>`;
+                    filtMsg += `<i>💡 Filter ini melindungi modal dari sinyal berkualitas rendah.</i>\n\n🔙 Kembali: /back`;
                     await ctx.reply(filtMsg, { parse_mode: 'HTML' });
                 }
 
@@ -532,7 +510,7 @@ export class TelegramInterface {
                         `• Harga di atas Awan (Kumo)\n` +
                         `• Volume &gt; 1.2× rata-rata\n\n` +
                         `💡 Pasar IDX buka <b>Senin–Jumat 09:00–15:45 WIB</b>.\n` +
-                        `🔄 Scan otomatis tiap hari pkl 15:45 WIB.`;
+                        `🔄 Scan otomatis tiap hari pkl 15:45 WIB.\n\n🔙 Kembali: /back`;
                     await ctx.reply(noSig, { parse_mode: 'HTML' });
                 }
 
@@ -571,7 +549,7 @@ export class TelegramInterface {
                     `📉 Prev Close: Rp ${quote.previousClose.toFixed(0)}\n\n` +
                     `📦 Volume: ${quote.volume.toLocaleString('id-ID')}\n` +
                     `🏢 Market Cap: Rp ${mcap}\n\n` +
-                    `⏰ Data dari Yahoo Finance (real-time)`;
+                    `⏰ Data dari Yahoo Finance (real-time)\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -598,7 +576,7 @@ export class TelegramInterface {
                 results.forEach((r, i) => {
                     msg += `${i + 1}. <code>${r.symbol}</code> — ${r.name}\n   Exchange: ${r.exchange}\n\n`;
                 });
-                msg += `\n💡 Gunakan simbol di atas untuk:\n/quote SYMBOL | /analyze SYMBOL`;
+                msg += `\n💡 Gunakan simbol di atas untuk:\n/quote SYMBOL | /analyze SYMBOL\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -671,6 +649,7 @@ export class TelegramInterface {
 
                 if (rtData) msg += `📊 Data: ${rtData.dataPoints} candle (Yahoo Finance)\n`;
                 if (!inDB) msg += `\n💡 Tambahkan ke watchlist: /add ${symbol}`;
+                msg += `\n\n🔙 Kembali: /back`;
 
                 if (signal.type === 'BUY') {
                     await ctx.reply(msg, {
@@ -710,7 +689,7 @@ export class TelegramInterface {
                 });
 
                 msg += `\n🔥 <b>Strategi:</b> Fokus pada saham di sektor <b>BULLISH</b> dengan skor Heat > 65.\n`;
-                msg += `\n👉 Gunakan <code>/analyze [TopPick]</code> untuk validasi entry.`;
+                msg += `\n👉 Gunakan <code>/analyze [TopPick]</code> untuk validasi entry.\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -746,7 +725,7 @@ export class TelegramInterface {
                     `🔄 Total Trades: ${result.totalTrades}\n` +
                     ((result as any).sharpeRatio !== undefined ? `📐 Sharpe Ratio: ${(result as any).sharpeRatio?.toFixed(2)}\n` : '') +
                     ((result as any).maxDrawdown !== undefined ? `📉 Max Drawdown: ${(result as any).maxDrawdown?.toFixed(2)}%\n` : '') +
-                    `\n💡 Gunakan /analyze ${symbol} untuk sinyal live`;
+                    `\n💡 Gunakan /analyze ${symbol} untuk sinyal live\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -789,7 +768,7 @@ export class TelegramInterface {
                 await ctx.reply(
                     `✅ <b>${name}</b> (<code>${symbol}</code>) berhasil ditambahkan ke watchlist!\n\n` +
                     `💡 Saham ini akan discan otomatis setiap hari.\n` +
-                    `Gunakan /analyze ${symbol} untuk analisis sekarang.`,
+                    `Gunakan /analyze ${symbol} untuk analisis sekarang.\n\n🔙 Kembali: /back`,
                     { parse_mode: 'HTML' }
                 );
             } catch (err: any) {
@@ -808,7 +787,7 @@ export class TelegramInterface {
                 if (!existing) return ctx.reply(`⚠️ ${symbol} tidak ada di watchlist kamu.`);
 
                 await this.tickerRepo.deleteBySymbol(symbol, userId);
-                await ctx.reply(`🗑️ <b>${symbol}</b> berhasil dihapus dari watchlist.`, { parse_mode: 'HTML' });
+                await ctx.reply(`🗑️ <b>${symbol}</b> berhasil dihapus dari watchlist.\n\n🔙 Kembali: /back`, { parse_mode: 'HTML' });
             } catch (err: any) {
                 await ctx.reply(`❌ Gagal menghapus: ${err.message}`);
             }
@@ -831,7 +810,7 @@ export class TelegramInterface {
                     const holding = t.state.isHolding ? `📌 Holding ${t.state.lots} lot @ ${t.state.entryPrice}` : '⬜ Idle';
                     msg += `${i + 1}. <code>${t.config.symbol}</code> — ${holding}\n`;
                 });
-                msg += `\n💡 /analyze SYMBOL untuk analisis | /remove SYMBOL untuk hapus`;
+                msg += `\n💡 /analyze SYMBOL untuk analisis | /remove SYMBOL untuk hapus\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -936,7 +915,7 @@ export class TelegramInterface {
                     msg += `${sym} ${harga} ${avg} ${lot} ${inv} ${pnl} ${pct}\n`;
                 }
                 msg += `</code>`;
-                msg += `\n💡 /scan — cari sinyal | /status — ringkasan`;
+                msg += `\n💡 /scan — cari sinyal | /status — ringkasan\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -964,7 +943,7 @@ export class TelegramInterface {
                         status += `   Lots: ${t.state.lots} | Entry: Rp ${t.state.entryPrice}\n`;
                         status += `   Peak: Rp ${t.state.highestPrice} (${pnlPct}%)\n\n`;
                     });
-                    status += `Total Posisi: ${holding.length}/${tickers.length}`;
+                    status += `Total Posisi: ${holding.length}/${tickers.length}\n\n🔙 Kembali: /back`;
                 }
                 await ctx.reply(status, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -1009,6 +988,41 @@ export class TelegramInterface {
             }
         });
 
+    }
+
+    private async sendMainMenu(ctx: Context, user: any) {
+        if (!user) {
+            return ctx.reply(
+                `👋 Halo, <b>${ctx.from?.first_name}</b>!\n\n` +
+                `🏛️ <b>Ultimate Bagger Bot V7.2</b>\n` +
+                `Institutional Quant Engine untuk IDX\n\n` +
+                `Kamu belum terdaftar. Gunakan:\n` +
+                `👉 /register — Daftar akun baru`,
+                { parse_mode: 'HTML' }
+            );
+        }
+        const telegramId = ctx.from?.id.toString() || '';
+        const statusEmoji = user.status === 'APPROVED' ? '✅' : user.status === 'PENDING' ? '⏳' : '🚫';
+        const isAdmin = this.isAdmin(telegramId);
+        return ctx.reply(
+            `👋 Selamat datang, <b>${ctx.from?.first_name}</b>! ${statusEmoji}\n` +
+            `🏛️ <b>ULTIMATE BAGGER BOT v8.5</b>\n` +
+            `<i>Institutional Quant Engine — Elite Suite</i>\n\n` +
+            `🎯 <b>DISCOVERY (Pencarian Saham)</b>\n` +
+            `├ /scan - Discovery Umum (Top Active)\n` +
+            `├ /hot - ⚡ <b>Fast Money</b> (Volume Breakout)\n` +
+            `└ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n\n` +
+            `🔬 <b>ANALYSIS (Deep Insights)</b>\n` +
+            `├ /analyze [SYM] - Deep Tech & Fund\n` +
+            `├ /sector - 🧭 <b>Market Heatmap</b> (Rotasi)\n` +
+            `└ /signals - Entry Saham Pilihan Saja\n\n` +
+            `📂 <b>MANAGEMENT (Watchlist)</b>\n` +
+            `├ /list - Lihat Daftar Pantau Anda\n` +
+            `└ /portfolio - Aktif Positions & P/L\n\n` +
+            (isAdmin ? `🔒 <b>ADMIN</b>: /users, /approve\n` : '') +
+            `📖 <b>Informasi detail indikator & command:</b> /help`,
+            { parse_mode: 'HTML' }
+        );
     }
 
     async launch() {
