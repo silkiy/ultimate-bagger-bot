@@ -148,7 +148,8 @@ export class DomainMath {
         const surge = this.calculateVolumeSurge(data, 10);
         const priceChange = Math.abs((current.close - prev.close) / (prev.close || 1));
 
-        return surge > 1.5 && priceChange < 0.01;
+        // Tuning: Loosen price change to 1.5% for IDX volatility
+        return surge > 1.5 && priceChange < 0.015;
     }
 
     /**
@@ -189,8 +190,9 @@ export class DomainMath {
         const avgIntensity = constituents.reduce((a, b) => a + b.intensity, 0) / constituents.length;
 
         // Weights: 40% Momentum, 60% Institutional Intensity
-        const momentumScore = Math.min(Math.max((avgChange + 5) * 10, 0), 100); // Normalized -5% to +5%
-        const intensityScore = Math.min(Math.max((avgIntensity + 100) / 2, 0), 100); // Normalized -100 to 100
+        // Tuning: More realistic normalization for IDX averages
+        const momentumScore = Math.min(Math.max((avgChange + 3) * 16.6, 0), 100); // Normalized -3% to +3%
+        const intensityScore = Math.min(Math.max((avgIntensity + 50), 0), 100); // Normalized -50 to 50 (Sweet spot)
 
         return Math.round((momentumScore * 0.4) + (intensityScore * 0.6));
     }

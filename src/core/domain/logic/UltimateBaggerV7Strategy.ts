@@ -51,10 +51,22 @@ export class UltimateBaggerV7Strategy implements IStrategy {
             }
 
             if (trigger && aboveCloud && volValid) {
-                // Calculate Confidence
-                const trendStrength = Math.min(100, ((price - cloudUpper) / cloudUpper) * 1000); // Distance from cloud
+                // Fetch complementary metrics for accuracy tuning
+                const adx = DomainMath.getADX(data, 14);
+                const intensity = DomainMath.getSmartMoneyIntensity(data, 20);
+
+                // Calculate Multi-Dimensional Confidence
+                const trendStrength = Math.min(100, ((price - cloudUpper) / cloudUpper) * 1000);
                 const volStrength = Math.min(100, (volRatio / config.volEntryMult) * 50);
-                const totalConfidence = (trendStrength * 0.4) + (volStrength * 0.6);
+                const adxStrength = Math.min(100, (adx / 25) * 100); // 25 is strong threshold
+                const intensityStrength = Math.min(100, (intensity + 100) / 2); // Normalized -100 to 100
+
+                // Weighted Total Confidence (Tuning: Balanced Institutional + Technical)
+                const totalConfidence =
+                    (trendStrength * 0.3) +
+                    (volStrength * 0.3) +
+                    (adxStrength * 0.2) +
+                    (intensityStrength * 0.2);
 
                 return {
                     symbol: ticker.config.symbol,
