@@ -12,12 +12,24 @@ export interface RealTimeQuote {
     name: string;
 }
 
+export interface FinancialData {
+    symbol: string;
+    pe?: number;
+    pb?: number;
+    eps?: number;
+    marketCap?: number;
+    sector?: string;
+    industry?: string;
+}
+
 export interface IMarketDataProvider {
-    fetchHistoricalData(symbol: string, startDate: Date): Promise<OHLCV[]>;
+    fetchHistoricalData(symbol: string, startDate: Date, interval?: '1d' | '1wk' | '1mo'): Promise<OHLCV[]>;
     fetchRealTimeQuote?(symbol: string): Promise<RealTimeQuote | null>;
+    fetchFinancials?(symbol: string): Promise<FinancialData | null>;
     validateSymbol?(symbol: string): Promise<boolean>;
     searchSymbol?(query: string): Promise<Array<{ symbol: string; name: string; exchange: string }>>;
     fetchTopActiveSymbols?(region: string): Promise<string[]>;
+    fetchTopGainers?(region: string): Promise<string[]>;
 }
 
 export interface IMessagingService {

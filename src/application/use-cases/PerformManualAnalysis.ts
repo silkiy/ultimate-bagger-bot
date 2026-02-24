@@ -4,6 +4,7 @@ import { IStrategy } from '../../core/domain/interfaces/Strategy';
 import { Signal } from '../../core/domain/entities/MarketData';
 import { logger } from '../../infrastructure/logging/WinstonLogger';
 import { YahooFinanceProvider } from '../../infrastructure/external/YahooFinanceProvider';
+import { DomainMath } from '../../core/domain/logic/Math';
 
 export class PerformManualAnalysis {
     constructor(
@@ -129,21 +130,37 @@ export class PerformManualAnalysis {
                 logger.warn('JKSE unavailable, defaulting regime to BULLISH for analysis');
             }
 
-            // 5. Calculate Signal
+            // 5. Calculate Indicators
+            const adx = DomainMath.getADX(stockData, 14);
+            const patterns = DomainMath.detectPatterns(stockData);
+            const financials = this.marketData.fetchFinancials ? await this.marketData.fetchFinancials(symbol) : null;
+
+            // 6. Calculate Signal
             const signal = this.strategy.calculateSignal(ticker as any, stockData, isMarketBullish);
 
-            // 6. Inject real-time price into signal
+            // 7. Inject real-time price into signal
             if (realTimePrice > 0) {
                 signal.price = realTimePrice;
             }
+            signal.timestamp = new Date();
 
-            // 7. Inject extra metadata
+            // 8. Inject extra metadata
             (signal as any).realTimeData = {
                 name: stockName,
                 currentPrice: realTimePrice,
                 changePercent: changePercent.toFixed(2),
                 volume,
-                dataPoints: stockData.length
+                dataPoints: stockData.length,
+                adx: adx.toFixed(1),
+                patterns,
+                financials: {
+                    pe: financials?.pe?.toFixed(2) || '-',
+                    pb: financials?.pb?.toFixed(2) || '-',
+                    eps: financials?.eps?.toFixed(2) || '-',
+                    marketCap: financials?.marketCap || 0,
+                    sector: financials?.sector || '-',
+                    industry: financials?.industry || '-'
+                }
             };
 
             // 8. Log signal to DB only if ticker exists in DB

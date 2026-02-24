@@ -16,6 +16,8 @@ interface AnalyzedTicker {
     stockData: OHLCV[];
     score: number;
     atr: number;
+    adx: number;
+    sector?: string;
 }
 
 export interface ScanSignalItem {
@@ -34,6 +36,8 @@ export interface RankedItem {
     score: number;
     price: number;
     inDb: boolean;
+    adx: number;
+    sector?: string;
 }
 
 export interface ScanReport {
@@ -42,6 +46,7 @@ export interface ScanReport {
     buySignals: ScanSignalItem[];
     sellSignals: ScanSignalItem[];
     rankedItems: RankedItem[];
+    elitePicks: RankedItem[];
     watchlist: string[];
     timestamp: Date;
 }
@@ -109,6 +114,25 @@ export class RunScanner {
         private messenger: IMessagingService
     ) { }
 
+    private async hasWeeklyTrend(ticker: DomainTicker): Promise<boolean> {
+        try {
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 365); // 1 year for weekly
+            const weeklyData = await this.marketData.fetchHistoricalData(ticker.config.symbol, startDate, '1wk');
+            if (!weeklyData || weeklyData.length < 20) return true; // Fallback if no data
+
+            const latest = weeklyData[weeklyData.length - 1];
+            const close = latest.adjclose || latest.close || 0;
+            const sma50 = DomainMath.getSMA(weeklyData, 50);
+
+            // Weekly Trend: Price > SMA50 Weekly
+            return sma50 === 0 || close > sma50;
+        } catch (err) {
+            logger.warn(`⚠️ Weekly trend check failed for ${ticker.config.symbol}: ${err}`);
+            return true; // Conservative fallback
+        }
+    }
+
     async execute(): Promise<ScanReport> {
         logger.info('🚀 Starting Compounding Optimization Engine (V7.0)');
 
@@ -118,6 +142,7 @@ export class RunScanner {
             buySignals: [],
             sellSignals: [],
             rankedItems: [],
+            elitePicks: [],
             watchlist: [],
             timestamp: new Date()
         };
@@ -200,39 +225,56 @@ export class RunScanner {
 
                     const signal = this.strategy.calculateSignal(ticker, stockData, isMarketBullish);
                     const atr = DomainMath.getATR(stockData, 14);
+                    const adx = DomainMath.getADX(stockData, 14);
                     const score = CompoundingOptimizer.calculateRankingScore(ticker, signal, atr);
 
-                    logger.info(`📊 [Ranking] ${ticker.config.symbol}: Score ${score.toFixed(2)}, Signal: ${signal.type}, Price: Rp${currentPrice.toFixed(0)}, AvgVol: ${(avgVolume / 1e6).toFixed(1)}M`);
-                    return { ticker, signal, stockData, score, atr };
+                    let sector: string | undefined;
+                    if (this.marketData.fetchFinancials) {
+                        const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
+                        if (financials) {
+                            if ((financials.eps || 0) < 0) {
+                                logger.debug(`⏭️ Skip ${ticker.config.symbol}: Negative EPS (${financials.eps})`);
+                                return null;
+                            }
+                            sector = financials.sector;
+                        }
+                    }
+
+                    logger.info(`📊 [Ranking] ${ticker.config.symbol}: Score ${score.toFixed(2)}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
+                    return { ticker, signal, stockData, score, atr, adx, sector };
                 } catch (err: any) {
                     logger.error(`❌ Skip ${ticker.config.symbol}: ${err.message}`);
                     return null;
                 }
             }));
 
-            const tickerSignals = tickerResults.filter((t): t is AnalyzedTicker => t !== null);
+            const tickerSignals = tickerResults.filter((t) => t !== null) as AnalyzedTicker[];
             report.totalScanned = tickerSignals.length;
 
             // Clip to Top 20 Ranked Assets
-            const rankedTickers = tickerSignals
+            const rankedTickers = [...tickerSignals]
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 20);
 
-            const top3Symbols = rankedTickers.slice(0, 3).map(t => t.ticker.config.symbol);
-
             // Populate rankedItems for Telegram display
-            report.rankedItems = rankedTickers.map(({ ticker, signal, stockData, score }) => ({
+            report.rankedItems = rankedTickers.map(({ ticker, signal, score, adx, sector }) => ({
                 symbol: ticker.config.symbol,
                 signal: signal.type,
                 score,
-                price: stockData[stockData.length - 1].adjclose || stockData[stockData.length - 1].close || 0,
-                inDb: dbSymbols.has(ticker.config.symbol)
+                price: signal.price,
+                inDb: dbSymbols.has(ticker.config.symbol),
+                adx,
+                sector
             }));
 
-            logger.info(`🏆 Top 3 Ranked Assets: ${top3Symbols.join(', ')}`);
+            // Identify Elite Picks (Top 3)
+            report.elitePicks = report.rankedItems.slice(0, 3);
+
+            logger.info(`🏆 Elite Picks: ${report.elitePicks.map(e => e.symbol).join(', ')}`);
 
             // 5. Signal Processing Loop
-            for (const { ticker, signal, stockData, score, atr } of rankedTickers) {
+            for (const tickerItem of rankedTickers) {
+                const { ticker, signal, stockData, score, atr, adx } = tickerItem;
                 // Protection Guards
                 const haltCheck = RiskEngine.checkSystemHalt(ticker);
                 if (!haltCheck.canProceed) continue;
@@ -260,7 +302,21 @@ export class RunScanner {
                 }
 
                 if (signal.type === 'BUY' && !ticker.state.isHolding) {
-                    if (!top3Symbols.includes(ticker.config.symbol)) continue;
+                    const eliteSymbols = report.elitePicks.map(e => e.symbol);
+                    if (!eliteSymbols.includes(ticker.config.symbol)) continue;
+
+                    // TREND STRENGTH (ADX) Filter
+                    if (adx < 20) {
+                        logger.warn(`⚠️ BUY Blocked ${ticker.config.symbol}: Trend too weak (ADX ${adx.toFixed(1)} < 20)`);
+                        continue;
+                    }
+
+                    // WEEKLY TREND CONFIRMATION
+                    const confirmed = await this.hasWeeklyTrend(ticker);
+                    if (!confirmed) {
+                        logger.warn(`⚠️ BUY Blocked ${ticker.config.symbol}: Weekly trend is NOT bullish`);
+                        continue;
+                    }
 
                     const { multiplier: momentumMult, confidenceIncrease } = EquityMomentumFilter.getMomentumMultiplier(ticker);
                     const isUnderPressure = LosingStreakTracker.isUnderPressure(ticker);

@@ -19,6 +19,7 @@ import { RunScanner } from './application/use-cases/RunScanner';
 import { ExecuteBacktest } from './application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from './application/use-cases/PerformManualAnalysis';
 import { HandleTradingDecision } from './application/use-cases/HandleTradingDecision';
+import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 
 // Presentation
 import { QuantController } from './presentation/api/QuantController';
@@ -45,6 +46,7 @@ async function main() {
     const executeBacktest = new ExecuteBacktest(marketData, strategy);
     const manualAnalysis = new PerformManualAnalysis(tickerRepo, marketData, strategy);
     const handleDecision = new HandleTradingDecision(tickerRepo, simulator, messaging);
+    const calculateHotlist = new CalculateHotlist(marketData);
 
     // 4. API & Interface Initialization
     const quantController = new QuantController(runScanner, executeBacktest, tickerRepo);
@@ -60,7 +62,8 @@ async function main() {
         handleDecision,
         tickerRepo,
         userRepo,
-        marketData
+        marketData,
+        calculateHotlist
     );
     telegramInterface.init();
 

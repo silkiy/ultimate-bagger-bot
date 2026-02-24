@@ -2,6 +2,7 @@ import { Telegraf, Context, Markup } from 'telegraf';
 import { RunScanner } from '../../application/use-cases/RunScanner';
 import { ExecuteBacktest } from '../../application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from '../../application/use-cases/PerformManualAnalysis';
+import { CalculateHotlist } from '../../application/use-cases/CalculateHotlist';
 import { HandleTradingDecision } from '../../application/use-cases/HandleTradingDecision';
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IUserRepository } from '../../core/domain/interfaces/UserRepository';
@@ -20,7 +21,8 @@ export class TelegramInterface {
         private handleDecision: HandleTradingDecision,
         private tickerRepo: ITickerRepository,
         private userRepo: IUserRepository,
-        private marketData: IMarketDataProvider
+        private marketData: IMarketDataProvider,
+        private calculateHotlist: CalculateHotlist
     ) { }
 
     // Helper: get admin name string
@@ -84,24 +86,26 @@ export class TelegramInterface {
             const isAdmin = this.isAdmin(telegramId);
             return ctx.reply(
                 `👋 Selamat datang, <b>${ctx.from.first_name}</b>! ${statusEmoji}\n` +
-                `🏛️ <b>Ultimate Bagger Bot V7.2</b>\n\n` +
-                `📡 <b>Sinyal Market</b>\n` +
-                `  /scan — Scan BUY/SELL/HOLD (15 IDX terpilih)\n` +
-                `  /quote [SYMBOL.JK] — Harga real-time\n` +
-                `  /analyze [SYMBOL.JK] — Analisis Ichimoku detail\n` +
-                `  /backtest [SYMBOL.JK] — Backtest strategi historis\n\n` +
-                `📂 <b>Watchlist Pribadi</b>\n` +
-                `  /add [SYMBOL.JK] — Tambah saham ke watchlist\n` +
-                `  /remove [SYMBOL.JK] — Hapus dari watchlist\n` +
-                `  /list — Lihat semua watchlist kamu\n\n` +
-                `💼 <b>Portfolio</b>\n` +
-                `  /portfolio — Posisi aktif + P&L real-time\n` +
-                `  /status — Ringkasan posisi singkat\n\n` +
-                `👤 <b>Akun</b>\n` +
-                `  /myprofile — Profil & modal kamu\n` +
-                `  /setcapital [N] — Set modal awal\n` +
-                (isAdmin ? `\n🔒 <b>Admin</b>\n  /users — Daftar semua user\n  /approve @username — Setujui user\n  /block 123 — Blokir user\n` : '') +
-                `\n👉 /help — Daftar lengkap semua commands`,
+                `🏛️ <b>ULTIMATE BAGGER BOT v7.5</b>\n` +
+                `<i>Institutional Quant Engine — Overpowered Edition</i>\n\n` +
+                `📡 <b>MARKET SCANNER</b>\n` +
+                `├ /scan - Full Market Discovery (LQ45+)\n` +
+                `├ /signals - Entry/Exit Actionable Only\n` +
+                `└ /quote [SYMBOL] - Real-time Price Info\n\n` +
+                `🔬 <b>SMART ANALYSIS</b>\n` +
+                `├ /analyze [SYMBOL] - Deep Ichimoku v7.5\n` +
+                `├ /backtest [SYMBOL] - Historical Strategy Test\n` +
+                `└ /search [KEYWORD] - Find IDX Symbol\n\n` +
+                `📂 <b>WATCHLIST & PORTFOLIO</b>\n` +
+                `├ /portfolio - Active Positions & P/L\n` +
+                `├ /list - Your Private Watchlist\n` +
+                `├ /add [SYMBOL] - Track new asset\n` +
+                `└ /remove [SYMBOL] - Stop tracking\n\n` +
+                `👤 <b>ACCOUNT</b>\n` +
+                `├ /myprofile - Balance & Risk Settings\n` +
+                `└ /setcapital [N] - Update Initial Capital\n` +
+                (isAdmin ? `\n🔒 <b>ADMIN CONTROL</b>\n├ /users - User Management\n├ /approve @user - Activate Access\n└ /block ID - Revoke Access\n` : '') +
+                `\n👉 Ketik /help untuk penjelasan detail indikator.`,
                 { parse_mode: 'HTML' }
             );
         });
@@ -259,26 +263,56 @@ export class TelegramInterface {
 
         // ─── /help ────────────────────────────────────────────────────────────
         this.bot.command('help', (ctx) => ctx.reply(
-            '🆘 <b>Command Reference</b>\n\n' +
-            '👤 <b>Akun</b>\n' +
-            '<code>/register</code> — Daftar akun baru\n' +
-            '<code>/myprofile</code> — Lihat profil & kapital\n' +
-            '<code>/setcapital [N]</code> — Set modal awal\n\n' +
-            '📡 <b>Market</b>\n' +
-            '<code>/scan</code> — Full market scan 15 IDX terpilih\n' +
-            '<code>/quote [SYMBOL]</code> — Real-time price\n' +
-            '<code>/search [KEYWORD]</code> — Cari simbol\n' +
-            '<code>/analyze [SYMBOL]</code> — Analisis Ichimoku\n' +
-            '<code>/backtest [SYMBOL]</code> — Backtest strategi\n\n' +
-            '📂 <b>Watchlist (Personal)</b>\n' +
-            '<code>/add [SYMBOL]</code> — Tambah ke watchlist\n' +
-            '<code>/remove [SYMBOL]</code> — Hapus dari watchlist\n' +
-            '<code>/list</code> — Lihat watchlist kamu\n\n' +
-            '💼 <b>Portfolio (Personal)</b>\n' +
-            '<code>/portfolio</code> — Posisi aktif + P&L real-time\n' +
-            '<code>/status</code> — Ringkasan posisi',
+            '📖 <b>Panduan Ultimate Bagger Bot v7.5</b>\n\n' +
+            '🤖 <b>Strategi Core:</b>\n' +
+            'Bot menggunakan sistem <b>Hybrid Ichimoku V7</b> yang dikombinasikan dengan:\n' +
+            '• <b>ADX Filter</b>: Menghindari sideways (Strong Trend > 20).\n' +
+            '• <b>Weekly Conf</b>: Entry hanya searah trend mingguan.\n' +
+            '• <b>Volume Spike</b>: Konfirmasi partisipasi big player.\n\n' +
+            '📡 <b>Perintah Utama:</b>\n' +
+            '• <code>/scan</code> — Menjalankan pencarian peluang di Top Active IDX.\n' +
+            '• <code>/hot</code> — <b>FAST MONEY.</b> Mencari saham dengan volume melonjak (>200%) secara instan.\n' +
+            '• <code>/signals</code> — Khusus menampilkan saham yang benar-benar siap eksekusi (Pass All Filters).\n' +
+            '• <code>/analyze [SYMBOL]</code> — Analisis teknikal & fundamental instan.\n\n' +
+            '📂 <b>Manajemen Watchlist:</b>\n' +
+            '• Gunakan <code>/add</code> untuk memasukkan saham ke monitoring harian.\n' +
+            '• Saham di watchlist akan secara otomatis mengirim notifikasi jika muncul sinyal BUY/SELL di jam penutupan.',
             { parse_mode: 'HTML' }
         ));
+
+        // ─── /hot ─────────────────────────────────────────────────────────────
+        this.bot.command('hot', async (ctx) => {
+            const loading = await ctx.reply('🔥 Mencari saham dengan Volume Breakout (Fast Money)...');
+            try {
+                const hotItems = await this.calculateHotlist.execute();
+                if (hotItems.length === 0) {
+                    return ctx.reply('⏸️ Belum ada lonjakan volume yang signifikan saat ini.');
+                }
+
+                let msg = `🔥 <b>INSTANT HOTLIST (Volume Surge)</b>\n`;
+                msg += `<i>Mencari "Fast Money" & Akumulasi Institusi</i>\n\n`;
+                msg += `<code>No Saham      VolSurge  Trend</code>\n`;
+
+                hotItems.forEach((item, idx) => {
+                    const no = String(idx + 1).padStart(2, ' ');
+                    const sym = item.symbol.replace('.JK', '').padEnd(10, ' ');
+                    const surge = item.volumeSurge.toFixed(1).padStart(5, ' ') + 'x';
+                    const trend = item.momentum === 'UP' ? '📈' : item.momentum === 'DOWN' ? '📉' : '↔️';
+                    msg += `<code>${no}. ${sym} ${surge}   </code> ${trend}\n`;
+                    if (item.patterns.length > 0) {
+                        msg += `   └ ✨ <i>${item.patterns.join(', ')}</i>\n`;
+                    }
+                });
+
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk cek validasi Ichimoku.`;
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Hot command error:', err);
+                await ctx.reply('❌ Gagal mengambil data hotlist.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
 
         // ─── /signals — Strict Actionable Signals ────────────────────────────
         this.bot.command('signals', async (ctx) => {
@@ -350,13 +384,18 @@ export class TelegramInterface {
                 header += `📈 Sinyal Terdeteksi:\n`;
                 header += `  🟢 BUY: <b>${rawBuyItems.length}</b>`;
                 if (rawBuyItems.length > actionableBuy) {
-                    header += ` (${actionableBuy} lolos filter, ${rawBuyItems.length - actionableBuy} terfilter)`;
+                    header += ` (${actionableBuy} lolos filter)`;
                 }
                 header += `\n  📈 SELL: <b>${rawSellItems.length}</b>`;
-                if (rawSellItems.length > actionableSell) {
-                    header += ` (${actionableSell} lolos filter)`;
+                header += `\n  ⏸️ HOLD: <b>${report.totalScanned - rawBuyItems.length - rawSellItems.length}</b>\n`;
+
+                if (report.elitePicks.length > 0) {
+                    header += `\n💎 <b>ELITE PICKS (Top Setup)</b>\n`;
+                    report.elitePicks.forEach((p, idx) => {
+                        header += `${idx + 1}. <b>${p.symbol}</b> (Score: ${p.score.toFixed(1)}) - ${p.sector || '?'}\n`;
+                    });
                 }
-                header += `\n  ⏸️ HOLD: <b>${report.totalScanned - rawBuyItems.length - rawSellItems.length}</b>`;
+
                 await ctx.reply(header, { parse_mode: 'HTML' });
 
                 // ── Message 2: Full Ranked Table ──
@@ -366,18 +405,18 @@ export class TelegramInterface {
                         const chunk = report.rankedItems.slice(i, i + chunkSize);
 
                         let rankMsg = i === 0
-                            ? `🏆 <b>Ranking Lengkap (${report.rankedItems.length} saham)</b>\n<code>No  Saham      Sinyal  Score    Harga</code>\n`
-                            : `<code>No  Saham      Sinyal  Score    Harga</code>\n`;
+                            ? `🏆 <b>Ranking Lengkap (${report.rankedItems.length} saham)</b>\n<code>No Saham      Sig  ADX  Score    Harga</code>\n`
+                            : `<code>No Saham      Sig  ADX  Score    Harga</code>\n`;
 
                         chunk.forEach((item, idx) => {
                             const no = String(i + idx + 1).padStart(2, ' ');
                             const sym = item.symbol.replace('.JK', '').padEnd(10, ' ');
-                            const sigLabel = item.signal === 'BUY' ? 'BUY ' : item.signal === 'SELL' ? 'SELL' : 'HOLD';
-                            const sigMark = item.signal === 'BUY' ? '[B]' : item.signal === 'SELL' ? '[S]' : '   ';
-                            const score = item.score.toFixed(2).padStart(6, ' ');
-                            const price = item.price > 0 ? `Rp ${item.price.toFixed(0)}` : '-';
-                            const dbTag = item.inDb ? ' 📌' : '';
-                            rankMsg += `<code>${no}. ${sym} ${sigLabel} ${score}</code>  ${price}${dbTag}\n`;
+                            const sigLabel = item.signal === 'BUY' ? 'B' : item.signal === 'SELL' ? 'S' : '-';
+                            const adx = item.adx.toFixed(0).padStart(3, ' ');
+                            const score = item.score.toFixed(1).padStart(5, ' ');
+                            const price = item.price > 0 ? `Rp${item.price.toFixed(0)}` : '-';
+                            const dbTag = item.inDb ? '📌' : '';
+                            rankMsg += `<code>${no}. ${sym} ${sigLabel}  ${adx}  ${score}</code> ${price}${dbTag}\n`;
                         });
 
                         if (i === 0) {
@@ -554,8 +593,18 @@ export class TelegramInterface {
 
                 if (rtData) {
                     const changeEmoji = parseFloat(rtData.changePercent) >= 0 ? '🟢' : '🔴';
-                    msg += `💰 <b>Harga Saat Ini: Rp ${Signal_priceFormat(signal.price)}</b>\n`;
-                    msg += `${changeEmoji} Perubahan: ${rtData.changePercent}%\n\n`;
+                    msg += `💰 <b>Harga: Rp ${rtData.currentPrice.toLocaleString('id-ID')}</b> (${changeEmoji} ${rtData.changePercent}%)\n`;
+                    msg += `⚡ <b>Trend Strength (ADX): ${rtData.adx}</b>\n`;
+                    if (rtData.patterns && rtData.patterns.length > 0) {
+                        msg += `✨ <b>Pola Candle: ${rtData.patterns.join(', ')}</b>\n`;
+                    }
+                    msg += `\n🏛️ <b>Sektor: ${rtData.financials.sector}</b>\n`;
+                    msg += `📁 Industri: ${rtData.financials.industry}\n\n`;
+
+                    msg += `📊 <b>Financial Health:</b>\n`;
+                    msg += `- P/E Ratio: ${rtData.financials.pe}\n`;
+                    msg += `- P/B Ratio: ${rtData.financials.pb}\n`;
+                    msg += `- EPS: ${rtData.financials.eps}\n\n`;
                 }
 
                 msg += `📡 <b>Sinyal V7: ${signal.type}</b>\n`;

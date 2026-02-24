@@ -9,6 +9,7 @@ import { RunScanner } from './application/use-cases/RunScanner';
 import { ExecuteBacktest } from './application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from './application/use-cases/PerformManualAnalysis';
 import { HandleTradingDecision } from './application/use-cases/HandleTradingDecision';
+import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -20,6 +21,7 @@ export interface AppContainer {
     executeBacktest: ExecuteBacktest;
     manualAnalysis: PerformManualAnalysis;
     handleDecision: HandleTradingDecision;
+    calculateHotlist: CalculateHotlist;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
     marketData: YahooFinanceProvider;
@@ -47,6 +49,7 @@ export async function bootstrap(): Promise<AppContainer> {
     const executeBacktest = new ExecuteBacktest(marketData, strategy);
     const manualAnalysis = new PerformManualAnalysis(tickerRepo, marketData, strategy);
     const handleDecision = new HandleTradingDecision(tickerRepo, simulator, messaging);
+    const calculateHotlist = new CalculateHotlist(marketData);
 
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
@@ -57,7 +60,8 @@ export async function bootstrap(): Promise<AppContainer> {
         handleDecision,
         tickerRepo,
         userRepo,
-        marketData
+        marketData,
+        calculateHotlist
     );
 
     // Initialize but don't start polling (since we'll use webhooks)
@@ -68,6 +72,7 @@ export async function bootstrap(): Promise<AppContainer> {
         executeBacktest,
         manualAnalysis,
         handleDecision,
+        calculateHotlist,
         tickerRepo,
         userRepo,
         marketData,

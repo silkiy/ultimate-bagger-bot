@@ -10,17 +10,17 @@ export class YahooFinanceProvider implements IMarketDataProvider {
     constructor() { }
 
     /**
-     * Fetch historical OHLCV data (daily candles)
+     * Fetch historical OHLCV data (daily, weekly, or monthly candles)
      */
-    async fetchHistoricalData(symbol: string, startDate: Date): Promise<OHLCV[]> {
+    async fetchHistoricalData(symbol: string, startDate: Date, interval: '1d' | '1wk' | '1mo' = '1d'): Promise<OHLCV[]> {
         try {
             const result = await yahoo.chart(symbol, {
                 period1: startDate,
-                interval: '1d',
+                interval: interval,
             }) as any;
 
             if (!result || !result.quotes || result.quotes.length === 0) {
-                logger.warn(`No data returned for ${symbol}`);
+                logger.warn(`No data returned for ${symbol} with interval ${interval}`);
                 return [];
             }
 
@@ -36,8 +36,57 @@ export class YahooFinanceProvider implements IMarketDataProvider {
                     adjclose: q.adjclose ?? q.close ?? 0,
                 }));
         } catch (error: any) {
-            logger.error(`Error fetching historical data for ${symbol}: ${error.message}`);
+            logger.error(`Error fetching historical (${interval}) data for ${symbol}: ${error.message}`);
             throw error;
+        }
+    }
+
+    /**
+     * Fetch financial data (PE, PB, EPS)
+     */
+    async fetchFinancials(symbol: string): Promise<{
+        symbol: string;
+        pe?: number;
+        pb?: number;
+        eps?: number;
+        marketCap?: number;
+        sector?: string;
+        industry?: string;
+    } | null> {
+        try {
+            const result = await yahoo.quote(symbol) as any;
+            if (!result) return null;
+
+            return {
+                symbol,
+                pe: result.trailingPE || result.forwardPE,
+                pb: result.priceToBook,
+                eps: result.trailingEps,
+                marketCap: result.marketCap,
+                sector: result.sector || result.industryDisp,
+                industry: result.industry
+            };
+        } catch (error: any) {
+            logger.error(`Error fetching financials for ${symbol}: ${error.message}`);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch Top Gainers for a specific region
+     */
+    async fetchTopGainers(region: string = 'ID'): Promise<string[]> {
+        try {
+            const screenRes = await (yahoo as any).screener({ scrIds: 'day_gainers', region });
+            if (screenRes && screenRes.quotes) {
+                return screenRes.quotes
+                    .map((q: any) => q.symbol)
+                    .filter((s: string) => s && s.endsWith('.JK'));
+            }
+            return [];
+        } catch (error: any) {
+            logger.warn(`⚠️ Top Gainers fetch failed for ${region}: ${error.message}`);
+            return [];
         }
     }
 
