@@ -1,21 +1,39 @@
 import cron from 'node-cron';
 import { RunScanner } from '../../application/use-cases/RunScanner';
 import { GenerateEveningSummary } from '../../application/use-cases/GenerateEveningSummary';
+import { ScanPersonalWatchlist, ScanSession } from '../../application/use-cases/ScanPersonalWatchlist';
+import { WatchlistSentinel } from '../../application/use-cases/WatchlistSentinel';
 import { IMessagingService } from '../../core/domain/interfaces/ExternalServices';
+import { IUserRepository } from '../../core/domain/interfaces/UserRepository';
 import { logger } from '../logging/WinstonLogger';
 
 export class Scheduler {
     constructor(
         private runScanner: RunScanner,
         private messenger: IMessagingService,
-        private eveningSummary: GenerateEveningSummary
+        private eveningSummary: GenerateEveningSummary,
+        private personalWatchlist: ScanPersonalWatchlist,
+        private sentinel: WatchlistSentinel,
+        private userRepo: IUserRepository
     ) { }
 
     setup() {
+        // ─── Watchlist Sentinel: Every 30 mins during market hours (09:00 - 16:00) ──
+        cron.schedule('*/30 9-16 * * 1-5', async () => {
+            logger.info('🚨 [Sentinel-Trigger] Running anomaly detection...');
+            await this.sentinel.execute();
+        }, { timezone: 'Asia/Jakarta' });
+
         // ─── Market Opening: 10:00 WIB ───────────────────────────────────────
         cron.schedule('0 10 * * 1-5', async () => {
             logger.info('🔔 [Morning-Scan] Triggered at 10:00 WIB');
             await this.performScheduledScan('MORNING (Awal Market)');
+        }, { timezone: 'Asia/Jakarta' });
+
+        // ─── Sesi 1 Tutup: 12:00 WIB (Personalized Watchlist) ────────────────
+        cron.schedule('0 12 * * 1-5', async () => {
+            logger.info('🔔 [Midday-Watchlist] Triggered at 12:00 WIB');
+            await this.performPersonalizedScan('MIDDAY');
         }, { timezone: 'Asia/Jakarta' });
 
         // ─── Market Closing: 15:45 WIB ───────────────────────────────────────
@@ -24,15 +42,57 @@ export class Scheduler {
             await this.performScheduledScan('AFTERNOON (Jelang Closing)');
         }, { timezone: 'Asia/Jakarta' });
 
+        // ─── Sesi 2 Tutup: 16:00 WIB (Personalized Watchlist) ────────────────
+        cron.schedule('0 16 * * 1-5', async () => {
+            logger.info('🔔 [Closing-Watchlist] Triggered at 16:00 WIB');
+            await this.performPersonalizedScan('CLOSING');
+        }, { timezone: 'Asia/Jakarta' });
+
         // ─── Evening Summary: 19:00 WIB ──────────────────────────────────────
         cron.schedule('0 19 * * 1-5', async () => {
             logger.info('🔔 [Evening-Summary] Triggered at 19:00 WIB');
             await this.performEveningSummary();
+            // Also send personalized evening watchlist scan
+            await this.performPersonalizedScan('EVENING');
         }, { timezone: 'Asia/Jakarta' });
 
-        logger.info('✅ Scheduler ready. Daily scans (10:00 & 15:45) + Evening Pulse (19:00) active.');
+        logger.info('✅ Scheduler ready. Global scans (10:00 & 15:45) + Personal Watchlist (12:00, 16:00, 19:00) active.');
     }
 
+    // ─── Personalized Watchlist Scan (per-user isolation) ─────────────────────
+    private async performPersonalizedScan(session: ScanSession) {
+        try {
+            const users = await this.userRepo.findAll();
+            const approvedUsers = users.filter(u => u.status === 'APPROVED');
+
+            if (approvedUsers.length === 0) {
+                logger.info(`[Personal Scan] No approved users, skipping.`);
+                return;
+            }
+
+            logger.info(`📋 [Personal Scan ${session}] Scanning watchlists for ${approvedUsers.length} users...`);
+
+            for (const user of approvedUsers) {
+                try {
+                    const report = await this.personalWatchlist.execute(user.telegramId, session);
+                    if (report) {
+                        await this.messenger.sendToUser(user.telegramId, report);
+                        logger.info(`✅ Sent ${session} watchlist to ${user.username || user.telegramId}`);
+                    } else {
+                        logger.info(`⏭️ ${user.username || user.telegramId}: No watchlist, skipped.`);
+                    }
+                } catch (err: any) {
+                    logger.error(`[Personal Scan] Failed for ${user.telegramId}: ${err.message}`);
+                }
+            }
+
+            logger.info(`✅ [Personal Scan ${session}] Complete.`);
+        } catch (err: any) {
+            logger.error(`[Personal Scan] ${session} Failed:`, err.message);
+        }
+    }
+
+    // ─── Evening Summary (Global Broadcast) ──────────────────────────────────
     private async performEveningSummary() {
         try {
             const summary = await this.eveningSummary.execute();
@@ -43,6 +103,7 @@ export class Scheduler {
         }
     }
 
+    // ─── Global Market Scan (Broadcast to ALL) ───────────────────────────────
     private async performScheduledScan(periodName: string) {
         const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
         try {

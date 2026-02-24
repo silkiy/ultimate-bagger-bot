@@ -105,14 +105,25 @@ Maximizes geometric portfolio growth through adaptive risk scaling.
 ---
 
 ## 🕒 11. Automated Market Intelligence
-Daily automated reporting system for institutional-style recaps.
-- **Morning Discovery (10:00 WIB)**: Early participation trends and volume surges.
-- **Final Scan (15:45 WIB)**: Entry signals before market close.
-- **Evening Market Pulse (19:00 WIB)**: IHSG regime, breakouts, smart money, sector rotation.
+Daily automated reporting system for institutional-style recaps and personalized surveillance.
+- **Morning Discovery (10:00 WIB)**: Early participation trends and volume surges (Global).
+- **Personalized Watchlist Scan (12:00, 16:00, 19:00 WIB)**: Isolated scans for individual users with Entry/TP/SL and Institutional Badges.
+- **Final Scan (15:45 WIB)**: Entry signals before market close (Global).
+- **Evening Market Pulse (19:00 WIB)**: IHSG regime, breakouts, smart money, sector rotation (Global).
 
 ---
 
-## 🔄 12. Navigation & UX (Elite Suite)
+## 🚨 12. Sovereign Sentinel (Anomaly Detection)
+Real-time guardian for your personal watchlist.
+- **24/7 Monitoring**: Automatically triggers every 30 minutes during market hours.
+- **Volume Spike Alert**: Immediate notification if current Volume > 1.5x of 22-Day Average.
+- **Price Jump Alert**: Immediate notification if Price > 5% change from Previous Close.
+- **Trend Deviation**: Alerts if price deviates > 3% from the Weekly Trend (SMA-5).
+- **Personal Isolation**: Alerts are sent only to the user who owns the stock in their watchlist.
+
+---
+
+## 🔄 13. Navigation & UX (Elite Suite)
 Professional-grade interface refinements.
 - **Unified Main Menu**: `/start` with Discovery, Analysis, and Management categories.
 - **Universal `/back`**: Persistent escape routes in every command.
@@ -120,7 +131,7 @@ Professional-grade interface refinements.
 
 ---
 
-## 📈 13. Technical Summary
+## 📈 14. Technical Summary
 - **Language**: TypeScript 5.x
 - **Runtime**: Node.js 18+ / Vercel Serverless
 - **Database**: MongoDB (Mongoose)

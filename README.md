@@ -1,11 +1,13 @@
-# 🏛️ Ultimate Bagger Quant Bot (v9.0) — Sovereign Edition
+# 🏛️ Ultimate Bagger Quant Bot (v9.2) — Sovereign Sentinel
 
-**Ultimate Bagger v9.0 "Sovereign Edition"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **analisis teknikal presisi**, **audit fundamental**, **kecerdasan sentimen (NLP)**, dan **manajemen resiko institusional** dalam satu ekosistem Telegram yang canggih.
+**Ultimate Bagger v9.2 "Sovereign Sentinel"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **analisis teknikal presisi**, **audit fundamental**, **kecerdasan sentimen (NLP)**, dan **Sovereign Sentinel (Anomaly Detection)** dalam satu ekosistem Telegram yang canggih.
 
 ---
 
 ## 🚀 Fitur Utama
 
+-   **Sovereign Sentinel (NEW)**: Pendeteksi anomali real-time 24/7 (Volume Spike > 1.5x & Price Jump > 5%) khusus untuk watchlist personal.
+-   **Personalized Watchlist Scan**: Laporan scan otomatis (12:00, 16:00, 19:00 WIB) yang diisolasi khusus untuk setiap user.
 -   **Institutional Alpha Engine**: Deteksi akumulasi institusi (*Smart Money*) dan lonjakan volume instan (*Fast Money*).
 -   **Sentiment Intelligence (NLP v18)**: Analisis sentimen hybrid dari berita (NLP bilingual EN/ID) dan mood pasar (momentum, volume, volatilitas).
 -   **Fundamental Quant Audit**: Penilaian kesehatan keuangan dengan Piotroski F-Score dan Altman Z-Score.

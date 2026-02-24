@@ -59,4 +59,5 @@ export interface IMessagingService {
     sendAlert(message: string): Promise<void>;
     sendInteractiveAlert(message: string, buttons: { text: string, callbackData: string }[]): Promise<void>;
     broadcast(message: string): Promise<void>;
+    sendToUser(telegramId: string, message: string): Promise<void>;
 }

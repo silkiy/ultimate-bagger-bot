@@ -16,6 +16,8 @@ import { GenerateEveningSummary } from './application/use-cases/GenerateEveningS
 import { AnalyzeSystemicRisk } from './application/use-cases/AnalyzeSystemicRisk';
 import { AuditFundamentalHealth } from './application/use-cases/AuditFundamentalHealth';
 import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
+import { ScanPersonalWatchlist } from './application/use-cases/ScanPersonalWatchlist';
+import { WatchlistSentinel } from './application/use-cases/WatchlistSentinel';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -33,6 +35,8 @@ export interface AppContainer {
     analyzeRisk: AnalyzeSystemicRisk;
     auditFundamental: AuditFundamentalHealth;
     analyzeSentiment: AnalyzeSentiment;
+    scanPersonalWatchlist: ScanPersonalWatchlist;
+    watchlistSentinel: WatchlistSentinel;
     generateEveningSummary: GenerateEveningSummary;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
@@ -73,6 +77,8 @@ export async function bootstrap(): Promise<AppContainer> {
         trackSmartMoney,
         analyzeSector
     );
+    const scanPersonalWatchlist = new ScanPersonalWatchlist(tickerRepo, manualAnalysis);
+    const watchlistSentinel = new WatchlistSentinel(userRepo, tickerRepo, marketData, messaging);
 
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
@@ -106,6 +112,8 @@ export async function bootstrap(): Promise<AppContainer> {
         analyzeRisk,
         auditFundamental,
         analyzeSentiment,
+        scanPersonalWatchlist,
+        watchlistSentinel,
         generateEveningSummary,
         tickerRepo,
         userRepo,

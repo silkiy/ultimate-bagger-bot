@@ -106,29 +106,41 @@ Setiap `/analyze` kini menampilkan level ATR-based:
 
 ## 🕒 Workflow Harian Otomatis
 
-1.  **10:00 WIB (Morning Discovery)**: Update saham dengan partisipasi volume awal kuat.
-2.  **15:45 WIB (Final Market Scan)**: Sinyal masuk final sebelum pasar tutup.
-3.  **19:00 WIB (Evening Market Pulse)**: Rangkuman lengkap termasuk akumulasi broker dan rotasi sektor.
+Bot bekerja secara proaktif untuk Anda di berbagai waktu:
+
+1.  **10:00 WIB (Morning Discovery)**: Update saham dengan partisipasi volume awal kuat (Global).
+2.  **12:00 WIB (Personalized Midday)**: Scan khusus **Watchlist Anda** saat Sesi 1 tutup.
+3.  **15:45 WIB (Final Market Scan)**: Sinyal masuk final sebelum pasar tutup (Global).
+4.  **16:00 WIB (Personalized Closing)**: Scan khusus **Watchlist Anda** saat Sesi 2 tutup.
+5.  **19:00 WIB (Evening Pulse + Personalized)**: Rangkuman lengkap IDX + Recon watchlist personal Anda.
 
 ---
 
-## 🔄 Workflow Trading Optimal
+## 🚨 Watchlist Sentinel (Anomaly Detection)
+
+Bot kini berfungsi sebagai penjaga (Sentinel) untuk watchlist Anda:
+- **Setiap 30 Menit**: Bot mengecek anomali volume dan harga pada saham di watchlist Anda.
+- **Real-Time Alerts**: Anda akan menerima pesan instan jika ada **Volume Spike (> 1.5x)** atau **Price Jump (> 5%)**.
+- **Isolation**: Notifikasi ini bersifat privat, hanya dikirim ke pemilik watchlist yang bersangkutan.
+
+---
+
+## 🔄 Workflow Trading Optimal (Sentinel Guided)
 
 ```
-Pagi → /sector (cari sektor bullish)
+Pagi → Sentinel (On standby monitor anomali)
+       → /sector (cari sektor bullish)
        → /smart (cari akumulasi institusi)
-       → /hot (cari volume surge)
 
-Siang → /analyze [SYM] (audit 360° + Entry/TP/SL)
-       → /sentiment [SYM] (konfirmasi mood pasar)
-       → /audit [SYM] (verifikasi kesehatan keuangan)
+Siang → Midday Scan (Terima laporan otomatis watchlist personal)
+       → /analyze [SYM] (jika Sentinel mendeteksi anomali)
 
-Sore  → /signals (eksekusi sinyal BUY terbaik)
-       → /risk (periksa korelasi portofolio)
+Sore  → Closing Scan (Audit final watchlist sebelum closing)
+       → /signals (eksekusi sinyal BUY terbaik)
 
-Malam → Evening Pulse (evaluasi performa hari ini)
+Malam → Recon Scan (Laporan akhir hari untuk persiapan besok)
 ```
 
 ---
 > [!IMPORTANT]
-> **Selalu jalankan `/analyze` DAN `/sentiment`** sebelum menekan tombol BELI. Kombinasi Entry/TP/SL + Mood Pasar + Fundamental Rating memberikan gambaran lengkap sebelum eksekusi.
+> **Selalu perhatikan notifikasi dari Sentinel**. Jika Sentinel mengirimkan alert "Volume Spike", segera jalankan `/analyze` untuk melihat apakah ada akumulasi institusi yang sedang terjadi secara agresif.

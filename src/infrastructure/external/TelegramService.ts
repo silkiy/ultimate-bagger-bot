@@ -70,4 +70,12 @@ export class TelegramService implements IMessagingService {
             logger.error('Telegram broadcast error:', error);
         }
     }
+
+    async sendToUser(telegramId: string, message: string): Promise<void> {
+        try {
+            await this.bot.telegram.sendMessage(telegramId, message, { parse_mode: 'HTML' });
+        } catch (error: any) {
+            logger.error(`Telegram sendToUser error (${telegramId}): ${error.message}`);
+        }
+    }
 }

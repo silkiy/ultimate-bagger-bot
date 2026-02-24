@@ -26,6 +26,8 @@ import { AnalyzeSystemicRisk } from './application/use-cases/AnalyzeSystemicRisk
 import { AuditFundamentalHealth } from './application/use-cases/AuditFundamentalHealth';
 import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
 import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
+import { ScanPersonalWatchlist } from './application/use-cases/ScanPersonalWatchlist';
+import { WatchlistSentinel } from './application/use-cases/WatchlistSentinel';
 
 // Presentation
 import { QuantController } from './presentation/api/QuantController';
@@ -64,6 +66,8 @@ async function main() {
         trackSmartMoney,
         analyzeSector
     );
+    const scanPersonalWatchlist = new ScanPersonalWatchlist(tickerRepo, manualAnalysis);
+    const watchlistSentinel = new WatchlistSentinel(userRepo, tickerRepo, marketData, messaging);
 
     // 4. API & Interface Initialization
     const quantController = new QuantController(runScanner, executeBacktest, tickerRepo);
@@ -97,7 +101,7 @@ async function main() {
     }
 
     // 6. Scheduler
-    const scheduler = new Scheduler(runScanner, messaging, generateEveningSummary);
+    const scheduler = new Scheduler(runScanner, messaging, generateEveningSummary, scanPersonalWatchlist, watchlistSentinel, userRepo);
     scheduler.setup();
 
     logger.info('🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)');
