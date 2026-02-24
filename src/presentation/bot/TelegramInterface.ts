@@ -5,6 +5,9 @@ import { PerformManualAnalysis } from '../../application/use-cases/PerformManual
 import { CalculateHotlist } from '../../application/use-cases/CalculateHotlist';
 import { TrackSmartMoney } from '../../application/use-cases/TrackSmartMoney';
 import { AnalyzeSectorRotation } from '../../application/use-cases/AnalyzeSectorRotation';
+import { AnalyzeSystemicRisk } from '../../application/use-cases/AnalyzeSystemicRisk';
+import { AuditFundamentalHealth } from '../../application/use-cases/AuditFundamentalHealth';
+import { AnalyzeSentiment } from '../../application/use-cases/AnalyzeSentiment';
 import { HandleTradingDecision } from '../../application/use-cases/HandleTradingDecision';
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IUserRepository } from '../../core/domain/interfaces/UserRepository';
@@ -26,7 +29,10 @@ export class TelegramInterface {
         private marketData: IMarketDataProvider,
         private calculateHotlist: CalculateHotlist,
         private trackSmartMoney: TrackSmartMoney,
-        private analyzeSector: AnalyzeSectorRotation
+        private analyzeSector: AnalyzeSectorRotation,
+        private analyzeRisk: AnalyzeSystemicRisk,
+        private auditFundamental: AuditFundamentalHealth,
+        private analyzeSentiment: AnalyzeSentiment
     ) { }
 
     // Helper: get admin name string
@@ -623,10 +629,48 @@ export class TelegramInterface {
                     msg += `\n🏛️ <b>Sektor: ${rtData.financials.sector}</b>\n`;
                     msg += `📁 Industri: ${rtData.financials.industry}\n\n`;
 
+                    // Market Cap Formatting
+                    const mcap = rtData.financials.marketCap;
+                    const mcapStr = mcap > 1e12
+                        ? `Rp ${(mcap / 1e12).toFixed(2)}T`
+                        : mcap > 1e9
+                            ? `Rp ${(mcap / 1e9).toFixed(2)}B`
+                            : mcap > 0
+                                ? `Rp ${(mcap / 1e6).toFixed(0)}M`
+                                : '-';
+
+                    const divYield = rtData.financials.dividendYield
+                        ? `${(rtData.financials.dividendYield * 100).toFixed(2)}%`
+                        : '-';
+
                     msg += `📊 <b>Financial Health:</b>\n`;
-                    msg += `- P/E Ratio: ${rtData.financials.pe}\n`;
-                    msg += `- P/B Ratio: ${rtData.financials.pb}\n`;
-                    msg += `- EPS: ${rtData.financials.eps}\n\n`;
+                    msg += `<code>`;
+                    msg += `• P/E Ratio    : ${rtData.financials.pe}\n`;
+                    msg += `• P/B Ratio    : ${rtData.financials.pb}\n`;
+                    msg += `• EPS          : ${rtData.financials.eps}\n`;
+                    msg += `• Market Cap   : ${mcapStr}\n`;
+                    msg += `• Dividend     : ${divYield}\n`;
+                    if (rtData.financials.bookValue > 0) {
+                        msg += `• Book Value   : Rp ${rtData.financials.bookValue.toLocaleString('id-ID')}\n`;
+                    }
+                    msg += `</code>\n`;
+
+                    // Fundamental Audit Injection (v15.2)
+                    const audit = await this.auditFundamental.execute(symbol);
+                    if (audit) {
+                        const auditEmoji = audit.rating.startsWith('A') ? '🟢' : audit.rating === 'B' ? '🟡' : '🔴';
+                        msg += `🏛️ <b>Fundamental: ${auditEmoji} ${audit.rating}</b>`;
+                        msg += ` (F-Score: <b>${audit.fScore}/9</b>`;
+                        msg += ` | Z-Score: <b>${audit.zScore > 0 ? audit.zScore.toFixed(1) : 'N/A'}</b>)\n`;
+                    }
+
+                    // Sentiment Injection (v18)
+                    const sentiment = await this.analyzeSentiment.execute(symbol);
+                    if (sentiment) {
+                        const sentEmoji = sentiment.compositeScore >= 20 ? '🟢' : sentiment.compositeScore <= -20 ? '🔴' : '⚪';
+                        msg += `🧠 <b>Sentiment: ${sentEmoji} ${sentiment.compositeLabel.replace('_', ' ')}</b> (${sentiment.compositeScore > 0 ? '+' : ''}${sentiment.compositeScore})\n`;
+                    }
+                    msg += `\n`;
                 }
 
                 msg += `📡 <b>Sinyal V7: ${signal.type}</b>\n`;
@@ -641,6 +685,23 @@ export class TelegramInterface {
                     msg += `- Di atas Awan: ${b.isAboveCloud ? '✅ Ya' : '❌ Tidak'}\n`;
                     msg += `- Cross Sinyal: ${b.isCrossed ? '✅ Ya' : '❌ Tidak'}\n`;
                     msg += `- Volume Breakout: ${b.isVolumeBreakout ? '✅ Ya' : '❌ Tidak'}\n\n`;
+                }
+
+                // Trading Levels (ATR-based)
+                if (rtData?.tradingLevels) {
+                    const lv = rtData.tradingLevels;
+                    msg += `🎯 <b>Trading Levels (ATR-based):</b>\n`;
+                    msg += `<code>`;
+                    msg += `📍 Entry   : Rp ${lv.entry.toLocaleString('id-ID')}\n`;
+                    msg += `🛑 SL      : Rp ${lv.sl.toLocaleString('id-ID')} (-${lv.riskPercent}%)\n`;
+                    msg += `✅ TP1 1:1 : Rp ${lv.tp1.toLocaleString('id-ID')}\n`;
+                    msg += `✅ TP2 1:2 : Rp ${lv.tp2.toLocaleString('id-ID')}\n`;
+                    msg += `✅ TP3 1:3 : Rp ${lv.tp3.toLocaleString('id-ID')}\n`;
+                    msg += `</code>`;
+                    msg += `📏 ATR(14): Rp ${lv.atr.toLocaleString('id-ID')}`;
+                    if (b) msg += ` | Kijun: Rp ${b.kijunLevel.toFixed(0)} | Trail: Rp ${b.stopLoss.toFixed(0)}`;
+                    msg += `\n\n`;
+                } else if (b) {
                     msg += `<b>📏 Level Kunci:</b>\n`;
                     msg += `- Kijun-Sen: Rp ${b.kijunLevel.toFixed(0)}\n`;
                     msg += `- Tenkan-Sen: Rp ${b.tenkanLevel.toFixed(0)}\n`;
@@ -951,6 +1012,172 @@ export class TelegramInterface {
             }
         });
 
+        // ─── /risk ──────────────────────────────────────────────────────────
+        this.bot.command('risk', async (ctx) => {
+            try {
+                const userId = ctx.from.id.toString();
+                const statusMsg = await ctx.reply('🔎 <b>Auditing Systemic Risk...</b>\n<i>Analisis korelasi 30 hari sedang berjalan.</i>', { parse_mode: 'HTML' });
+
+                const report = await this.analyzeRisk.execute(userId);
+
+                if (report.totalPositions === 0) {
+                    return ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined,
+                        '📭 <b>Audit Selesai</b>\nTidak ada posisi aktif yang perlu diaudit.\n\n🔙 Kembali: /back', { parse_mode: 'HTML' });
+                }
+
+                let msg = `🏛️ <b>Institutional Risk Audit</b>\n`;
+                msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+                const scoreEmoji = report.diversificationScore > 70 ? '🟢' : report.diversificationScore > 40 ? '🟡' : '🔴';
+                msg += `${scoreEmoji} <b>Diversification Score: ${report.diversificationScore.toFixed(1)}/100</b>\n`;
+                msg += `📊 Total Positions: <b>${report.totalPositions}</b>\n`;
+                msg += `📉 Avg Correlation: <b>${report.avgCorrelation.toFixed(2)}</b>\n\n`;
+
+                if (Object.keys(report.correlationMatrix).length > 0) {
+                    msg += `📑 <b>Correlation Highlights:</b>\n`;
+                    Object.entries(report.correlationMatrix)
+                        .sort(([, a], [, b]) => b - a)
+                        .slice(0, 5)
+                        .forEach(([pair, val]) => {
+                            const valEmoji = val > 0.8 ? '🧨' : val > 0.6 ? '⚠️' : '✅';
+                            msg += `${valEmoji} ${pair.padEnd(12)} : <b>${val.toFixed(2)}</b>\n`;
+                        });
+                }
+
+                if (report.warnings.length > 0) {
+                    msg += `\n🚨 <b>Risk Warnings:</b>\n`;
+                    report.warnings.forEach(w => msg += `• ${w}\n`);
+                }
+
+                msg += `\n💡 <i>Skor tinggi (>70) menandakan portofolio memiliki diversifikasi yang sehat. Korelasi > 0.8 menandakan overlap resiko yang berbahaya.</i>\n\n🔙 Kembali: /back`;
+
+                await ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined, msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Risk audit error:', err);
+                await ctx.reply(`❌ Risk audit failed: ${err.message}`);
+            }
+        });
+
+        // ─── /audit (v15.2) ────────────────────────────────────────────────
+        this.bot.command('audit', async (ctx) => {
+            try {
+                const text = (ctx.message as any).text || '';
+                const parts = text.split(' ');
+                let symbol = parts[1]?.toUpperCase();
+
+                if (!symbol) {
+                    return ctx.reply('📑 <b>Usage:</b> <code>/audit [SYMBOL]</code>\nContoh: <code>/audit BBCA.JK</code>', { parse_mode: 'HTML' });
+                }
+
+                if (!symbol.includes('.')) symbol += '.JK';
+
+                const statusMsg = await ctx.reply(`🔍 <b>Auditing Fundamental: ${symbol}...</b>\n<i>Analisis Piotroski F-Score & Altman Z-Score sedang berjalan.</i>`, { parse_mode: 'HTML' });
+
+                const report = await this.auditFundamental.execute(symbol);
+
+                if (!report) {
+                    return ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined,
+                        `❌ <b>Audit Gagal</b>\nData fundamental untuk <b>${symbol}</b> tidak tersedia.\n<i>Coba lagi beberapa saat lagi.</i>`, { parse_mode: 'HTML' });
+                }
+
+                let msg = `🏛️ <b>Institutional Fundamental Audit</b>\n`;
+                msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+                const ratingEmoji = report.rating.startsWith('A') ? '🟢' : report.rating === 'B' ? '🟡' : '🔴';
+                msg += `🏷️ Rating: ${ratingEmoji} <b>${report.rating}</b>\n`;
+                msg += `📈 F-Score: <b>${report.fScore}/9</b>\n`;
+                msg += `🛡️ Z-Score: <b>${report.zScore > 0 ? report.zScore.toFixed(2) : 'N/A'}</b>\n\n`;
+
+                msg += `📊 <b>Key Metrics:</b>\n`;
+                msg += `<code>• P/E Ratio: ${report.metrics.pe.toFixed(2)}</code>\n`;
+                msg += `<code>• P/B Ratio: ${report.metrics.pb.toFixed(2)}</code>\n`;
+                msg += `<code>• Div Yield: ${report.metrics.dividendYield.toFixed(2)}%</code>\n`;
+                msg += `<code>• Mkt Cap  : ${(report.metrics.marketCap / 1e12).toFixed(2)}T IDR</code>\n\n`;
+
+                msg += `📝 <b>Summary:</b>\n<i>"${report.summary}"</i>\n`;
+
+                if (report.warnings.length > 0) {
+                    msg += `\n⚠️ <b>Audit Warnings:</b>\n`;
+                    report.warnings.forEach(w => msg += `• ${w}\n`);
+                }
+
+                msg += `\n🔙 Kembali: /back`;
+
+                await ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined, msg, { parse_mode: 'HTML' });
+
+            } catch (err: any) {
+                logger.error('Fundamental audit error:', err);
+                await ctx.reply(`❌ Audit failed: ${err.message}`);
+            }
+        });
+
+        // ─── /sentiment (v18) ─────────────────────────────────────────────
+        this.bot.command('sentiment', async (ctx) => {
+            try {
+                const text = (ctx.message as any).text || '';
+                const parts = text.split(' ');
+                let symbol = parts[1]?.toUpperCase();
+
+                if (!symbol) {
+                    return ctx.reply('🧠 <b>Usage:</b> <code>/sentiment [SYMBOL]</code>\nContoh: <code>/sentiment BBCA.JK</code>', { parse_mode: 'HTML' });
+                }
+
+                if (!symbol.includes('.')) symbol += '.JK';
+
+                const statusMsg = await ctx.reply(`🧠 <b>Analyzing Sentiment: ${symbol}...</b>\n<i>NLP Engine & Market Mood sedang diproses.</i>`, { parse_mode: 'HTML' });
+
+                const report = await this.analyzeSentiment.execute(symbol);
+
+                if (!report) {
+                    return ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined,
+                        `❌ <b>Sentiment Analysis Gagal</b>\nData untuk <b>${symbol}</b> tidak tersedia.`, { parse_mode: 'HTML' });
+                }
+
+                const moodEmoji = report.compositeScore >= 60 ? '🟢🔥' : report.compositeScore >= 20 ? '🟢' : report.compositeScore <= -60 ? '🔴🧊' : report.compositeScore <= -20 ? '🔴' : '⚪';
+                const moodBar = this.buildMoodBar(report.compositeScore);
+
+                let msg = `🧠 <b>Sentiment Intelligence Report</b>\n`;
+                msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+                msg += `🏷️ Symbol: <b>${symbol}</b>\n`;
+                msg += `${moodEmoji} Mood: <b>${report.compositeLabel.replace('_', ' ')}</b> (${report.compositeScore > 0 ? '+' : ''}${report.compositeScore})\n`;
+                msg += `<code>${moodBar}</code>\n`;
+                msg += `📡 Source: <b>${report.source.replace('_', ' ')}</b>\n\n`;
+
+                // News Section
+                msg += `📰 <b>News NLP Score:</b> ${report.news.totalAnalyzed > 0 ? report.news.score : 'N/A'}\n`;
+                if (report.news.totalAnalyzed > 0) {
+                    msg += `   ├ Bullish: <b>${report.news.bullishCount}</b> | Bearish: <b>${report.news.bearishCount}</b>\n`;
+                    msg += `   └ Analyzed: ${report.news.totalAnalyzed} headlines\n`;
+                } else {
+                    msg += `   └ <i>No headlines available for NLP</i>\n`;
+                }
+
+                // Market Section
+                msg += `\n📊 <b>Market Mood Score:</b> ${report.market.score}\n`;
+                msg += `   ├ Momentum: <b>${report.market.momentum > 0 ? '+' : ''}${report.market.momentum}</b>\n`;
+                msg += `   ├ Volume:   <b>${report.market.volumeTrend > 0 ? '+' : ''}${report.market.volumeTrend}</b>\n`;
+                msg += `   └ Volatility: <b>${report.market.volatilitySignal > 0 ? '+' : ''}${report.market.volatilitySignal}</b>\n\n`;
+
+                // Headlines Preview
+                if (report.news.headlines.length > 0) {
+                    msg += `📋 <b>Latest Headlines:</b>\n`;
+                    report.news.headlines.slice(0, 3).forEach((h, i) => {
+                        msg += `  ${i + 1}. <i>${h.substring(0, 80)}${h.length > 80 ? '...' : ''}</i>\n`;
+                    });
+                    msg += `\n`;
+                }
+
+                msg += `📝 <b>Summary:</b>\n<i>"${report.summary}"</i>\n`;
+                msg += `\n🔙 Kembali: /back`;
+
+                await ctx.telegram.editMessageText(ctx.chat.id, statusMsg.message_id, undefined, msg, { parse_mode: 'HTML' });
+
+            } catch (err: any) {
+                logger.error('Sentiment analysis error:', err);
+                await ctx.reply(`❌ Sentiment failed: ${err.message}`);
+            }
+        });
+
         // ─── Callback Query Handler ────────────────────────────────────────────
         this.bot.on('callback_query', async (ctx) => {
             const data = (ctx.callbackQuery as any).data;
@@ -994,8 +1221,8 @@ export class TelegramInterface {
         if (!user) {
             return ctx.reply(
                 `👋 Halo, <b>${ctx.from?.first_name}</b>!\n\n` +
-                `🏛️ <b>Ultimate Bagger Bot V7.2</b>\n` +
-                `Institutional Quant Engine untuk IDX\n\n` +
+                `🏛️ <b>Ultimate Bagger Bot V9.0</b>\n` +
+                `Institutional Quant Engine — Sovereign Edition\n\n` +
                 `Kamu belum terdaftar. Gunakan:\n` +
                 `👉 /register — Daftar akun baru`,
                 { parse_mode: 'HTML' }
@@ -1006,23 +1233,36 @@ export class TelegramInterface {
         const isAdmin = this.isAdmin(telegramId);
         return ctx.reply(
             `👋 Selamat datang, <b>${ctx.from?.first_name}</b>! ${statusEmoji}\n` +
-            `🏛️ <b>ULTIMATE BAGGER BOT v8.5</b>\n` +
-            `<i>Institutional Quant Engine — Elite Suite</i>\n\n` +
+            `🏛️ <b>ULTIMATE BAGGER BOT v9.0</b>\n` +
+            `<i>Institutional Quant Engine — Sovereign Edition</i>\n\n` +
             `🎯 <b>DISCOVERY (Pencarian Saham)</b>\n` +
             `├ /scan - Discovery Umum (Top Active)\n` +
             `├ /hot - ⚡ <b>Fast Money</b> (Volume Breakout)\n` +
             `└ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n\n` +
-            `🔬 <b>ANALYSIS (Deep Insights)</b>\n` +
-            `├ /analyze [SYM] - Deep Tech & Fund\n` +
             `├ /sector - 🧭 <b>Market Heatmap</b> (Rotasi)\n` +
-            `└ /signals - Entry Saham Pilihan Saja\n\n` +
+            `├ /risk - 🛡️ <b>Risk Audit</b> (Correlation)\n` +
+            `├ /audit [SYM] - 🏛️ <b>Fund Audit</b> (F/Z-Score)\n` +
+            `└ /sentiment [SYM] - 🧠 <b>Sentiment</b> (NLP)\n\n` +
             `📂 <b>MANAGEMENT (Watchlist)</b>\n` +
             `├ /list - Lihat Daftar Pantau Anda\n` +
             `└ /portfolio - Aktif Positions & P/L\n\n` +
+            `🔬 <b>ANALYSIS (Deep Insights)</b>\n` +
+            `├ /analyze [SYM] - Deep Tech & Fund\n` +
+            `└ /signals - Entry Saham Pilihan Saja\n\n` +
             (isAdmin ? `🔒 <b>ADMIN</b>: /users, /approve\n` : '') +
             `📖 <b>Informasi detail indikator & command:</b> /help`,
             { parse_mode: 'HTML' }
         );
+    }
+
+    private buildMoodBar(score: number): string {
+        // Renders: FEAR [████░░░░░░░░░░░░████] GREED
+        const barLen = 20;
+        const normalized = Math.round(((score + 100) / 200) * barLen); // 0 to barLen
+        const clamped = Math.max(0, Math.min(barLen, normalized));
+        const filled = '█'.repeat(clamped);
+        const empty = '░'.repeat(barLen - clamped);
+        return `FEAR [${filled}${empty}] GREED`;
     }
 
     async launch() {

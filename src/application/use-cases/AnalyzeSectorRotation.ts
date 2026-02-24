@@ -21,8 +21,8 @@ export class AnalyzeSectorRotation {
             const activeSymbols = await this.marketData.fetchTopActiveSymbols('ID') || [];
             if (activeSymbols.length === 0) return [];
 
-            // 2. Parallel Fetch & Process
-            const rawData = await Promise.all(activeSymbols.slice(0, 40).map(async (symbol) => {
+            // 2. Parallel Fetch & Process (Reduced to 25 for Vercel stability)
+            const rawData = await Promise.all(activeSymbols.slice(0, 25).map(async (symbol) => {
                 try {
                     if (!this.marketData.fetchFinancials || !this.marketData.fetchRealTimeQuote) return null;
 

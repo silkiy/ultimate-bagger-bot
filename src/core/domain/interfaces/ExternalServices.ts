@@ -20,6 +20,27 @@ export interface FinancialData {
     marketCap?: number;
     sector?: string;
     industry?: string;
+    // Deep Fundamentals for v15.2
+    bookValue?: number;
+    sharesOutstanding?: number;
+    dividendYield?: number;
+    totalCash?: number;
+    totalDebt?: number;
+    revenue?: number;
+    ebit?: number;
+    workingCapital?: number;
+    retainedEarnings?: number;
+    netIncome?: number;
+    operatingCashFlow?: number;
+    totalAssets?: number;
+    totalLiabilities?: number;
+}
+
+export interface NewsItem {
+    title: string;
+    publisher: string;
+    link: string;
+    publishedAt?: Date;
 }
 
 export interface IMarketDataProvider {
@@ -30,6 +51,8 @@ export interface IMarketDataProvider {
     searchSymbol?(query: string): Promise<Array<{ symbol: string; name: string; exchange: string }>>;
     fetchTopActiveSymbols?(region: string): Promise<string[]>;
     fetchTopGainers?(region: string): Promise<string[]>;
+    fetchDeepFundamentals?(symbol: string): Promise<Partial<FinancialData> | null>;
+    fetchNewsHeadlines?(symbol: string): Promise<NewsItem[]>;
 }
 
 export interface IMessagingService {

@@ -1,5 +1,5 @@
 import YahooFinance from 'yahoo-finance2';
-import { IMarketDataProvider } from '../../core/domain/interfaces/ExternalServices';
+import { IMarketDataProvider, FinancialData, NewsItem } from '../../core/domain/interfaces/ExternalServices';
 import { OHLCV } from '../../core/domain/entities/MarketData';
 import { logger } from '../logging/WinstonLogger';
 
@@ -42,17 +42,9 @@ export class YahooFinanceProvider implements IMarketDataProvider {
     }
 
     /**
-     * Fetch financial data (PE, PB, EPS)
+     * Fetch financial data (PE, PB, EPS + Fundamentals)
      */
-    async fetchFinancials(symbol: string): Promise<{
-        symbol: string;
-        pe?: number;
-        pb?: number;
-        eps?: number;
-        marketCap?: number;
-        sector?: string;
-        industry?: string;
-    } | null> {
+    async fetchFinancials(symbol: string): Promise<FinancialData | null> {
         try {
             const result = await yahoo.quote(symbol) as any;
             if (!result) return null;
@@ -64,10 +56,50 @@ export class YahooFinanceProvider implements IMarketDataProvider {
                 eps: result.trailingEps,
                 marketCap: result.marketCap,
                 sector: result.sector || result.industryDisp,
-                industry: result.industry
+                industry: result.industry,
+                // New for v15.2
+                bookValue: result.bookValue,
+                sharesOutstanding: result.sharesOutstanding,
+                dividendYield: result.dividendYield
             };
         } catch (error: any) {
             logger.error(`Error fetching financials for ${symbol}: ${error.message}`);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch deep fundamental data via quoteSummary (Income, Balance, Cashflow)
+     * Note: May not be available for all IDX stocks.
+     */
+    async fetchDeepFundamentals(symbol: string): Promise<Partial<FinancialData> | null> {
+        try {
+            const result = await yahoo.quoteSummary(symbol, {
+                modules: ['financialData', 'balanceSheetHistory', 'incomeStatementHistory', 'cashflowStatementHistory']
+            }) as any;
+
+            if (!result) return null;
+
+            const f = result.financialData || {};
+            const bs = result.balanceSheetHistory?.balanceSheetStatements?.[0] || {};
+            const is = result.incomeStatementHistory?.incomeStatementHistory?.[0] || {};
+            const cf = result.cashflowStatementHistory?.cashflowStatements?.[0] || {};
+
+            return {
+                totalCash: f.totalCash,
+                totalDebt: f.totalDebt,
+                revenue: f.totalRevenue,
+                ebit: is.ebit,
+                netIncome: is.netIncome,
+                operatingCashFlow: cf.totalCashFromOperatingActivities,
+                totalAssets: bs.totalAssets,
+                totalLiabilities: bs.totalLiabilities,
+                // Derived for Altman Z
+                workingCapital: bs.totalCurrentAssets - bs.totalCurrentLiabilities,
+                retainedEarnings: bs.retainedEarnings
+            };
+        } catch (error: any) {
+            logger.warn(`Deep fundamentals unavailable for ${symbol}: ${error.message}`);
             return null;
         }
     }
@@ -212,6 +244,28 @@ export class YahooFinanceProvider implements IMarketDataProvider {
         } catch (error: any) {
             logger.error(`Error in hybrid ticker discovery: ${error.message}`);
             return []; // Fallback to empty if everything fails
+        }
+    }
+
+    /**
+     * Fetch news headlines for a symbol from Yahoo Finance search
+     */
+    async fetchNewsHeadlines(symbol: string): Promise<NewsItem[]> {
+        try {
+            const result = await yahoo.search(symbol) as any;
+            if (!result || !result.news || result.news.length === 0) {
+                return [];
+            }
+
+            return result.news.map((n: any) => ({
+                title: n.title || '',
+                publisher: n.publisher || 'Unknown',
+                link: n.link || '',
+                publishedAt: n.providerPublishTime ? new Date(n.providerPublishTime * 1000) : undefined
+            }));
+        } catch (error: any) {
+            logger.warn(`News headlines unavailable for ${symbol}: ${error.message}`);
+            return [];
         }
     }
 }

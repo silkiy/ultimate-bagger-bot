@@ -159,12 +159,32 @@ export class PerformManualAnalysis {
                 },
                 financials: {
                     pe: financials?.pe?.toFixed(2) || '-',
-                    pb: financials?.pb?.toFixed(2) || '-',
+                    pb: financials?.pb && financials.pb < 10000 ? financials.pb.toFixed(2) : '-',
                     eps: financials?.eps?.toFixed(2) || '-',
                     marketCap: financials?.marketCap || 0,
-                    sector: financials?.sector || '-',
-                    industry: financials?.industry || '-'
-                }
+                    sector: financials?.sector || 'Tidak Tersedia',
+                    industry: financials?.industry || 'Tidak Tersedia',
+                    dividendYield: financials?.dividendYield || 0,
+                    bookValue: financials?.bookValue || 0,
+                    sharesOutstanding: financials?.sharesOutstanding || 0
+                },
+                // Trading Levels (ATR-based)
+                tradingLevels: (() => {
+                    const atr = DomainMath.getATR(stockData, 14);
+                    const entry = realTimePrice || stockData[stockData.length - 1]?.close || 0;
+                    const stopDistance = atr * 2.0;
+                    const sl = Math.round(entry - stopDistance);
+                    const risk = entry - sl;
+                    return {
+                        entry: Math.round(entry),
+                        sl,
+                        tp1: Math.round(entry + risk * 1),     // R:R 1:1
+                        tp2: Math.round(entry + risk * 2),     // R:R 1:2
+                        tp3: Math.round(entry + risk * 3),     // R:R 1:3
+                        atr: Math.round(atr),
+                        riskPercent: entry > 0 ? ((stopDistance / entry) * 100).toFixed(2) : '0'
+                    };
+                })()
             };
 
             // 8. Log signal to DB only if ticker exists in DB

@@ -22,6 +22,9 @@ import { HandleTradingDecision } from './application/use-cases/HandleTradingDeci
 import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 import { TrackSmartMoney } from './application/use-cases/TrackSmartMoney';
 import { AnalyzeSectorRotation } from './application/use-cases/AnalyzeSectorRotation';
+import { AnalyzeSystemicRisk } from './application/use-cases/AnalyzeSystemicRisk';
+import { AuditFundamentalHealth } from './application/use-cases/AuditFundamentalHealth';
+import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
 import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
 
 // Presentation
@@ -52,6 +55,9 @@ async function main() {
     const calculateHotlist = new CalculateHotlist(marketData);
     const trackSmartMoney = new TrackSmartMoney(marketData);
     const analyzeSector = new AnalyzeSectorRotation(marketData);
+    const analyzeRisk = new AnalyzeSystemicRisk(tickerRepo, marketData);
+    const auditFundamental = new AuditFundamentalHealth(marketData);
+    const analyzeSentiment = new AnalyzeSentiment(marketData);
     const generateEveningSummary = new GenerateEveningSummary(
         marketData,
         calculateHotlist,
@@ -76,7 +82,10 @@ async function main() {
         marketData,
         calculateHotlist,
         trackSmartMoney,
-        analyzeSector
+        analyzeSector,
+        analyzeRisk,
+        auditFundamental,
+        analyzeSentiment
     );
     telegramInterface.init();
 

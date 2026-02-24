@@ -13,6 +13,9 @@ import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
 import { TrackSmartMoney } from './application/use-cases/TrackSmartMoney';
 import { AnalyzeSectorRotation } from './application/use-cases/AnalyzeSectorRotation';
 import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
+import { AnalyzeSystemicRisk } from './application/use-cases/AnalyzeSystemicRisk';
+import { AuditFundamentalHealth } from './application/use-cases/AuditFundamentalHealth';
+import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -27,6 +30,9 @@ export interface AppContainer {
     calculateHotlist: CalculateHotlist;
     trackSmartMoney: TrackSmartMoney;
     analyzeSector: AnalyzeSectorRotation;
+    analyzeRisk: AnalyzeSystemicRisk;
+    auditFundamental: AuditFundamentalHealth;
+    analyzeSentiment: AnalyzeSentiment;
     generateEveningSummary: GenerateEveningSummary;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
@@ -58,6 +64,9 @@ export async function bootstrap(): Promise<AppContainer> {
     const calculateHotlist = new CalculateHotlist(marketData);
     const trackSmartMoney = new TrackSmartMoney(marketData);
     const analyzeSector = new AnalyzeSectorRotation(marketData);
+    const analyzeRisk = new AnalyzeSystemicRisk(tickerRepo, marketData);
+    const auditFundamental = new AuditFundamentalHealth(marketData);
+    const analyzeSentiment = new AnalyzeSentiment(marketData);
     const generateEveningSummary = new GenerateEveningSummary(
         marketData,
         calculateHotlist,
@@ -77,7 +86,10 @@ export async function bootstrap(): Promise<AppContainer> {
         marketData,
         calculateHotlist,
         trackSmartMoney,
-        analyzeSector
+        analyzeSector,
+        analyzeRisk,
+        auditFundamental,
+        analyzeSentiment
     );
 
     // Initialize but don't start polling (since we'll use webhooks)
@@ -91,6 +103,9 @@ export async function bootstrap(): Promise<AppContainer> {
         calculateHotlist,
         trackSmartMoney,
         analyzeSector,
+        analyzeRisk,
+        auditFundamental,
+        analyzeSentiment,
         generateEveningSummary,
         tickerRepo,
         userRepo,

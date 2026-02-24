@@ -1,14 +1,14 @@
-# 🏛️ Ultimate Bagger V7: Project Features Documentation
+# 🏛️ Ultimate Bagger V9.0: Project Features Documentation
 
-The Ultimate Bagger V7 is an institutional-grade, semi-automatic algorithmic trading platform built on **Clean Architecture** principles. It combines high-speed market analysis with human-in-the-loop control and hyper-disciplined risk management.
+The Ultimate Bagger V9.0 "Sovereign Edition" is an institutional-grade, semi-automatic algorithmic trading platform built on **Clean Architecture** principles. It combines high-speed market analysis with NLP sentiment intelligence, fundamental scoring, and hyper-disciplined risk management.
 
 ---
 
 ## 🏗️ 1. Architecture: Clean & Modular
 The system is built using a 4-layer Clean Architecture pattern, ensuring that business logic is isolated and the system is technology-agnostic.
-- **Core Domain**: Contains pure strategy logic (Ichimoku V7), math utilities, and risk formulas. Zero external dependencies.
-- **Application Layer**: Orchestrates business use cases like `RunScanner`, `ExecuteBacktest`, and `HandleTradingDecision`.
-- **Infrastructure Layer**: Concrete implementations for MongoDB (Persistence), Yahoo Finance (Market Data), and Telegram (Messaging).
+- **Core Domain**: Contains pure strategy logic (Ichimoku V7), math utilities, NLP sentiment lexicon, and risk formulas. Zero external dependencies.
+- **Application Layer**: Orchestrates business use cases like `RunScanner`, `AnalyzeSentiment`, `AuditFundamentalHealth`, and `AnalyzeSystemicRisk`.
+- **Infrastructure Layer**: Concrete implementations for MongoDB (Persistence), Yahoo Finance (Market Data & News), and Telegram (Messaging).
 - **Presentation Layer**: Entry points via REST API (Express) and Interactive Telegram Bot.
 
 ---
@@ -18,129 +18,113 @@ Moves beyond simple automation to provide a "Pilot-Copilot" experience.
 - **Semi-Automatic Flow**: BUY signals trigger a confirmation request via Telegram buttons instead of blind execution.
 - **Human-in-the-Loop**: Confirm trades with one tap (`CONFIRM BUY`) or `IGNORE` them based on discretionary insight.
 - **Full-Auto Exit**: SELL signals are executed automatically to ensure profit taking and capital protection happen without delay.
-- **Scheduler**: Automated scanning and analysis runs every market day at **15:45 WIB** (configurable).
+- **Scheduler**: Automated scanning at **10:00** and **15:45 WIB**, with Evening Pulse at **19:00 WIB**.
 
 ---
 
 ## 🛡️ 3. Institutional Risk Engine
 A hyper-disciplined risk layer designed to protect the equity curve.
-- **ATR-Adjusted Position Sizing**: Automatically reduces number of lots during high volatility (Average True Range) to maintain a constant 2% risk per trade.
-- **Portfolio Heat Limit**: Total risk exposure across all open positions is capped at **8%** of total equity.
-- **Double Circuit Breaker**: 
-  - **Daily Loss Limit**: Halts new trades if equity drops **3%** within a standard day.
-  - **System Drawdown Limit**: Total halt and warning if drawdown exceeds **15%** from all-time peak.
-- **1% Fee Buffer**: All sizing calculations reserved 1% capital for IDX fees/slippage.
+- **ATR-Adjusted Position Sizing**: Automatically reduces lots during high volatility to maintain 2% risk per trade.
+- **Portfolio Heat Limit**: Total risk exposure capped at **8%** of total equity.
+- **Double Circuit Breaker**:
+  - **Daily Loss Limit**: Halts new trades if equity drops **3%** within a day.
+  - **System Drawdown Limit**: Total halt if drawdown exceeds **15%** from peak.
+- **1% Fee Buffer**: All sizing calculations reserve 1% for IDX fees/slippage.
 
 ---
 
 ## 📊 4. Advanced Strategy & Analysis
-Powered by the V7 refined Ichimoku algorithm.
+Powered by the V7 refined Ichimoku algorithm with multi-dimensional validation.
 - **Multi-Signal Detection**: Supports `STANDARD`, `AGGRESSIVE`, and `PULLBACK` entry rules.
-- **Volume Breakout Filter**: Validates signals only if volume exceeds 20-day average with a configurable multiplier.
-- **Signal Confidence Scoring**: Every BUY signal comes with a `Confidence Score (0-100%)` calculated from trend strength and volume breakout quality.
-- **Dynamic Trailing Stop**: Trails price from the highest peak to lock in profits, ignoring "exit on signal" if trailing stop hit first.
+- **Volume Breakout Filter**: Validates signals only if volume exceeds 20-day average.
+- **Signal Confidence Scoring**: Every BUY signal scored 0-100% from trend strength and volume quality.
+- **ATR-Based Trading Levels**: Automatic Entry, SL (2×ATR), TP1 (R:R 1:1), TP2 (1:2), TP3 (1:3).
+- **Dynamic Trailing Stop**: Trails price from highest peak to lock in profits.
 
 ---
 
-## 🤖 5. Interactive Telegram Interface
+## 🧠 5. Sentiment Intelligence Engine (v18)
+Hybrid NLP sentiment scoring combining news analysis with market-derived mood.
+- **NLP Headline Scorer**: Bilingual financial lexicon (40+ terms EN/ID) scanning Yahoo Finance headlines.
+- **Market-Derived Sentiment**: Composite score from Price Momentum (50%), Volume Trend (25%), and Volatility Signal (25%).
+- **Hybrid Engine**: Auto-detects source availability — `HYBRID`, `NEWS_ONLY`, or `MARKET_ONLY`.
+- **Fear-Greed Gauge**: Visual mood indicator from -100 (Extreme Fear) to +100 (Extreme Greed).
+- **`/sentiment [SYM]`**: Standalone sentiment report with NLP scores, market mood breakdown, and latest headlines.
+
+---
+
+## 🏛️ 6. Fundamental Quant Audit (v20)
+Institutional-grade financial health scoring.
+- **Piotroski F-Score (0-9)**: Profitability, leverage, and operating efficiency assessment.
+- **Altman Z-Score**: Bankruptcy risk prediction using balance sheet fundamentals.
+- **Synthetic Quality Proxy**: Fallback scoring for IDX stocks where deep financial data is restricted.
+- **Rating System**: AAA → D ratings based on combined F-Score and Z-Score analysis.
+- **`/audit [SYM]`**: Full fundamental health report with breakdown and risk warnings.
+
+---
+
+## 🎯 7. Enriched Analysis (`/analyze`)
+The `/analyze` command now delivers a complete 360° institutional audit:
+- **Financial Health Table**: P/E, P/B, EPS, Market Cap (formatted T/B/M), Dividend Yield, Book Value.
+- **Trading Levels**: ATR-based Entry, SL, TP1, TP2, TP3 with risk percentage.
+- **Fundamental Badge**: F-Score/Z-Score rating inline.
+- **Sentiment Badge**: NLP mood score inline.
+- **Ichimoku Breakdown**: Cloud position, cross signal, volume breakout.
+- **Smart Money**: Intensity score and accumulation detection.
+- **P/B Sanity Check**: Values > 10,000 auto-filtered to prevent misleading display.
+
+---
+
+## 🤖 8. Interactive Telegram Interface (Sovereign Suite)
 Complete platform control via professional chat interface.
-- **Commands**:
-  - `/scan`: Manual market-wide scan trigger.
-  - `/analyze <TICKER>`: Deep-dive report including Cloud status, Volume breakout, Risk breakdown, and Entry Specs.
-  - `/status`: Real-time portfolio dashboard showing growth, lots, and entry prices.
-  - `/backtest <TICKER>`: Instant 150-day simulation of current strategy performance.
-- **Interactions**:
-  - **Inline Buttons**: Confirm or Ignore signals with a single tap.
-  - **Structured Alerts**: Professional HTML-formatted messages with emojis for instant readability.
+- **Discovery Commands**: `/scan`, `/hot`, `/smart`, `/sector`, `/risk`, `/audit`, `/sentiment`.
+- **Analysis Commands**: `/analyze [SYM]` (360° audit), `/signals` (filtered BUY only).
+- **Management Commands**: `/list`, `/portfolio`, `/back`.
+- **Inline Buttons**: Confirm or Ignore signals with a single tap.
+- **Professional Output**: HTML-formatted with monospace tables, emojis, and visual gauges.
 
 ---
 
-## 💾 6. High-Fidelity Persistence & Analytics
-Comprehensive data logging for audit and machine learning preparation.
-- **Trade Logging**: Stores every single buy/sell event with precision execution price, slippage, and reasons.
-- **Signal History**: Logs every strategy hit even if the user chooses to ignore it (for signal quality analysis).
-- **Equity Snapshots**: Daily tracking of total portfolio value and drawdown for equity curve visualization.
-- **Structured JSON Logging**: Powered by Winston for institutional observability.
+## 🏛️ 9. Institutional Alpha Suite (v15.0)
+Advanced market discovery & intelligence for absolute sovereign control.
+- **Smart Money Tracking**: Money Flow Multiplier logic for "Quiet Accumulation" detection (Intensity Score -100 to 100).
+- **Portfolio Correlation Matrix**: Pearson's coefficient across holdings for cluster risk identification.
+- **Systemic Guard (/risk)**: Diversification Score with specific overlapping risk warnings.
+- **Sector Wisdom (Heatmap)**: Momentum and institutional intensity aggregated across IDX sectors.
 
 ---
 
-## 🚀 7. Production-Ready Infrastructure
-- **Environment Driven**: 100% configuration via `.env` with strict **Zod validation** at startup.
-- **Dockerized**: Includes `Dockerfile` and `docker-compose.yml` for instant deployment to cloud servers.
-- **Type Safety**: 100% TypeScript coverage with strict mode, ensuring no runtime "undefined" errors.
-- **Market Data Abstraction**: Ready-to-use Yahoo Finance v3 integration with a provider interface that can be easily swapped for Direct Feed.
+## 💎 10. Compounding & Growth Engine (V7.0-7.2)
+Maximizes geometric portfolio growth through adaptive risk scaling.
+- **Adaptive Risk Scaling**: Dynamically adjusts risk (1.5% - 2.5%) based on equity state.
+- **Automated Profit Locking**: Secures 30% of profit every 5% growth increment.
+- **Asset Ranking (Top 3 Filter)**: Restricts new entries to top 3 capital efficiency scores.
+- **Position Pyramiding**: Adds to winners (0.5x size) when profit > 1R and trend is peak.
+- **QuantPerformanceLab**: Monte Carlo (500-run), Walk-Forward, Sharpe/Sortino, and Grid Search.
 
 ---
 
-## � 9. Capital Preservation Layer
-Institutional equity protection system to stabilize long-term growth.
-- **Equity Curve Control**: Automatic risk reduction tiers (Multiplier: 1.0 down to 0.5) based on drawdown depth (0-15%).
-- **Dynamic Growth Scaling**: Increases risk cap from 2% to 2.5% when equity creates new 10% peaks above previous highs.
-- **Regime-Based Capital Allocation**: Dynamically shifts capital usage based on market state (Bull: 100%, Sideways: 70%, Bear: 30%).
-- **Losing Streak Filter**: Automatically tightens signal requirements (Confidence Req: 60% -> 80%) after a series of losses to prevent "revenge trading" or deep drawdown clusters.
+## 🕒 11. Automated Market Intelligence
+Daily automated reporting system for institutional-style recaps.
+- **Morning Discovery (10:00 WIB)**: Early participation trends and volume surges.
+- **Final Scan (15:45 WIB)**: Entry signals before market close.
+- **Evening Market Pulse (19:00 WIB)**: IHSG regime, breakouts, smart money, sector rotation.
 
 ---
 
-## 💎 10. Compounding Optimization Engine (V7.0)
-Maximizes geometric portfolio growth through adaptive risk scaling and capital efficiency.
-- **Adaptive Risk Scaling**: Dynamically adjusts risk (1.5%, 2.0%, 2.25%, 2.5%) based on equity states (Drawdown, Normal, Growth).
-- **Automated Profit Locking**: Secures 30% of profit every 5% growth increment above previous peaks, excluding it from future risk sizing.
-- **Asset Ranking (Top 3 Filter)**: Global ranking system that restricts new entries only to the top 3 assets with the highest capital efficiency scores.
-- **High Conviction Boost**: Automatically increases position size by 20% for signals with very high confidence (>85%) during bullish market regimes.
-- **Equity Momentum Filter**: Detects negative equity curve slopes (10-day lookback) to proactively reduce risk and increase signal requirements.
+## 🔄 12. Navigation & UX (Elite Suite)
+Professional-grade interface refinements.
+- **Unified Main Menu**: `/start` with Discovery, Analysis, and Management categories.
+- **Universal `/back`**: Persistent escape routes in every command.
+- **Enriched Alerts**: Candlestick patterns, ADX strength, institutional intensity, sentiment mood.
 
 ---
 
-## 🚀 11. Growth Acceleration Engine (V7.1)
-- **Growth Acceleration (V7.1)**: "Turbo Mode" yang mempercepat profit saat performa optimal melalui *pyramiding* dan *multi-tier scaling*.
-- **QuantPerformanceLab (V7.2)**: Fasilitas riset kuantitatif untuk optimasi parameter, simulasi Monte Carlo, dan pelaporan performa kelas institusi.
-- **Clean Architecture (4-Layer)**: Struktur kode profesional yang modular, *testable*, dan independen terhadap *framework*.
-- **Position Pyramiding (Scale-in)**: Adds to winning positions (0.5x size) when trade profit > 1R and trend strength is peak.
-- **Institutional Volatility Filter**: Instant deactivation of acceleration if ATR expands > 1.5x of the moving average.
-- **Optimal Regime Guard**: Only activates when drawdown < 5%, market is BULL, and equity slope is positive for 15 days.
-- **Auto-Reset Protocol**: Instant fallback to baseline compounding if 2 consecutive losses occur or drawdown breaches 5%.
-
----
-
-## 🧪 12. QuantPerformanceLab (v7.2)
-Advanced research suite for strategy validation and optimization.
-- **Institutional Metrics**: Professional performance analysis including CAGR, Sharpe Ratio, Sortino Ratio, and Recovery Factor.
-- **Monte Carlo Simulator**: 500-run simulation suite to determine statistical drawdown probabilities (95% CI).
-- **Strategy Tuning Engine**: Automated Grid Search optimization for key parameters like ATR multipliers and confidence thresholds.
-- **Walk-Forward Analysis**: Dynamic backtesting mode that simulates out-of-sample performance to guard against overfitting.
-- **Export & Reporting Service**: Automated generation of CSV trade logs and JSON summary reports for external analysis.
-
----
-
-## 🏛️ 13. Institutional Alpha Suite (v8.5)
-Advanced market discovery tools for detecting institutional presence.
-- **Smart Money Tracking**: Uses Money Flow Multiplier logic to detect "Quiet Accumulation" (Price stability + Volume surge) and assigns an Intensity Score (-100 to 100).
-- **Sector Wisdom (Heatmap)**: Aggregates momentum and institutional intensity of constituents across all IDX sectors to identify leading market segments.
-- **Fast Money (Hotlist)**: Real-time volume surge scanner that identifies stocks experiencing immediate participation breakouts (>2.0x average volume).
-- **Multi-Dimensional Logic**: Signal validation now integrates ADX (Trend Strength) and Smart Money Intensity for institutional-grade reliability.
-
----
-
-## 🕒 14. Automated Market Intelligence (v13.0)
-Daily automated reporting system for institutional-style market recaps.
-- **Evening Market Pulse**: Automated daily report at 19:00 WIB covering IHSG regime, top breakouts, smart money accumulation, and leading sectors.
-- **Morning Discovery**: Automated market-wide scan at 10:00 WIB to identify early participation trends.
-- **Broadcast System**: Multi-user notification engine that ensures all approved traders receive mission-critical alerts.
-
----
-
-## 🔄 15. Elite Suite Navigation & UX (v8.5)
-Professional-grade interface refinements for seamless operation.
-- **Unified Main Menu**: Redesigned `/start` interface categorizing features into Discovery, Analysis, and Management.
-- **Universal `/back` Navigation**: Persistent escape routes in every command message, allowing users to return to the institutional dashboard with one click.
-- **Refined Signal Alerts**: Enriched signal reports including candlestick patterns (Hammer, Marubozu), ADX strength, and institutional intensity metrics.
-
----
-
-## 📈 16. Technical Summary
+## 📈 13. Technical Summary
 - **Language**: TypeScript 5.x
 - **Runtime**: Node.js 18+ / Vercel Serverless
 - **Database**: MongoDB (Mongoose)
-- **Market Data**: Yahoo Finance v3 (Refined for IDX)
+- **Market Data**: Yahoo Finance v3 (IDX Optimized, News API)
+- **NLP Engine**: Keyword-based bilingual financial lexicon (EN/ID)
 - **Validation**: Zod & Strict Type Safety
 - **Observability**: Winston Structured Logging

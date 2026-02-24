@@ -1,17 +1,19 @@
-# 🏛️ Ultimate Bagger Quant Bot (v8.5) — Elite Suite
+# 🏛️ Ultimate Bagger Quant Bot (v9.0) — Sovereign Edition
 
-**Ultimate Bagger v8.5 "Elite Suite"** adalah platform trading kuantitatif *professional-grade* kelas institusi. Dirancang untuk bursa saham Indonesia (IDX), sistem ini menggabungkan analisis teknikal presisi, pelacakan modal besar (*Smart Money*), dan rotasi sektor dinamis dalam satu ekosistem Telegram yang elegan.
+**Ultimate Bagger v9.0 "Sovereign Edition"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **analisis teknikal presisi**, **audit fundamental**, **kecerdasan sentimen (NLP)**, dan **manajemen resiko institusional** dalam satu ekosistem Telegram yang canggih.
 
 ---
 
 ## 🚀 Fitur Utama
 
--   **Institutional Alpha Engine**: Deteksi akumulasi institusi (*Quiet Buying*) dan lonjakan volume instan (*Fast Money*).
--   **Sector Wisdom (v8.5)**: Analisis rotasi sektor real-time untuk menemukan pimpinan pasar (*Leading Sectors*) setiap hari.
--   **Hybrid Control (Human-in-the-Loop)**: Sinyal beli memerlukan konfirmasi manual via Telegram, sementara pengamanan modal (*Trailing Stop*) bekerja 24/7 secara otomatis.
--   **Multi-Dimensional Accuracy**: Sinyal trading divalidasi menggunakan bobot gabungan Ichimoku, ADX, dan intensitas Smart Money.
--   **Evening Market Pulse**: Rangkuman otomatis performa IHSG, breakout harian, dan tren akumulasi setiap pukul 19:00 WIB.
--   **Capital Preservation Layer**: Manajemen posisi berbasis volatilitas (ATR) dengan penghentian perdagangan otomatis saat *drawdown* sistem terjadi.
+-   **Institutional Alpha Engine**: Deteksi akumulasi institusi (*Smart Money*) dan lonjakan volume instan (*Fast Money*).
+-   **Sentiment Intelligence (NLP v18)**: Analisis sentimen hybrid dari berita (NLP bilingual EN/ID) dan mood pasar (momentum, volume, volatilitas).
+-   **Fundamental Quant Audit**: Penilaian kesehatan keuangan dengan Piotroski F-Score dan Altman Z-Score.
+-   **ATR-Based Trading Levels**: Entry, Stop Loss, dan Take Profit (R:R 1:1 / 1:2 / 1:3) dihitung otomatis dari volatilitas aktual.
+-   **Sector Wisdom (Heatmap)**: Rotasi sektor real-time untuk menemukan pimpinan pasar setiap hari.
+-   **Systemic Risk Audit**: Analisis korelasi portofolio dan diversifikasi untuk mencegah cluster risk.
+-   **Evening Market Pulse**: Rangkuman harian otomatis pukul 19:00 WIB.
+-   **Hybrid Control (Human-in-the-Loop)**: Sinyal beli memerlukan konfirmasi manual, sementara proteksi modal berjalan 24/7.
 
 ---
 
@@ -19,35 +21,57 @@
 
 ```text
 src/
-├── core/           # Logic Inti (Strategy v7, Smart Money, Math, Entities)
-├── application/    # Use Cases (Scanner, Sector Rotation, Morning/Evening Pulse)
+├── core/           # Logic Inti (Strategy V7, Smart Money, Sentiment NLP, Math)
+├── application/    # Use Cases (Scanner, Audit, Sentiment, Sector Rotation)
 ├── infrastructure/ # External Services (MongoDB, Yahoo Finance, Scheduler)
 └── presentation/   # Interfaces (Professional Telegram Bot, REST API)
 ```
 
 ---
 
-## 🕹️ Navigasi & Command (Elite Suite)
+## 🕹️ Navigasi & Command (Sovereign Suite)
 
+### 🎯 Discovery (Pencarian Saham)
 | Perintah | Deskripsi |
 | :--- | :--- |
 | `/scan` | Discovery umum Top Active IDX & Ranking pasar. |
 | `/hot` | **Fast Money**: Scan saham dengan volume melonjak instan. |
 | `/smart` | **Smart Money**: Lacak akumulasi diam-diam modal besar. |
 | `/sector` | **Market Heatmap**: Analisis rotasi & kekuatan sektoral. |
-| `/analyze` | Audit mendalam: Sinyal V8, Pola Candle, & Financial Health. |
-| `/signals` | *Low Noise Mode*: Hanya tampilkan sinyal BUY yang lolos 100% filter. |
-| `/back` | Kembali ke Dashboard Utama (Dashboard Navigation). |
+| `/risk` | **Risk Audit**: Deteksi korelasi portofolio & resiko sistemik. |
+| `/audit [SYM]` | **Fundamental Audit**: Piotroski F-Score & Altman Z-Score. |
+| `/sentiment [SYM]` | **Sentiment NLP**: Analisis mood pasar hybrid (NLP + Market). |
+
+### 🔬 Analysis (Deep Insights)
+| Perintah | Deskripsi |
+| :--- | :--- |
+| `/analyze [SYM]` | Audit 360°: Teknikal, Fundamental, Sentiment, Entry/TP/SL. |
+| `/signals` | *Low Noise Mode*: Hanya sinyal BUY yang lolos 100% filter. |
+
+### 📂 Management
+| Perintah | Deskripsi |
+| :--- | :--- |
+| `/list` | Lihat Daftar Pantau (Watchlist). |
+| `/portfolio` | Aktif Positions & P/L. |
+| `/back` | 🔙 Kembali ke Dashboard Utama. |
 
 ---
 
-## 🛡️ Protokol Resiko (The "Diamond Hands" Engine)
+## 🛡️ Protokol Resiko (Capital Preservation Layer)
 
-Sistem ini tidak hanya mencari profit, tapi berfokus pada **Capital Preservation**:
--   **Max Drawdown Halt**: Sistem akan berhenti jika drawdown portofolio mencapai 15%.
--   **Daily Loss Limit**: Penghentian trading harian jika rugi mencapai 3%.
--   **Portfolio Heat**: Total resiko terbuka dibatasi maksimal 8% dari modal.
--   **ATR Sizing**: Lot dihitung otomatis berdasarkan volatilitas untuk menjaga resiko tetap 2% per trade.
+-   **Max Drawdown Halt**: Trading otomatis berhenti jika drawdown portofolio 15%.
+-   **Daily Loss Limit**: Penghentian harian jika rugi harian 3%.
+-   **Portfolio Heat**: Total resiko terbuka dibatasi 8% dari modal.
+-   **ATR Sizing**: Lot dihitung otomatis berdasarkan volatilitas (2% resiko/trade).
+-   **ATR-Based SL**: Stop Loss dihitung dari 2× ATR(14) di bawah harga entry.
+
+---
+
+## 📈 Logika Strategi V7
+-   **Trend**: Price > Cloud & IHSG Bullish.
+-   **Entry**: Tenkan-Kijun Cross + Volume > 1.2x SMA20.
+-   **Protection**: Trailing Stop + ATR-adjusted sizing.
+-   **Levels**: Entry, SL (2×ATR), TP1 (R:R 1:1), TP2 (1:2), TP3 (1:3).
 
 ---
 
@@ -57,14 +81,7 @@ Sistem ini tidak hanya mencari profit, tapi berfokus pada **Capital Preservation
 2.  **Environment**: Salin `.env.example` ke `.env` dan isi token Telegram & MongoDB.
 3.  **Run**: `npm run dev`
 4.  **Docker**: `docker-compose up -d`
-
----
-
-## 📈 Logika Strategi V7
-Menggunakan kombinasi Ichimoku Aggressive dan Volume Breakout:
--   **Trend**: Price > Cloud & IHSG Bullish.
--   **Entry**: Tenkan-Kijun Cross + Volume > 1.2x SMA20.
--   **Protection**: Trailing Stop + ATR-adjusted sizing.
+5.  **Vercel**: `vercel deploy` (Serverless Mode)
 
 ---
 
@@ -72,4 +89,4 @@ Menggunakan kombinasi Ichimoku Aggressive dan Volume Breakout:
 Gunakan dengan bijak. Trading melibatkan resiko kapital yang nyata. Robot ini adalah alat bantu analisis dan eksekusi berbasis data (DYOR).
 
 ---
-*Developed with ❤️ for Quant Trading Excellence.*
+*Developed with ❤️ for Institutional Quant Trading Excellence.*

@@ -148,8 +148,8 @@ export class DomainMath {
         const surge = this.calculateVolumeSurge(data, 10);
         const priceChange = Math.abs((current.close - prev.close) / (prev.close || 1));
 
-        // Tuning: Loosen price change to 1.5% for IDX volatility
-        return surge > 1.5 && priceChange < 0.015;
+        // Tuning: Tighten price change to 1.2% for more "Quiet" institutional detection
+        return surge > 1.5 && priceChange < 0.012;
     }
 
     /**
@@ -231,5 +231,259 @@ export class DomainMath {
         }
 
         return patterns;
+    }
+
+    /**
+     * Calculates the correlation between two sets of price returns (Pearson's coefficient).
+     * Institutional use: Detect systemic risk and ensure diversification.
+     */
+    static calculateCorrelation(dataA: number[], dataB: number[]): number {
+        if (dataA.length !== dataB.length || dataA.length < 2) return 0;
+
+        const returnsA = this.calculateReturns(dataA);
+        const returnsB = this.calculateReturns(dataB);
+
+        if (returnsA.length === 0 || returnsB.length === 0) return 0;
+
+        const meanA = returnsA.reduce((a, b) => a + b, 0) / returnsA.length;
+        const meanB = returnsB.reduce((a, b) => a + b, 0) / returnsB.length;
+
+        let num = 0;
+        let denA = 0;
+        let denB = 0;
+
+        for (let i = 0; i < returnsA.length; i++) {
+            const diffA = returnsA[i] - meanA;
+            const diffB = returnsB[i] - meanB;
+            num += diffA * diffB;
+            denA += diffA * diffA;
+            denB += diffB * diffB;
+        }
+
+        const Den = Math.sqrt(denA * denB);
+        if (Den === 0 || isNaN(Den)) return 0;
+
+        const result = num / Den;
+        return isNaN(result) ? 0 : result;
+    }
+
+    private static calculateReturns(prices: number[]): number[] {
+        const returns: number[] = [];
+        for (let i = 1; i < prices.length; i++) {
+            returns.push((prices[i] - prices[i - 1]) / (prices[i - 1] || 1));
+        }
+        return returns;
+    }
+
+    /**
+     * Calculates annualized volatility.
+     */
+    static calculateVolatility(prices: number[]): number {
+        const returns = this.calculateReturns(prices);
+        if (returns.length === 0) return 0;
+        const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
+        const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+        return Math.sqrt(variance) * Math.sqrt(252); // Annualized 252 trading days
+    }
+
+    /**
+     * Calculates the Piotroski F-Score (0-9).
+     * Institutional-grade quality audit for financial health.
+     */
+    static calculatePiotroskiFScore(metrics: {
+        netIncome: number;
+        operatingCashFlow: number;
+        roa: number;
+        prevRoa: number;
+        prevOperatingCashFlow: number;
+        accruals: number; // OCF - Net Income
+        prevLeverage: number;
+        currLeverage: number;
+        prevLiquidity: number;
+        currLiquidity: number;
+        sharesIssued: boolean;
+        prevMargin: number;
+        currMargin: number;
+        prevTurnover: number;
+        currTurnover: number;
+    }): number {
+        let score = 0;
+
+        // Profitability
+        if (metrics.netIncome > 0) score++;
+        if (metrics.operatingCashFlow > 0) score++;
+        if (metrics.roa > metrics.prevRoa) score++;
+        if (metrics.operatingCashFlow > metrics.netIncome) score++;
+
+        // Leverage, Liquidity and Source of Funds
+        if (metrics.currLeverage < metrics.prevLeverage) score++;
+        if (metrics.currLiquidity > metrics.prevLiquidity) score++;
+        if (!metrics.sharesIssued) score++;
+
+        // Operating Efficiency
+        if (metrics.currMargin > metrics.prevMargin) score++;
+        if (metrics.currTurnover > metrics.prevTurnover) score++;
+
+        return score;
+    }
+
+    /**
+     * Calculates Altman Z-Score (Solvency/Bankruptcy risk).
+     * Formula: 1.2A + 1.4B + 3.3C + 0.6D + 1.0E
+     */
+    static calculateAltmanZScore(metrics: {
+        workingCapital: number;
+        retainedEarnings: number;
+        ebit: number;
+        marketCap: number;
+        totalAssets: number;
+        totalLiabilities: number;
+        revenue: number;
+    }): number {
+        if (metrics.totalAssets === 0) return 0;
+
+        const A = metrics.workingCapital / metrics.totalAssets;
+        const B = metrics.retainedEarnings / metrics.totalAssets;
+        const C = metrics.ebit / metrics.totalAssets;
+        const D = metrics.marketCap / Math.max(1, metrics.totalLiabilities);
+        const E = metrics.revenue / metrics.totalAssets;
+
+        const score = (1.2 * A) + (1.4 * B) + (3.3 * C) + (0.6 * D) + (1.0 * E);
+        return Math.round(score * 100) / 100;
+    }
+
+    // ─── Sentiment Intelligence (NLP Engine v18) ────────────────────────
+
+    /**
+     * Bilingual financial lexicon for headline sentiment scoring.
+     * Returns a score from -100 (extreme fear) to +100 (extreme greed).
+     */
+    static analyzeSentimentFromHeadlines(headlines: string[]): {
+        score: number;
+        label: 'EXTREME_GREED' | 'GREED' | 'NEUTRAL' | 'FEAR' | 'EXTREME_FEAR';
+        bullishCount: number;
+        bearishCount: number;
+        totalAnalyzed: number;
+    } {
+        if (headlines.length === 0) {
+            return { score: 0, label: 'NEUTRAL', bullishCount: 0, bearishCount: 0, totalAnalyzed: 0 };
+        }
+
+        // Bilingual Financial Lexicons (EN + ID)
+        const bullishWords = [
+            // English
+            'surge', 'soar', 'rally', 'breakout', 'bullish', 'upgrade', 'beat', 'record',
+            'growth', 'profit', 'gain', 'rise', 'jump', 'strong', 'boom', 'outperform',
+            'buy', 'accumulate', 'overweight', 'positive', 'recover', 'dividend',
+            // Indonesian
+            'naik', 'meroket', 'menguat', 'laba', 'untung', 'positif', 'melonjak',
+            'tumbuh', 'kinerja', 'dividen', 'rekor', 'prospek', 'cerah', 'bagus',
+            'akumulasi', 'beli', 'optimis', 'menembus', 'penguatan'
+        ];
+
+        const bearishWords = [
+            // English
+            'crash', 'plunge', 'drop', 'sell', 'bearish', 'downgrade', 'miss', 'loss',
+            'decline', 'fall', 'weak', 'risk', 'fear', 'recession', 'default', 'bankruptcy',
+            'underperform', 'underweight', 'negative', 'warning', 'cut', 'layoff',
+            // Indonesian
+            'turun', 'anjlok', 'melemah', 'rugi', 'negatif', 'merosot', 'tertekan',
+            'koreksi', 'ambruk', 'jatuh', 'gagal', 'resiko', 'pelemahan', 'defisit',
+            'penurunan', 'jual', 'pesimis', 'merugi', 'tekanan'
+        ];
+
+        let bullishCount = 0;
+        let bearishCount = 0;
+
+        for (const headline of headlines) {
+            const lower = headline.toLowerCase();
+            for (const word of bullishWords) {
+                if (lower.includes(word)) { bullishCount++; break; }
+            }
+            for (const word of bearishWords) {
+                if (lower.includes(word)) { bearishCount++; break; }
+            }
+        }
+
+        const total = bullishCount + bearishCount;
+        let score = 0;
+        if (total > 0) {
+            score = Math.round(((bullishCount - bearishCount) / total) * 100);
+        }
+
+        // Clamp to -100..+100
+        score = Math.max(-100, Math.min(100, score));
+
+        let label: 'EXTREME_GREED' | 'GREED' | 'NEUTRAL' | 'FEAR' | 'EXTREME_FEAR' = 'NEUTRAL';
+        if (score >= 60) label = 'EXTREME_GREED';
+        else if (score >= 20) label = 'GREED';
+        else if (score <= -60) label = 'EXTREME_FEAR';
+        else if (score <= -20) label = 'FEAR';
+
+        return { score, label, bullishCount, bearishCount, totalAnalyzed: headlines.length };
+    }
+
+    /**
+     * Market-derived sentiment from technical data.
+     * Uses price momentum, volume trend, and volatility compression
+     * to derive a "Market Mood" score (-100 to +100).
+     */
+    static calculateMarketSentiment(data: OHLCV[]): {
+        score: number;
+        label: 'EXTREME_GREED' | 'GREED' | 'NEUTRAL' | 'FEAR' | 'EXTREME_FEAR';
+        momentum: number;
+        volumeTrend: number;
+        volatilitySignal: number;
+    } {
+        if (data.length < 20) {
+            return { score: 0, label: 'NEUTRAL', momentum: 0, volumeTrend: 0, volatilitySignal: 0 };
+        }
+
+        const recent = data.slice(-20);
+        const older = data.slice(-40, -20);
+
+        // 1. Price Momentum (-100 to +100)
+        const recentClose = recent[recent.length - 1].close;
+        const sma20 = recent.reduce((s, d) => s + d.close, 0) / recent.length;
+        const momentum = Math.round(((recentClose - sma20) / sma20) * 1000); // Scale to readable range
+        const momentumClamped = Math.max(-100, Math.min(100, momentum));
+
+        // 2. Volume Trend (-100 to +100)
+        const recentAvgVol = recent.reduce((s, d) => s + d.volume, 0) / recent.length;
+        const olderAvgVol = older.length > 0
+            ? older.reduce((s, d) => s + d.volume, 0) / older.length
+            : recentAvgVol;
+        const volChange = olderAvgVol > 0 ? ((recentAvgVol - olderAvgVol) / olderAvgVol) * 100 : 0;
+        const volumeTrend = Math.max(-100, Math.min(100, Math.round(volChange)));
+
+        // 3. Volatility Compression Signal (-100 to +100)
+        // Low volatility with rising price = bullish compression (greed)
+        // High volatility with falling price = bearish expansion (fear)
+        const recentReturns = recent.slice(1).map((d, i) => (d.close - recent[i].close) / recent[i].close);
+        const avgReturn = recentReturns.reduce((a, b) => a + b, 0) / recentReturns.length;
+        const stdDev = Math.sqrt(recentReturns.reduce((a, b) => a + Math.pow(b - avgReturn, 2), 0) / recentReturns.length);
+        const annualizedVol = stdDev * Math.sqrt(252);
+
+        let volatilitySignal = 0;
+        if (annualizedVol < 0.2 && momentumClamped > 0) volatilitySignal = 50;  // Quiet bullish
+        else if (annualizedVol < 0.2) volatilitySignal = 20; // Quiet neutral
+        else if (annualizedVol > 0.5 && momentumClamped < 0) volatilitySignal = -60; // Volatile bearish
+        else if (annualizedVol > 0.5) volatilitySignal = -30; // Volatile uncertain
+
+        // Composite Score: weighted average
+        const compositeScore = Math.round(
+            (momentumClamped * 0.50) +
+            (volumeTrend * 0.25) +
+            (volatilitySignal * 0.25)
+        );
+        const score = Math.max(-100, Math.min(100, compositeScore));
+
+        let label: 'EXTREME_GREED' | 'GREED' | 'NEUTRAL' | 'FEAR' | 'EXTREME_FEAR' = 'NEUTRAL';
+        if (score >= 60) label = 'EXTREME_GREED';
+        else if (score >= 20) label = 'GREED';
+        else if (score <= -60) label = 'EXTREME_FEAR';
+        else if (score <= -20) label = 'FEAR';
+
+        return { score, label, momentum: momentumClamped, volumeTrend, volatilitySignal };
     }
 }
