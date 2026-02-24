@@ -153,6 +153,10 @@ export class PerformManualAnalysis {
                 dataPoints: stockData.length,
                 adx: adx.toFixed(1),
                 patterns,
+                smartMoney: {
+                    intensity: DomainMath.getSmartMoneyIntensity(stockData, 20),
+                    isAccumulating: DomainMath.detectQuietAccumulation(stockData)
+                },
                 financials: {
                     pe: financials?.pe?.toFixed(2) || '-',
                     pb: financials?.pb?.toFixed(2) || '-',

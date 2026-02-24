@@ -3,6 +3,8 @@ import { RunScanner } from '../../application/use-cases/RunScanner';
 import { ExecuteBacktest } from '../../application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from '../../application/use-cases/PerformManualAnalysis';
 import { CalculateHotlist } from '../../application/use-cases/CalculateHotlist';
+import { TrackSmartMoney } from '../../application/use-cases/TrackSmartMoney';
+import { AnalyzeSectorRotation } from '../../application/use-cases/AnalyzeSectorRotation';
 import { HandleTradingDecision } from '../../application/use-cases/HandleTradingDecision';
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IUserRepository } from '../../core/domain/interfaces/UserRepository';
@@ -22,7 +24,9 @@ export class TelegramInterface {
         private tickerRepo: ITickerRepository,
         private userRepo: IUserRepository,
         private marketData: IMarketDataProvider,
-        private calculateHotlist: CalculateHotlist
+        private calculateHotlist: CalculateHotlist,
+        private trackSmartMoney: TrackSmartMoney,
+        private analyzeSector: AnalyzeSectorRotation
     ) { }
 
     // Helper: get admin name string
@@ -86,14 +90,16 @@ export class TelegramInterface {
             const isAdmin = this.isAdmin(telegramId);
             return ctx.reply(
                 `👋 Selamat datang, <b>${ctx.from.first_name}</b>! ${statusEmoji}\n` +
-                `🏛️ <b>ULTIMATE BAGGER BOT v7.5</b>\n` +
-                `<i>Institutional Quant Engine — Overpowered Edition</i>\n\n` +
+                `🏛️ <b>ULTIMATE BAGGER BOT v8.5</b>\n` +
+                `<i>Institutional Quant Engine — Elite Suite</i>\n\n` +
                 `📡 <b>MARKET SCANNER</b>\n` +
-                `├ /scan - Full Market Discovery (LQ45+)\n` +
+                `├ /scan - Full Market Discovery (Top Active)\n` +
+                `├ /hot - ⚡ <b>FAST MONEY</b> (Volume Surge)\n` +
+                `├ /smart - 🏛️ <b>SMART MONEY</b> (Accumulation)\n` +
                 `├ /signals - Entry/Exit Actionable Only\n` +
                 `└ /quote [SYMBOL] - Real-time Price Info\n\n` +
                 `🔬 <b>SMART ANALYSIS</b>\n` +
-                `├ /analyze [SYMBOL] - Deep Ichimoku v7.5\n` +
+                `├ /analyze [SYMBOL] - Institutional Analysis\n` +
                 `├ /backtest [SYMBOL] - Historical Strategy Test\n` +
                 `└ /search [KEYWORD] - Find IDX Symbol\n\n` +
                 `📂 <b>WATCHLIST & PORTFOLIO</b>\n` +
@@ -270,10 +276,16 @@ export class TelegramInterface {
             '• <b>Weekly Conf</b>: Entry hanya searah trend mingguan.\n' +
             '• <b>Volume Spike</b>: Konfirmasi partisipasi big player.\n\n' +
             '📡 <b>Perintah Utama:</b>\n' +
-            '• <code>/scan</code> — Menjalankan pencarian peluang di Top Active IDX.\n' +
+            '• <code>/scan</code> — Fast Market Discovery di Top Active IDX.\n' +
             '• <code>/hot</code> — <b>FAST MONEY.</b> Mencari saham dengan volume melonjak (>200%) secara instan.\n' +
+            '• <code>/smart</code> — <b>SMART MONEY.</b> Deteksi akumulasi institusi (Quiet buying/Absorption).\n' +
             '• <code>/signals</code> — Khusus menampilkan saham yang benar-benar siap eksekusi (Pass All Filters).\n' +
-            '• <code>/analyze [SYMBOL]</code> — Analisis teknikal & fundamental instan.\n\n' +
+            '• <code>/analyze [SYMBOL]</code> — Analisis teknikal, fundamental, & institutional flow.\n\n' +
+            '🔬 <b>Penjelasan Indikator:</b>\n' +
+            '• <b>ADX > 20</b>: Menunjukkan tren sedang kuat (Trending).\n' +
+            '• <b>Smart Money Score</b>: Skor intensitas akumulasi modal besar (-100 ke 100).\n' +
+            '• <b>Pola Candle</b>: Deteksi Hammer, Engulfing, Marubozu untuk konfirmasi entry.\n' +
+            '• <b>Ichimoku Breakthrough</b>: Konfirmasi harga menembus awan Kumo (Bullish Change).\n\n' +
             '📂 <b>Manajemen Watchlist:</b>\n' +
             '• Gunakan <code>/add</code> untuk memasukkan saham ke monitoring harian.\n' +
             '• Saham di watchlist akan secara otomatis mengirim notifikasi jika muncul sinyal BUY/SELL di jam penutupan.',
@@ -309,6 +321,40 @@ export class TelegramInterface {
             } catch (err: any) {
                 logger.error('Hot command error:', err);
                 await ctx.reply('❌ Gagal mengambil data hotlist.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
+
+        // ─── /smart ────────────────────────────────────────────────────────────
+        this.bot.command('smart', async (ctx) => {
+            const loading = await ctx.reply('🔍 Memindai Akumulasi Smart Money & Quiet Buying...');
+            try {
+                const results = await this.trackSmartMoney.execute();
+                if (results.length === 0) {
+                    return ctx.reply('⏸️ Belum mendeteksi pola akumulasi Smart Money yang signifikan saat ini.');
+                }
+
+                let msg = `🏛️ <b>SMART MONEY TRACKER</b>\n`;
+                msg += `<i>Mendeteksi Akumulasi & Intensitas Beli Institusi</i>\n\n`;
+                msg += `<code>No Saham      Score  Status</code>\n`;
+
+                results.forEach((item, idx) => {
+                    const no = String(idx + 1).padStart(2, ' ');
+                    const sym = item.symbol.replace('.JK', '').padEnd(10, ' ');
+                    const score = item.intensity.toString().padStart(5, ' ');
+                    const status = item.isAccumulating ? '🤫 QUIET' : '🔥 ACTIVE';
+                    msg += `<code>${no}. ${sym} ${score}  </code> ${status}\n`;
+                });
+
+                msg += `\n🤫 <b>QUIET:</b> Volume melonjak tapi harga belum breakout (Akumulasi).\n`;
+                msg += `🔥 <b>ACTIVE:</b> Tekanan beli institusi sangat kuat.\n`;
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk detail chart Ichimoku.`;
+
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Smart command error:', err);
+                await ctx.reply('❌ Gagal mengambil data smart money.');
             } finally {
                 ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
             }
@@ -598,6 +644,12 @@ export class TelegramInterface {
                     if (rtData.patterns && rtData.patterns.length > 0) {
                         msg += `✨ <b>Pola Candle: ${rtData.patterns.join(', ')}</b>\n`;
                     }
+
+                    // Smart Money Injection
+                    const intensity = parseInt(rtData.smartMoney?.intensity || '0');
+                    const intensityEmoji = intensity > 40 ? '🏛️' : intensity > 0 ? '🟢' : intensity < -40 ? '🐋' : '⚪';
+                    msg += `${intensityEmoji} <b>Smart Money: ${intensity}</b> ${rtData.smartMoney?.isAccumulating ? '(Akumulasi 🤫)' : ''}\n`;
+
                     msg += `\n🏛️ <b>Sektor: ${rtData.financials.sector}</b>\n`;
                     msg += `📁 Industri: ${rtData.financials.industry}\n\n`;
 
@@ -641,6 +693,39 @@ export class TelegramInterface {
                 }
             } catch (err: any) {
                 await ctx.reply(`❌ Error analisis: ${err.message}`);
+            }
+        });
+
+        // ─── /sector ──────────────────────────────────────────────────────────
+        this.bot.command('sector', async (ctx) => {
+            const loading = await ctx.reply('🔍 Menganalisis Rotasi Sektor & Heatmap Pasar...');
+            try {
+                const results = await this.analyzeSector.execute();
+                if (results.length === 0) {
+                    return ctx.reply('⏸️ Belum dapat menganalisis data sektoral saat ini.');
+                }
+
+                let msg = `🧭 <b>SECTOR WISDOM (Market Heatmap)</b>\n`;
+                msg += `<i>Mencari Sektor Leading & Arus Uang Pintar</i>\n\n`;
+                msg += `<code>Heat  Sector         Trend  TopPick</code>\n`;
+
+                results.forEach((s) => {
+                    const heat = s.heatScore.toString().padStart(3, ' ');
+                    const name = s.name.substring(0, 14).padEnd(14, ' ');
+                    const trend = s.momentum === 'BULLISH' ? '📈' : s.momentum === 'BEARISH' ? '📉' : '↔️';
+                    const pick = s.topConstituent.padEnd(7, ' ');
+                    msg += `<code>${heat}   ${name} </code> ${trend}   <code>${pick}</code>\n`;
+                });
+
+                msg += `\n🔥 <b>Strategi:</b> Fokus pada saham di sektor <b>BULLISH</b> dengan skor Heat > 65.\n`;
+                msg += `\n👉 Gunakan <code>/analyze [TopPick]</code> untuk validasi entry.`;
+
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Sector command error:', err);
+                await ctx.reply('❌ Gagal melakukan analisis rotasi sektor.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
             }
         });
 

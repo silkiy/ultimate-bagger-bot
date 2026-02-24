@@ -10,6 +10,8 @@ import { ExecuteBacktest } from './application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from './application/use-cases/PerformManualAnalysis';
 import { HandleTradingDecision } from './application/use-cases/HandleTradingDecision';
 import { CalculateHotlist } from './application/use-cases/CalculateHotlist';
+import { TrackSmartMoney } from './application/use-cases/TrackSmartMoney';
+import { AnalyzeSectorRotation } from './application/use-cases/AnalyzeSectorRotation';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -22,6 +24,8 @@ export interface AppContainer {
     manualAnalysis: PerformManualAnalysis;
     handleDecision: HandleTradingDecision;
     calculateHotlist: CalculateHotlist;
+    trackSmartMoney: TrackSmartMoney;
+    analyzeSector: AnalyzeSectorRotation;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
     marketData: YahooFinanceProvider;
@@ -50,6 +54,8 @@ export async function bootstrap(): Promise<AppContainer> {
     const manualAnalysis = new PerformManualAnalysis(tickerRepo, marketData, strategy);
     const handleDecision = new HandleTradingDecision(tickerRepo, simulator, messaging);
     const calculateHotlist = new CalculateHotlist(marketData);
+    const trackSmartMoney = new TrackSmartMoney(marketData);
+    const analyzeSector = new AnalyzeSectorRotation(marketData);
 
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
@@ -61,7 +67,9 @@ export async function bootstrap(): Promise<AppContainer> {
         tickerRepo,
         userRepo,
         marketData,
-        calculateHotlist
+        calculateHotlist,
+        trackSmartMoney,
+        analyzeSector
     );
 
     // Initialize but don't start polling (since we'll use webhooks)
@@ -73,6 +81,8 @@ export async function bootstrap(): Promise<AppContainer> {
         manualAnalysis,
         handleDecision,
         calculateHotlist,
+        trackSmartMoney,
+        analyzeSector,
         tickerRepo,
         userRepo,
         marketData,

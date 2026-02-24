@@ -137,6 +137,65 @@ export class DomainMath {
     }
 
     /**
+     * Detect "Quiet Accumulation" 
+     * Formula: High Volume Spike (>1.5x) AND Low Price Movement (<1%)
+     */
+    static detectQuietAccumulation(data: OHLCV[]): boolean {
+        if (data.length < 10) return false;
+        const current = data[data.length - 1];
+        const prev = data[data.length - 2];
+
+        const surge = this.calculateVolumeSurge(data, 10);
+        const priceChange = Math.abs((current.close - prev.close) / (prev.close || 1));
+
+        return surge > 1.5 && priceChange < 0.01;
+    }
+
+    /**
+     * Calculate Smart Money Intensity (-100 to 100)
+     * Based on Money Flow Multiplier logic (Chaikin variation)
+     */
+    static getSmartMoneyIntensity(data: OHLCV[], period: number = 20): number {
+        if (data.length < period) return 0;
+        const slice = data.slice(-period);
+
+        let mfVolumeSum = 0;
+        let volumeSum = 0;
+
+        slice.forEach(d => {
+            const high = d.high;
+            const low = d.low;
+            const close = d.close;
+            const vol = d.volume || 0;
+
+            const range = high - low;
+            const multiplier = range === 0 ? 0 : ((close - low) - (high - close)) / range;
+
+            mfVolumeSum += (multiplier * vol);
+            volumeSum += vol;
+        });
+
+        return volumeSum === 0 ? 0 : Math.round((mfVolumeSum / volumeSum) * 100);
+    }
+
+    /**
+     * Calculate Sector Heat Score (0-100)
+     * Aggregates momentum and smart money intensity of constituent stocks
+     */
+    static getSectorHeatScore(constituents: { changePercent: number, intensity: number }[]): number {
+        if (constituents.length === 0) return 0;
+
+        const avgChange = constituents.reduce((a, b) => a + b.changePercent, 0) / constituents.length;
+        const avgIntensity = constituents.reduce((a, b) => a + b.intensity, 0) / constituents.length;
+
+        // Weights: 40% Momentum, 60% Institutional Intensity
+        const momentumScore = Math.min(Math.max((avgChange + 5) * 10, 0), 100); // Normalized -5% to +5%
+        const intensityScore = Math.min(Math.max((avgIntensity + 100) / 2, 0), 100); // Normalized -100 to 100
+
+        return Math.round((momentumScore * 0.4) + (intensityScore * 0.6));
+    }
+
+    /**
      * Detect Bullish Candlestick Patterns (Hammer, Engulfing, Marubozu)
      */
     static detectPatterns(data: OHLCV[]): string[] {
