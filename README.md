@@ -1,17 +1,14 @@
-# 🏛️ Ultimate Bagger Quant Bot (v9.5) — Sovereign Sentinel
+# 🦅 Ultimate Bagger Quant Bot (v11.0) — Prime Dominance
 
-**Ultimate Bagger v9.5 "Sovereign Sentinel (Data Aligned)"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **analisis teknikal presisi**, **audit fundamental**, **kecerdasan sentimen (NLP)**, dan **Sovereign Sentinel (Anomaly Detection)** dalam satu ekosistem Telegram yang canggih.
+**Ultimate Bagger v11.0 "Prime Dominance"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Prime Alpha Scoring (α)**, **Market Breadth Analysis**, dan **Sovereign Sentinel** dalam satu ekosistem Telegram yang canggih.
 
 ---
 
 ## 🚀 Fitur Utama
 
--   **Sector Wisdom (NEW v9.4)**: Rotasi sektor real-time dengan *hardcoded fallback* untuk 70+ saham utama IDX, menjamin data sektor selalu tersedia.
--   **Institutional Trading Logic (v9.5)**: Stop Loss cerdas berbasis jarak teraman antara **ATR (2.5x)** dan level **Kijun-Sen**.
--   **Scanner Data Aligned**: Perbaikan total pada dashboard `/scan` — harga, sinyal, dan skor ranking kini muncul utuh untuk semua saham aktif.
--   **Sovereign Sentinel**: Pendeteksi anomali real-time 24/7 (Volume Spike > 1.5x & Price Jump > 5%) khusus untuk watchlist personal.
--   **Personalized Watchlist Scan**: Laporan scan otomatis (12:00, 16:00, 19:00 WIB) yang diisolasi khusus untuk setiap user.
--   **Institutional Alpha Engine**: Deteksi akumulasi institusi (*Smart Money*) dan lonjakan volume instan (*Fast Money*).
+-   **Prime Alpha Engine (v11.0)**: Metrik konvinsi tunggal (0-100) yang menggabungkan Tech + Fund + Sent + Smart Money untuk keputusan trading yang tidak bias.
+-   **Market Breadth (NEW v11.0)**: Fitur `/breadth` untuk memantau kesehatan ekosistem pasar (Advance/Decline vs SMA-50).
+-   **Sector Wisdom**: Rotasi sektor real-time dengan *hardcoded fallback* untuk 70+ saham utama IDX.
 -   **Sentiment Intelligence (NLP v18)**: Analisis sentimen hybrid dari berita (NLP bilingual EN/ID) dan mood pasar (momentum, volume, volatilitas).
 -   **Fundamental Quant Audit**: Penilaian kesehatan keuangan dengan Piotroski F-Score dan Altman Z-Score.
 -   **ATR-Based Trading Levels**: Entry, Stop Loss (v10.1 Tuned), dan Take Profit (R:R 1:1 / 1:2 / 1:3) dihitung otomatis dari volatilitas aktual.

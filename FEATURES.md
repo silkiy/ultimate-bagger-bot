@@ -1,6 +1,6 @@
-# 🏛️ Ultimate Bagger V9.5: Project Features Documentation
+# 🦅 Ultimate Bagger Quant Bot (v11.0) — Prime Dominance
 
-The Ultimate Bagger V9.5 "Sovereign Sentinel (Data Aligned)" is an institutional-grade, semi-automatic algorithmic trading platform built on **Clean Architecture** principles. It combines high-speed market analysis with NLP sentiment intelligence, fundamental scoring, and hyper-disciplined risk management.
+**Ultimate Bagger v11.0 "Prime Dominance"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Prime Alpha Scoring (α)**, **Market Breadth Analysis**, dan **Sovereign Sentinel** dalam satu ekosistem Telegram yang canggih.
 
 ---
 

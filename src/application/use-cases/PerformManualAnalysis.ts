@@ -168,6 +168,12 @@ export class PerformManualAnalysis {
                     bookValue: financials?.bookValue || 0,
                     sharesOutstanding: financials?.sharesOutstanding || 0
                 },
+                alphaScore: DomainMath.calculatePrimeAlphaScore({
+                    technicalStrength: adx + (signal.type === 'BUY' ? 20 : 0),
+                    fundamentalRating: financials?.pb && financials.pb < 5 ? 7 : 5,
+                    sentimentScore: DomainMath.calculateMarketSentiment(stockData).score,
+                    institutionalIntensity: DomainMath.getSmartMoneyIntensity(stockData, 20)
+                }),
                 // Trading Levels (v10.1 Tuned Logic)
                 tradingLevels: (() => {
                     const atr = DomainMath.getATR(stockData, 14);

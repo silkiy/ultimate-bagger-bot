@@ -486,4 +486,35 @@ export class DomainMath {
 
         return { score, label, momentum: momentumClamped, volumeTrend, volatilitySignal };
     }
+    /**
+     * Prime Alpha Score (v11.0) — The "Institutional Holy Grail" Score.
+     * Combines multiple factors into a single 0-100 conviction metric.
+     * Weights: Technical (30%), Fundamental (30%), Sentiment (20%), Smart Money (20%)
+     */
+    static calculatePrimeAlphaScore(metrics: {
+        technicalStrength: number; // 0-100 (ADX/Cloud)
+        fundamentalRating: number; // 0-10 (Normalized F-Score/Z-Score)
+        sentimentScore: number;    // -100 to 100
+        institutionalIntensity: number; // -100 to 100
+    }): number {
+        // Normalize all to 0-100 scale
+        const technical = Math.min(Math.max(metrics.technicalStrength, 0), 100);
+        const fundamental = metrics.fundamentalRating * 10;
+        const sentiment = (metrics.sentimentScore + 100) / 2;
+        const intensity = (metrics.institutionalIntensity + 100) / 2;
+
+        const alpha = (technical * 0.3) + (fundamental * 0.3) + (sentiment * 0.2) + (intensity * 0.2);
+        return Math.round(alpha);
+    }
+
+    /**
+     * Calculate Market Breadth (v11.0).
+     * Returns the percentage of assets trading above their SMA-50.
+     * Institutions use this as a "Real Market Health" gauge.
+     */
+    static calculateMarketBreadth(assets: { currentPrice: number, sma50: number }[]): number {
+        if (assets.length === 0) return 0;
+        const aboveCount = assets.filter(a => a.currentPrice > a.sma50 && a.sma50 > 0).length;
+        return Math.round((aboveCount / assets.length) * 100);
+    }
 }

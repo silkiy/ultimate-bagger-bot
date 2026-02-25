@@ -34,6 +34,7 @@ export interface RankedItem {
     symbol: string;
     signal: 'BUY' | 'SELL' | 'HOLD';
     score: number;
+    alphaScore: number;
     price: number;
     inDb: boolean;
     adx: number;
@@ -42,6 +43,7 @@ export interface RankedItem {
 
 export interface ScanReport {
     regime: string;
+    marketBreadth: number;
     totalScanned: number;
     buySignals: ScanSignalItem[];
     sellSignals: ScanSignalItem[];
@@ -138,6 +140,7 @@ export class RunScanner {
 
         const report: ScanReport = {
             regime: 'SIDEWAYS',
+            marketBreadth: 0,
             totalScanned: 0,
             buySignals: [],
             sellSignals: [],
@@ -226,47 +229,71 @@ export class RunScanner {
                     const signal = this.strategy.calculateSignal(ticker, stockData, isMarketBullish);
                     const atr = DomainMath.getATR(stockData, 14);
                     const adx = DomainMath.getADX(stockData, 14);
+                    const sma50 = DomainMath.getSMA(stockData, 50);
                     const score = CompoundingOptimizer.calculateRankingScore(ticker, signal, atr);
 
                     let sector: string | undefined;
+                    let fundamentalRating = 5; // Default neutral
+                    let epsValue = 0;
                     if (this.marketData.fetchFinancials) {
                         const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
                         if (financials) {
-                            // Relaxed EPS filter: only skip extremely negative outliers or if sector is unknown/skipped
                             if ((financials.eps || 0) < -5000) {
                                 logger.debug(`⏭️ Skip ${ticker.config.symbol}: Extreme negative EPS (${financials.eps})`);
                                 return null;
                             }
                             sector = financials.sector;
+                            epsValue = financials.eps || 0;
+                            // Basic normalization for fundamental rating (0-10)
+                            fundamentalRating = financials.pb && financials.pb < 5 ? 7 : 5;
+                            if (financials.pe && financials.pe < 15) fundamentalRating += 1;
                         }
                     }
+
+                    const sent = DomainMath.calculateMarketSentiment(stockData);
+                    const intensity = DomainMath.getSmartMoneyIntensity(stockData, 20);
+
+                    const alphaScore = DomainMath.calculatePrimeAlphaScore({
+                        technicalStrength: adx + (signal.type === 'BUY' ? 20 : 0),
+                        fundamentalRating,
+                        sentimentScore: sent.score,
+                        institutionalIntensity: intensity
+                    });
 
                     // Safety: ensure signal has the latest price
                     if (!signal.price || signal.price === 0) {
                         signal.price = currentPrice;
                     }
 
-                    logger.info(`📊 [Ranking] ${ticker.config.symbol}: Score ${score.toFixed(2)}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
-                    return { ticker, signal, stockData, score, atr, adx, sector };
+                    logger.info(`📊 [Ranking] ${ticker.config.symbol}: Alpha ${alphaScore}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
+                    return { ticker, signal, stockData, score, atr, adx, sector, alphaScore, currentPrice, sma50 };
                 } catch (err: any) {
                     logger.error(`❌ Skip ${ticker.config.symbol}: ${err.message}`);
                     return null;
                 }
             }));
 
-            const tickerSignals = tickerResults.filter((t) => t !== null) as AnalyzedTicker[];
-            report.totalScanned = tickerSignals.length;
+            const analyzedItems = tickerResults.filter((t) => t !== null) as any[];
+            report.totalScanned = analyzedItems.length;
+
+            // 4.1 Calculate Market Breadth
+            report.marketBreadth = DomainMath.calculateMarketBreadth(analyzedItems.map(a => ({
+                currentPrice: a.currentPrice,
+                sma50: a.sma50
+            })));
+            logger.info(`📈 Market Breadth: ${report.marketBreadth}%`);
 
             // Clip to Top 20 Ranked Assets
-            const rankedTickers = [...tickerSignals]
-                .sort((a, b) => b.score - a.score)
+            const rankedTickers = [...analyzedItems]
+                .sort((a, b) => b.alphaScore - a.alphaScore)
                 .slice(0, 20);
 
             // Populate rankedItems for Telegram display
-            report.rankedItems = rankedTickers.map(({ ticker, signal, score, adx, sector }) => ({
+            report.rankedItems = rankedTickers.map(({ ticker, signal, score, adx, sector, alphaScore }) => ({
                 symbol: ticker.config.symbol,
                 signal: signal.type,
                 score,
+                alphaScore,
                 price: signal.price,
                 inDb: dbSymbols.has(ticker.config.symbol),
                 adx,

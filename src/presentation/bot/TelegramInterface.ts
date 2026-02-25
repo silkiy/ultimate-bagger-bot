@@ -245,7 +245,7 @@ export class TelegramInterface {
 
         // ─── /help ────────────────────────────────────────────────────────────
         this.bot.command('help', (ctx) => ctx.reply(
-            '📖 <b>PANDUAN ULTIMATE BAGGER BOT v9.2 — Sovereign Sentinel</b>\n\n' +
+            '📖 <b>PANDUAN ULTIMATE BAGGER BOT — Sovereign Sentinel</b>\n\n' +
             'Bot ini adalah asisten kuantitatif institusional yang bekerja secara proaktif untuk menjaga dan mencari peluang di pasar IDX.\n\n' +
             '🛡️ <b>SOVEREIGN SENTINEL (Anomaly Detection)</b>\n' +
             'Penjaga otomatis yang memantau watchlist Anda setiap 30 menit:\n' +
@@ -253,10 +253,11 @@ export class TelegramInterface {
             '• <b>Price Jump</b>: Notifikasi jika harga melonjak/anjlok > 5% dari closing kemarin.\n' +
             '• <b>Trend Deviation</b>: Notifikasi jika harga melenceng > 3% dari trend MA-5.\n\n' +
             '📡 <b>PENCARIAN PELUANG (DISCOVERY)</b>\n' +
-            '• <code>/scan</code> — Scan Top Active IDX & Ranking pasar secara dinamis.\n' +
+            '• <code>/scan</code> — Scan Top Active IDX & Ranking Alpha (α) pasar.\n' +
             '• <code>/hot</code> — ⚡ <b>Fast Money.</b> Deteksi lonjakan volume & momentum instan.\n' +
             '• <code>/smart</code> — 🤫 <b>Smart Money.</b> Lacak akumulasi diam-diam broker & institusi.\n' +
-            '• <code>/sector</code> — 🧭 <b>Market Heatmap.</b> Analisis rotasi sektor & pimpinan pasar.\n\n' +
+            '• <code>/sector</code> — 🧭 <b>Market Heatmap.</b> Analisis rotasi sektor & pimpinan pasar.\n' +
+            '• <code>/breadth</code> — 📈 <b>Market Internals.</b> Cek kesehatan ekosistem pasar (Advance/Decline).\n\n' +
             '🔬 <b>ANALISIS MENDALAM (ANALYSIS)</b>\n' +
             '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental (Rating), Sentiment, & Level TP/SL.\n' +
             '• <code>/sentiment [SYM]</code> — 🧠 <b>NLP Intelligence.</b> Analisis mood pasar dari berita & momentum.\n' +
@@ -404,9 +405,13 @@ export class TelegramInterface {
                 const actionableSell = report.sellSignals.length;
 
                 // ── Message 1: Header + Summary ──
-                let header = `🏛️ <b>Peringkat Pasar IDX (Top Assets)</b>\n`;
+                let header = `🏛️ <b>Peringkat Pasar IDX (Alpha Ranking)</b>\n`;
                 header += `${regimeEmoji} Regime IHSG: <b>${report.regime}</b> | 🕒 ${now}\n`;
-                header += `📋 Dianalisis: <b>${report.totalScanned} saham</b> dari Yahoo Finance\n\n`;
+                header += `📋 Dianalisis: <b>${report.totalScanned} saham</b>\n`;
+
+                const breadthEmoji = report.marketBreadth >= 60 ? '🌿' : report.marketBreadth >= 40 ? '🍂' : '❄️';
+                header += `📈 Breadth: <b>${report.marketBreadth}%</b> Assets > SMA-50 ${breadthEmoji}\n\n`;
+
                 header += `📈 Sinyal Terdeteksi:\n`;
                 header += `  🟢 BUY: <b>${rawBuyItems.length}</b>`;
                 if (rawBuyItems.length > actionableBuy) {
@@ -416,9 +421,9 @@ export class TelegramInterface {
                 header += `\n  ⏸️ HOLD: <b>${report.totalScanned - rawBuyItems.length - rawSellItems.length}</b>\n`;
 
                 if (report.elitePicks.length > 0) {
-                    header += `\n💎 <b>ELITE PICKS (Top Setup)</b>\n`;
+                    header += `\n💎 <b>ELITE PICKS (Alpha Dominance)</b>\n`;
                     report.elitePicks.forEach((p, idx) => {
-                        header += `${idx + 1}. <b>${p.symbol}</b> (Score: ${p.score.toFixed(1)}) - ${p.sector || '?'}\n`;
+                        header += `${idx + 1}. <b>${p.symbol}</b> (α: ${p.alphaScore}) - ${p.sector || '?'}\n`;
                     });
                 }
 
@@ -431,18 +436,18 @@ export class TelegramInterface {
                         const chunk = report.rankedItems.slice(i, i + chunkSize);
 
                         let rankMsg = i === 0
-                            ? `🏆 <b>Ranking Lengkap (${report.rankedItems.length} saham)</b>\n<code>No Saham      Sig  ADX  Score    Harga</code>\n`
-                            : `<code>No Saham      Sig  ADX  Score    Harga</code>\n`;
+                            ? `🏆 <b>Ranking Alpha (${report.rankedItems.length} saham)</b>\n<code>No Saham      Sig  ADX  α (Alpha) Harga</code>\n`
+                            : `<code>No Saham      Sig  ADX  α (Alpha) Harga</code>\n`;
 
                         chunk.forEach((item, idx) => {
                             const no = String(i + idx + 1).padStart(2, ' ');
                             const sym = item.symbol.replace('.JK', '').padEnd(10, ' ');
                             const sigLabel = item.signal === 'BUY' ? 'B' : item.signal === 'SELL' ? 'S' : '-';
                             const adx = item.adx.toFixed(0).padStart(3, ' ');
-                            const score = item.score.toFixed(1).padStart(5, ' ');
+                            const alpha = item.alphaScore.toString().padStart(5, ' ');
                             const price = item.price > 0 ? `Rp${item.price.toFixed(0)}` : '-';
                             const dbTag = item.inDb ? '📌' : '';
-                            rankMsg += `<code>${no}. ${sym} ${sigLabel}  ${adx}  ${score}</code> ${price}${dbTag}\n`;
+                            rankMsg += `<code>${no}. ${sym} ${sigLabel}  ${adx}  ${alpha}  </code> ${price}${dbTag}\n`;
                         });
 
                         if (i === 0) {
@@ -615,6 +620,12 @@ export class TelegramInterface {
                 if (rtData?.name && rtData.name !== symbol) {
                     msg += `<i>${rtData.name}</i>\n`;
                 }
+
+                if (rtData?.alphaScore) {
+                    const alpha = rtData.alphaScore;
+                    const alphaEmoji = alpha >= 70 ? '💎' : alpha >= 50 ? '🛡️' : alpha >= 30 ? '⚪' : '⚠️';
+                    msg += `🏛️ <b>Prime Alpha Score: ${alphaEmoji} ${alpha}/100</b>\n`;
+                }
                 msg += `\n`;
 
                 if (rtData) {
@@ -760,6 +771,37 @@ export class TelegramInterface {
             } catch (err: any) {
                 logger.error('Sector command error:', err);
                 await ctx.reply('❌ Gagal melakukan analisis rotasi sektor.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
+
+        // ─── /breadth ─────────────────────────────────────────────────────────
+        this.bot.command('breadth', async (ctx) => {
+            const loading = await ctx.reply('📈 Menganalisis Market Breadth (Internal Health)...');
+            try {
+                const report = await this.scanner.execute();
+                const breadth = report.marketBreadth;
+                const emoji = breadth >= 60 ? '🌿 BULLISH (Healthy)' : breadth >= 40 ? '🍂 NEUTRAL (Fragile)' : '❄️ BEARISH (Exhausted)';
+
+                let msg = `📈 <b>MARKET BREADTH REPORT</b>\n`;
+                msg += `<i>Mendeteksi Kesehatan Ekosistem Pasar IDX</i>\n\n`;
+                msg += `📊 Kondisi: <b>${emoji}</b>\n`;
+                msg += `📉 Assets > SMA-50: <b>${breadth}%</b>\n\n`;
+
+                if (breadth >= 60) {
+                    msg += `✅ <b>Aksi:</b> Dominasi pembeli sangat kuat. Peluang Profit tinggi di banyak sektor.\n`;
+                } else if (breadth >= 40) {
+                    msg += `⚠️ <b>Aksi:</b> Pasar terfragmentasi. Hanya beberapa sektor yang kuat. Pilih-pilih saham (Selective).\n`;
+                } else {
+                    msg += `🚫 <b>Aksi:</b> Market Internal sangat lemah. Rally mungkin hanya didorong segelintir saham besar. Disarankan <i>Wait & See</i>.\n`;
+                }
+
+                msg += `\n🕒 Scanned: ${report.totalScanned} Assets\n\n🔙 Kembali: /back`;
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Breadth command error:', err);
+                await ctx.reply('❌ Gagal melakukan analisis market breadth.');
             } finally {
                 ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
             }
