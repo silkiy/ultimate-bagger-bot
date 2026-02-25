@@ -232,12 +232,18 @@ export class RunScanner {
                     if (this.marketData.fetchFinancials) {
                         const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
                         if (financials) {
-                            if ((financials.eps || 0) < 0) {
-                                logger.debug(`⏭️ Skip ${ticker.config.symbol}: Negative EPS (${financials.eps})`);
+                            // Relaxed EPS filter: only skip extremely negative outliers or if sector is unknown/skipped
+                            if ((financials.eps || 0) < -5000) {
+                                logger.debug(`⏭️ Skip ${ticker.config.symbol}: Extreme negative EPS (${financials.eps})`);
                                 return null;
                             }
                             sector = financials.sector;
                         }
+                    }
+
+                    // Safety: ensure signal has the latest price
+                    if (!signal.price || signal.price === 0) {
+                        signal.price = currentPrice;
                     }
 
                     logger.info(`📊 [Ranking] ${ticker.config.symbol}: Score ${score.toFixed(2)}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);

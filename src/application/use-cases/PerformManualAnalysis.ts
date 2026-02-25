@@ -168,21 +168,33 @@ export class PerformManualAnalysis {
                     bookValue: financials?.bookValue || 0,
                     sharesOutstanding: financials?.sharesOutstanding || 0
                 },
-                // Trading Levels (ATR-based)
+                // Trading Levels (v10.1 Tuned Logic)
                 tradingLevels: (() => {
                     const atr = DomainMath.getATR(stockData, 14);
                     const entry = realTimePrice || stockData[stockData.length - 1]?.close || 0;
-                    const stopDistance = atr * 2.0;
+
+                    // V10.1: Institutional Risk Distance
+                    // Safe Risk Distance = Max(2.5x ATR, Distance to Kijun-sen)
+                    const stopDistanceATR = atr * 2.5;
+                    const kijunLevel = signal.breakdown?.kijunLevel || 0;
+                    const stopDistanceKijun = kijunLevel > 0 ? Math.abs(entry - kijunLevel) : 0;
+
+                    // Logic: Use 2.5x ATR as the floor, but if Kijun is further away, it's safer for trend-following
+                    const stopDistance = Math.max(stopDistanceATR, stopDistanceKijun);
+
                     const sl = Math.round(entry - stopDistance);
                     const risk = entry - sl;
+
                     return {
                         entry: Math.round(entry),
                         sl,
-                        tp1: Math.round(entry + risk * 1),     // R:R 1:1
-                        tp2: Math.round(entry + risk * 2),     // R:R 1:2
-                        tp3: Math.round(entry + risk * 3),     // R:R 1:3
+                        tp1: Math.round(entry + risk * 1),     // RR 1:1
+                        tp2: Math.round(entry + risk * 2),     // RR 1:2
+                        tp3: Math.round(entry + risk * 3),     // RR 1:3
                         atr: Math.round(atr),
-                        riskPercent: entry > 0 ? ((stopDistance / entry) * 100).toFixed(2) : '0'
+                        kijun: Math.round(kijunLevel),
+                        riskPercent: entry > 0 ? ((stopDistance / entry) * 100).toFixed(2) : '0',
+                        isV10Logical: true
                     };
                 })()
             };

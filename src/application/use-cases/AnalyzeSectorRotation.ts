@@ -16,18 +16,19 @@ export class AnalyzeSectorRotation {
         logger.info('🔭 Analyzing Sector Rotation & Market Heatmap...');
 
         try {
-            // 1. Fetch Universe (Limit to 40 for speed)
+            // 1. Fetch Universe (Expand to 35 for better sector coverage)
             if (!this.marketData.fetchTopActiveSymbols) return [];
             const activeSymbols = await this.marketData.fetchTopActiveSymbols('ID') || [];
             if (activeSymbols.length === 0) return [];
 
-            // 2. Parallel Fetch & Process (Reduced to 25 for Vercel stability)
-            const rawData = await Promise.all(activeSymbols.slice(0, 25).map(async (symbol) => {
+            // 2. Parallel Fetch & Process
+            const scanLimit = 35;
+            const rawData = await Promise.all(activeSymbols.slice(0, scanLimit).map(async (symbol) => {
                 try {
                     if (!this.marketData.fetchFinancials || !this.marketData.fetchRealTimeQuote) return null;
 
                     const financials = await this.marketData.fetchFinancials(symbol);
-                    if (!financials || !financials.sector) return null;
+                    if (!financials || !financials.sector || financials.sector === 'Tidak Tersedia') return null;
 
                     const startDate = new Date();
                     startDate.setDate(startDate.getDate() - 30);

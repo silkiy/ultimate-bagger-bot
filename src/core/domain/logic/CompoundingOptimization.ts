@@ -105,10 +105,15 @@ export class CompoundingOptimizer {
     /**
      * Capital Efficiency Ranking Score:
      * Score = (Trend Strength * Volume Quality) / ATR Risk
-     * (Simplified for now using confidence score)
+     * (Provides a relative ranking even for non-actionable signals)
      */
     static calculateRankingScore(ticker: DomainTicker, signal: any, atr: number): number {
-        if (!signal.confidence) return 0;
-        return signal.confidence.total / (atr > 0 ? atr : 1);
+        const confidence = signal.confidence?.total || 0;
+        const risk = atr > 0 ? atr : 1;
+
+        // Boost score for BUY signals, but keep a baseline for others
+        const bias = signal.type === 'BUY' ? 2.0 : 1.0;
+
+        return (confidence * bias) / risk;
     }
 }

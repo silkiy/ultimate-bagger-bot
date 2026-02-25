@@ -113,16 +113,26 @@ export class UltimateBaggerV7Strategy implements IStrategy {
             }
         }
 
-        return this.createHoldSignal(ticker, 'No actionable signal');
+        return this.createHoldSignal(ticker, 'No actionable signal', price, data);
     }
 
-    private createHoldSignal(ticker: DomainTicker, reason: string): Signal {
+    private createHoldSignal(ticker: DomainTicker, reason: string, price: number = 0, data: OHLCV[] = []): Signal {
+        const adx = data.length >= 14 ? DomainMath.getADX(data, 14) : 0;
+        const latest = data.length > 0 ? data[data.length - 1] : null;
+        const volMA = data.length >= 20 ? DomainMath.getVolumeSMA(data, 20) : 1;
+        const volRatio = latest ? (latest.volume / (volMA || 1)) : 1;
+
         return {
             symbol: ticker.config.symbol,
             type: 'HOLD',
-            price: 0,
-            reason,
-            timestamp: new Date()
+            price: price,
+            reason: reason,
+            timestamp: new Date(),
+            confidence: {
+                trend: adx,
+                volume: Math.min(100, volRatio * 50),
+                total: (adx * 0.5) + (Math.min(100, volRatio * 50) * 0.5)
+            }
         };
     }
 }

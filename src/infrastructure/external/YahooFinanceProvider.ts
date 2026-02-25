@@ -41,26 +41,123 @@ export class YahooFinanceProvider implements IMarketDataProvider {
         }
     }
 
+    // Fallback Map for core IDX Sector/Industry (Yahoo often lacks this for Jakarta)
+    private static readonly IDX_SECTOR_FALLBACK: Record<string, { sector: string, industry: string }> = {
+        'BBCA.JK': { sector: 'Financial Services', industry: 'Banks - Regional' },
+        'BBRI.JK': { sector: 'Financial Services', industry: 'Banks - Regional' },
+        'BMRI.JK': { sector: 'Financial Services', industry: 'Banks - Regional' },
+        'BBNI.JK': { sector: 'Financial Services', industry: 'Banks - Regional' },
+        'ASII.JK': { sector: 'Industrials', industry: 'Conglomerates' },
+        'TLKM.JK': { sector: 'Communication Services', industry: 'Telecom Services' },
+        'UNTR.JK': { sector: 'Industrials', industry: 'Heavy Machinery' },
+        'ADRO.JK': { sector: 'Energy', industry: 'Thermal Coal' },
+        'ITMG.JK': { sector: 'Energy', industry: 'Thermal Coal' },
+        'PTBA.JK': { sector: 'Energy', industry: 'Thermal Coal' },
+        'MDKA.JK': { sector: 'Basic Materials', industry: 'Gold' },
+        'ANTM.JK': { sector: 'Basic Materials', industry: 'Other Industrial Metals & Mining' },
+        'INCO.JK': { sector: 'Basic Materials', industry: 'Other Industrial Metals & Mining' },
+        'GOTO.JK': { sector: 'Technology', industry: 'Internet Content & Information' },
+        'AMRT.JK': { sector: 'Consumer Defensive', industry: 'Grocery Stores' },
+        'ICBP.JK': { sector: 'Consumer Defensive', industry: 'Packaged Foods' },
+        'INDF.JK': { sector: 'Consumer Defensive', industry: 'Packaged Foods' },
+        'UNVR.JK': { sector: 'Consumer Defensive', industry: 'Household & Personal Products' },
+        'CPIN.JK': { sector: 'Consumer Defensive', industry: 'Farm Products' },
+        'JPFA.JK': { sector: 'Consumer Defensive', industry: 'Farm Products' },
+        'KLBF.JK': { sector: 'Healthcare', industry: 'Drug Manufacturers - General' },
+        'MIKA.JK': { sector: 'Healthcare', industry: 'Medical Care Facilities' },
+        'HEAL.JK': { sector: 'Healthcare', industry: 'Medical Care Facilities' },
+        'SIDO.JK': { sector: 'Healthcare', industry: 'Drug Manufacturers - Specialty & Generic' },
+        'SMGR.JK': { sector: 'Basic Materials', industry: 'Building Materials' },
+        'INTP.JK': { sector: 'Basic Materials', industry: 'Building Materials' },
+        'TPIA.JK': { sector: 'Basic Materials', industry: 'Chemicals' },
+        'BRPT.JK': { sector: 'Basic Materials', industry: 'Chemicals' },
+        'PGAS.JK': { sector: 'Utilities', industry: 'Utilities - Regulated Gas' },
+        'AKRA.JK': { sector: 'Energy', industry: 'Oil & Gas Refining & Marketing' },
+        'MEDC.JK': { sector: 'Energy', industry: 'Oil & Gas E&P' },
+        'HRUM.JK': { sector: 'Energy', industry: 'Thermal Coal' },
+        'BRMS.JK': { sector: 'Basic Materials', industry: 'Gold' },
+        'MBMA.JK': { sector: 'Basic Materials', industry: 'Other Industrial Metals & Mining' },
+        'CTRA.JK': { sector: 'Real Estate', industry: 'Real Estate - Development' },
+        'PANI.JK': { sector: 'Real Estate', industry: 'Real Estate - Development' },
+        'BSDE.JK': { sector: 'Real Estate', industry: 'Real Estate - Development' },
+        'PWON.JK': { sector: 'Real Estate', industry: 'Real Estate - Development' },
+        'SMRA.JK': { sector: 'Real Estate', industry: 'Real Estate - Development' },
+        'ACES.JK': { sector: 'Consumer Cyclical', industry: 'Home Improvement Retail' },
+        'MAPI.JK': { sector: 'Consumer Cyclical', industry: 'Specialty Retail' },
+        'ERAA.JK': { sector: 'Consumer Cyclical', industry: 'Specialty Retail' },
+        'HMSP.JK': { sector: 'Consumer Defensive', industry: 'Tobacco' },
+        'GGRM.JK': { sector: 'Consumer Defensive', industry: 'Tobacco' },
+    };
+
     /**
      * Fetch financial data (PE, PB, EPS + Fundamentals)
+     * Optimized for IDX stocks using quoteSummary and robust scaling heuristics.
      */
     async fetchFinancials(symbol: string): Promise<FinancialData | null> {
         try {
-            const result = await yahoo.quote(symbol) as any;
-            if (!result) return null;
+            // 1. Basic quote for rapid scalars
+            const quote = await yahoo.quote(symbol) as any;
+
+            // 2. Summary for deep data
+            const summary = await yahoo.quoteSummary(symbol, {
+                modules: ['assetProfile', 'defaultKeyStatistics', 'price']
+            }).catch(() => null) as any;
+
+            if (!quote) return null;
+
+            const profile = summary?.assetProfile || {};
+            const stats = summary?.defaultKeyStatistics || {};
+            const priceModule = summary?.price || {};
+            const currency = priceModule.currency || quote.currency || 'IDR';
+
+            let bookValue = quote.bookValue || stats.bookValue;
+            let mcap = quote.marketCap || stats.enterpriseValue || 0;
+
+            // FIX: Currency scaling heuristic (High confidence tuning)
+            // Even if Yahoo claims 'IDR', a bookValue < 5 for a bluechip IDX stock 
+            // is almost certainly USD-denominated (or scaled wrong).
+            if (symbol.endsWith('.JK')) {
+                const isVeryLowBook = bookValue && bookValue < 5;
+                const isVeryLowMcap = mcap && mcap < 1e9; // Large IDX companies have billions/trillions
+
+                if (currency === 'USD' || isVeryLowBook || isVeryLowMcap) {
+                    const usdToIdr = 15800;
+                    if (bookValue && bookValue < 10) bookValue *= usdToIdr;
+                    if (mcap && mcap < 2e9) mcap *= usdToIdr;
+                    logger.debug(`💱 Heuristic scaling applied to ${symbol} (Detected USD-denominator)`);
+                }
+            }
+
+            // Synthetic PB Calculation if missing or obviously wrong (> 10,000 indicates scaling error)
+            let pb = quote.priceToBook || stats.priceToBook;
+            if ((!pb || pb > 1000) && bookValue && quote.regularMarketPrice) {
+                pb = quote.regularMarketPrice / bookValue;
+            }
+
+            // Fallback for Sector/Industry
+            let sector = profile.sector || quote.sector || quote.industryDisp;
+            let industry = profile.industry || quote.industry;
+
+            if (!sector || sector === 'Tidak Tersedia') {
+                const fallback = YahooFinanceProvider.IDX_SECTOR_FALLBACK[symbol];
+                if (fallback) {
+                    sector = fallback.sector;
+                    industry = fallback.industry;
+                    logger.debug(`🧭 Sector fallback used for ${symbol}: ${sector}`);
+                }
+            }
 
             return {
                 symbol,
-                pe: result.trailingPE || result.forwardPE,
-                pb: result.priceToBook,
-                eps: result.trailingEps,
-                marketCap: result.marketCap,
-                sector: result.sector || result.industryDisp,
-                industry: result.industry,
-                // New for v15.2
-                bookValue: result.bookValue,
-                sharesOutstanding: result.sharesOutstanding,
-                dividendYield: result.dividendYield
+                pe: quote.trailingPE || quote.forwardPE || stats.trailingPE || stats.forwardPE,
+                pb: pb,
+                eps: quote.trailingEps || stats.trailingEps,
+                marketCap: mcap,
+                sector: sector,
+                industry: industry,
+                bookValue: bookValue || 0,
+                sharesOutstanding: quote.sharesOutstanding || stats.sharesOutstanding,
+                dividendYield: quote.dividendYield || stats.yield
             };
         } catch (error: any) {
             logger.error(`Error fetching financials for ${symbol}: ${error.message}`);

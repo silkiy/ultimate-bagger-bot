@@ -390,7 +390,7 @@ export class TelegramInterface {
 
         // ─── /scan ────────────────────────────────────────────────────────────
         this.bot.command('scan', async (ctx) => {
-            await ctx.reply('🔎 <b>Menjalankan Market Scanner V7.3...</b>\n⏳ Menganalisis Top 20 saham IDX paling aktif saat ini secara dinamis.', { parse_mode: 'HTML' });
+            await ctx.reply('🔎 <b>Menjalankan Market Scanner</b>\n⏳ Menganalisis Top 20 saham IDX paling aktif saat ini secara dinamis.', { parse_mode: 'HTML' });
             try {
                 const report = await this.scanner.execute();
 
@@ -691,20 +691,20 @@ export class TelegramInterface {
                     msg += `- Volume Breakout: ${b.isVolumeBreakout ? '✅ Ya' : '❌ Tidak'}\n\n`;
                 }
 
-                // Trading Levels (ATR-based)
+                // Trading Levels (v10.1 institutional Logic)
                 if (rtData?.tradingLevels) {
                     const lv = rtData.tradingLevels;
-                    msg += `🎯 <b>Trading Levels (ATR-based):</b>\n`;
+                    msg += `🎯 <b>Level Trading (v10.1 Tuned):</b>\n`;
                     msg += `<code>`;
                     msg += `📍 Entry   : Rp ${lv.entry.toLocaleString('id-ID')}\n`;
-                    msg += `🛑 SL      : Rp ${lv.sl.toLocaleString('id-ID')} (-${lv.riskPercent}%)\n`;
+                    msg += `🛑 StopLoss: Rp ${lv.sl.toLocaleString('id-ID')} (-${lv.riskPercent}%)\n`;
                     msg += `✅ TP1 1:1 : Rp ${lv.tp1.toLocaleString('id-ID')}\n`;
                     msg += `✅ TP2 1:2 : Rp ${lv.tp2.toLocaleString('id-ID')}\n`;
                     msg += `✅ TP3 1:3 : Rp ${lv.tp3.toLocaleString('id-ID')}\n`;
                     msg += `</code>`;
                     msg += `📏 ATR(14): Rp ${lv.atr.toLocaleString('id-ID')}`;
-                    if (b) msg += ` | Kijun: Rp ${b.kijunLevel.toFixed(0)} | Trail: Rp ${b.stopLoss.toFixed(0)}`;
-                    msg += `\n\n`;
+                    if (lv.kijun) msg += ` | Kijun: Rp ${lv.kijun.toLocaleString('id-ID')}`;
+                    msg += `\n💡 <i>Tips: SL (Safe Risk) diset pada jarak teraman antara ATR & Kijun-Sen.</i>\n\n`;
                 } else if (b) {
                     msg += `<b>📏 Level Kunci:</b>\n`;
                     msg += `- Kijun-Sen: Rp ${b.kijunLevel.toFixed(0)}\n`;
