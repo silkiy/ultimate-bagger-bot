@@ -16,6 +16,7 @@ interface WatchlistScanResult {
     tp2: number;
     auditBadge: string;
     sentimentBadge: string;
+    brokerSummary: string;
 }
 
 export class ScanPersonalWatchlist {
@@ -66,7 +67,8 @@ export class ScanPersonalWatchlist {
                     tp1: lv?.tp1 || 0,
                     tp2: lv?.tp2 || 0,
                     auditBadge: (signal as any).auditBadge || '',
-                    sentimentBadge: (signal as any).sentimentBadge || ''
+                    sentimentBadge: (signal as any).sentimentBadge || '',
+                    brokerSummary: rt?.brokerSummary || 'NEUTRAL'
                 };
             } catch (err: any) {
                 logger.warn(`Watchlist scan failed for ${ticker.config.symbol}: ${err.message}`);
@@ -95,15 +97,14 @@ export class ScanPersonalWatchlist {
 
         // Per-stock table
         msg += `<code>`;
-        msg += `Saham      Harga    Chg%  Sinyal\n`;
-        msg += `────────── ──────── ───── ──────\n`;
+        msg += `Saham  Harga    Sig   Brosum\n`;
+        msg += `────── ──────── ───── ─────────\n`;
         for (const r of results) {
-            const sym = r.symbol.replace('.JK', '').padEnd(10, ' ');
+            const sym = r.symbol.replace('.JK', '').substring(0, 6).padEnd(6, ' ');
             const price = r.price.toLocaleString('id-ID').padStart(8, ' ');
-            const chg = (parseFloat(r.changePercent) >= 0 ? '+' : '') + parseFloat(r.changePercent).toFixed(1) + '%';
-            const chgStr = chg.padStart(5, ' ');
-            const sig = r.signalType.padEnd(6, ' ');
-            msg += `${sym} ${price} ${chgStr} ${sig}\n`;
+            const sig = r.signalType.substring(0, 5).padEnd(5, ' ');
+            const brosum = r.brokerSummary.padEnd(9, ' ');
+            msg += `${sym} ${price} ${sig} ${brosum}\n`;
         }
         msg += `</code>\n`;
 

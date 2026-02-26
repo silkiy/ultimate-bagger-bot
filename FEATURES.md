@@ -133,3 +133,15 @@ Tools for long-term capital efficiency and fair value auditing.
 - **Intrinsic Value Audit (/valuation)**: Estimate the fair value of any IDX stock using the **Benjamin Graham Formula**, adjusted for local bond yields.
 - **Portfolio Rebalancer (/optimize)**: Automated analysis of your portfolio to find "Alpha Swaps" — identifying low-performing assets to be replaced by high-convinction candidates.
 - **Conviction Sync**: Rebalancer prioritizes symbols with Alpha Score > 80 from your global discovery results.
+
+---
+
+## 📊 16. Broker Summary (Brosum) v13.2
+Algorithmic classification of institutional accumulation and distribution.
+- **Brosum Heuristics**: Uses Money Flow and Volume Surge to proxy standard IDX broker summary labels.
+- **Classification Labels**:
+  - **BIG ACCUM**: Strong institutional buying with significant volume surge.
+  - **ACCUM**: Steady capital inflow.
+  - **NEUTRAL**: Balanced market activity.
+  - **DIST / BIG DIST**: Institutional capital outflow/liquidation.
+- **Omni-Presence**: Labels injected into `/analyze` detailed reports and the **19:00 WIB Evening Watchlist scan**.

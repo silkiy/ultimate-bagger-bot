@@ -1,19 +1,20 @@
-# 🦅 Ultimate Bagger Quant Bot (v13.0) — Institutional Plus
+# 🦅 Ultimate Bagger Quant Bot (v13.2) — Broker Summary Edition
 
-**Ultimate Bagger v13.0 "Institutional Plus"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Market Regime Auto-Pilot**, **Intrinsic Value Audit**, **Whale Radar**, dan **Portfolio Rebalancer** dalam satu ekosistem Telegram yang canggih.
+**Ultimate Bagger v13.2 "Broker Summary"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini kini dilengkapi dengan **Algorithmic Broker Summary (Brosum)**, di samping fitur unggulan **Market Regime Auto-Pilot**, **Intrinsic Value Audit**, **Whale Radar**, dan **Portfolio Rebalancer**.
 
 ---
 
 ## 🚀 Fitur Utama
 
+-   **Broker Summary (NEW v13.2)**: Klasifikasi otomatis akumulasi/distribusi broker (BIG ACCUM, ACCUM, NEUTRAL, DIST, BIG DIST) menggunakan proksi Money Flow & Volume Surge.
 -   **Prime Alpha Engine (v11.0)**: Metrik konvinsi tunggal (0-100) yang menggabungkan Tech + Fund + Sent + Smart Money untuk keputusan trading yang tidak bias.
--   **Market Breadth (NEW v11.0)**: Fitur `/breadth` untuk memantau kesehatan ekosistem pasar (Advance/Decline vs SMA-50).
+-   **Market Breadth (v11.0)**: Fitur `/breadth` untuk memantau kesehatan ekosistem pasar (Advance/Decline vs SMA-50).
 -   **Sector Wisdom**: Rotasi sektor real-time dengan *hardcoded fallback* untuk 70+ saham utama IDX.
 -   **Sentiment Intelligence (NLP v18)**: Analisis sentimen hybrid dari berita (NLP bilingual EN/ID) dan mood pasar (momentum, volume, volatilitas).
 -   **Fundamental Quant Audit**: Penilaian kesehatan keuangan dengan Piotroski F-Score dan Altman Z-Score.
 -   **ATR-Based Trading Levels**: Entry, Stop Loss (v10.1 Tuned), dan Take Profit (R:R 1:1 / 1:2 / 1:3) dihitung otomatis dari volatilitas aktual.
 -   **Systemic Risk Audit**: Analisis korelasi portofolio dan diversifikasi untuk mencegah cluster risk.
--   **Evening Market Pulse**: Rangkuman harian otomatis pukul 19:00 WIB.
+-   **Evening Market Pulse**: Rangkuman harian otomatis pukul 19:00 WIB, kini dilengkapi dengan label **Brosum**.
 -   **Hybrid Control (Human-in-the-Loop)**: Sinyal beli memerlukan konfirmasi manual, sementara proteksi modal berjalan 24/7.
 
 ---

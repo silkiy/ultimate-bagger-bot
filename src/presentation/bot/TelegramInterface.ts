@@ -371,11 +371,7 @@ export class TelegramInterface {
             '• <code>/sector</code> — 🧭 <b>Market Heatmap.</b> Analisis rotasi sektor & pimpinan pasar.\n' +
             '• <code>/breadth</code> — 📈 <b>Market Internals.</b> Cek kesehatan ekosistem pasar (Advance/Decline).\n\n' +
             '🔬 <b>ANALISIS MENDALAM (ANALYSIS)</b>\n' +
-            '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental (Rating), Sentiment, & Level TP/SL.\n' +
-            '• <code>/sentiment [SYM]</code> — 🧠 <b>NLP Intelligence.</b> Analisis mood pasar dari berita & momentum.\n' +
-            '• <code>/audit [SYM]</code> — 🏛️ <b>Fund Audit.</b> Cek kesehatan keuangan (F-Score & Z-Score).\n' +
-            '• <code>/valuation [SYM]</code> — ⚖️ <b>Intrinsic Value.</b> Audit nilai wajar (Graham Formula).\n' +
-            '• <code>/signals</code> — Hanya menampilkan saham yang lolos 100% filter disiplin BUY.\n\n' +
+            '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental, Sentiment, & <b>Broker Summary.</b>\n• <code>/sentiment [SYM]</code> — 🧠 <b>NLP Intelligence.</b> Analisis mood pasar dari berita & momentum.\n• <code>/audit [SYM]</code> — 🏛️ <b>Fund Audit.</b> Cek kesehatan keuangan (F-Score & Z-Score).\n• <code>/valuation [SYM]</code> — ⚖️ <b>Intrinsic Value.</b> Audit nilai wajar (Graham Formula).\n• <code>/signals</code> — Hanya menampilkan saham yang lolos 100% filter disiplin BUY.\n\n' +
             '📂 <b>MANAJEMEN PORTFOLIO</b>\n' +
             '• <code>/list</code> — Lihat daftar saham yang Anda pantau.\n' +
             '• <code>/optimize</code> — ⚖️ <b>Portfolio Rebalancer.</b> Saran "Alpha Swaps" untuk optimalisasi capital.\n' +
@@ -749,10 +745,14 @@ export class TelegramInterface {
                         msg += `✨ <b>Pola Candle: ${rtData.patterns.join(', ')}</b>\n`;
                     }
 
-                    // Smart Money Injection
                     const intensity = parseInt(rtData.smartMoney?.intensity || '0');
                     const intensityEmoji = intensity > 40 ? '🏛️' : intensity > 0 ? '🟢' : intensity < -40 ? '🐋' : '⚪';
-                    msg += `${intensityEmoji} <b>Smart Money: ${intensity}</b> ${rtData.smartMoney?.isAccumulating ? '(Akumulasi 🤫)' : ''}\n`;
+                    msg += `${intensityEmoji} <b>Smart Money Intensity: ${intensity}</b> ${rtData.smartMoney?.isAccumulating ? '(Akumulasi 🤫)' : ''}\n`;
+
+                    // Broker Summary Injection (v13.2)
+                    const brosum = rtData.brokerSummary || 'NEUTRAL';
+                    const brosumEmoji = brosum.includes('ACCUM') ? '🟢' : brosum.includes('DIST') ? '🔴' : '⚪';
+                    msg += `${brosumEmoji} <b>Broker Summary: ${brosum}</b>\n`;
 
                     msg += `\n🏛️ <b>Sektor: ${rtData.financials.sector}</b>\n`;
                     msg += `📁 Industri: ${rtData.financials.industry}\n\n`;

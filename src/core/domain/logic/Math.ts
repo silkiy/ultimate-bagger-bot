@@ -539,4 +539,20 @@ export class DomainMath {
         const value = (metrics.eps * (8.5 + 2 * metrics.growthRate) * 4.4) / metrics.bondYield;
         return Math.round(Math.max(0, value));
     }
+
+    /**
+     * Broker Summary Classification (v13.2)
+     * Algorithmic proxy for IDX Broker Summary labels.
+     * Uses Smart Money Intensity and Volume Surge.
+     */
+    static getBrokerSummaryLabel(data: OHLCV[]): string {
+        const intensity = this.getSmartMoneyIntensity(data, 20);
+        const surge = this.calculateVolumeSurge(data, 10);
+
+        if (intensity > 40 && surge > 1.8) return 'BIG ACCUM';
+        if (intensity > 15) return 'ACCUM';
+        if (intensity < -40 && surge > 1.8) return 'BIG DIST';
+        if (intensity < -15) return 'DIST';
+        return 'NEUTRAL';
+    }
 }

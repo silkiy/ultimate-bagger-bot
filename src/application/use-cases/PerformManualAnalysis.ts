@@ -153,6 +153,7 @@ export class PerformManualAnalysis {
                 dataPoints: stockData.length,
                 adx: adx.toFixed(1),
                 patterns,
+                brokerSummary: DomainMath.getBrokerSummaryLabel(stockData),
                 smartMoney: {
                     intensity: DomainMath.getSmartMoneyIntensity(stockData, 20),
                     isAccumulating: DomainMath.detectQuietAccumulation(stockData)

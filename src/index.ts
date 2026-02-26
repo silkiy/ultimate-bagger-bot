@@ -79,7 +79,11 @@ async function main() {
     const quantController = new QuantController(runScanner, executeBacktest, tickerRepo);
     bootstrapApi(quantController);
 
-    // 5. Telegram Interaction Initialization
+    // 6. Scheduler
+    const scheduler = new Scheduler(runScanner, messaging, generateEveningSummary, scanPersonalWatchlist, watchlistSentinel, userRepo);
+    scheduler.setup();
+
+    // 7. Telegram Interaction Initialization
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
         telegramBot,
@@ -108,10 +112,6 @@ async function main() {
     } else {
         logger.info('ℹ️ Polling mode disabled (Set USE_POLLING=true to enable)');
     }
-
-    // 6. Scheduler
-    const scheduler = new Scheduler(runScanner, messaging, generateEveningSummary, scanPersonalWatchlist, watchlistSentinel, userRepo);
-    scheduler.setup();
 
     logger.info('🚀 Hybrid Engine is fully operational (Semi-Auto Mode Enabled)');
 }
