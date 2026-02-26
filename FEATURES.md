@@ -1,6 +1,6 @@
-# 🦅 Ultimate Bagger Quant Bot (v11.0) — Prime Dominance
-
-**Ultimate Bagger v11.0 "Prime Dominance"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Prime Alpha Scoring (α)**, **Market Breadth Analysis**, dan **Sovereign Sentinel** dalam satu ekosistem Telegram yang canggih.
+# 🦅 Ultimate Bagger Quant Bot (v13.0) — Institutional Plus
+      
+**Ultimate Bagger v13.0 "Institutional Plus"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Market Regime Auto-Pilot**, **Intrinsic Value Audit**, **Whale Radar**, dan **Portfolio Rebalancer** dalam satu ekosistem Telegram yang canggih.
 
 ---
 
@@ -110,11 +110,26 @@ Professional-grade interface refinements.
 
 ---
 
-## 📈 12. Technical Summary
-- **Language**: TypeScript 5.x
-- **Runtime**: Node.js 18+ / Vercel Serverless
-- **Database**: MongoDB (Mongoose)
-- **Market Data**: Yahoo Finance v3 (IDX Optimized, News API)
-- **NLP Engine**: Keyword-based bilingual financial lexicon (EN/ID)
-- **Validation**: Zod & Strict Type Safety
-- **Observability**: Winston Structured Logging
+## 🐋 12. Whale Radar (v12.0)
+Specialized institutional flow detector for proactive discovery.
+- **` /whale`**: Proactively scans the top 70 liquid IDX symbols for "Smart Money" signatures.
+- **Accumulation Detection**: Identifies symbols with volume spikes but stable prices (Quiet Buying).
+- **Institutional Intensity**: Ranks symbols by Money Flow Multiplier (Institutional conviction) to find future movers.
+
+---
+      
+## 📊 14. Market Regime Auto-Pilot (v13.0)
+Advanced risk adaptation based on broad market internals (IHSG/JKSE).
+- **Regime Detection**: The scanner automatically determines if the market is **BULL**, **BEAR**, or **SIDEWAYS**.
+- **Adaptive Risk Tuning**: 
+  - **BULL**: Aggressive growth (2.0% risk per trade).
+  - **BEAR**: Capital preservation (0.5% risk per trade, higher trailing stops).
+- **Rule Shifting**: Automatically shifts between **AGGRESSIVE** and **CONSERVATIVE** entry filters based on market volatility environment.
+
+---
+      
+## ⚖️ 15. Institutional Valuation & Rebalancing (v13.0)
+Tools for long-term capital efficiency and fair value auditing.
+- **Intrinsic Value Audit (/valuation)**: Estimate the fair value of any IDX stock using the **Benjamin Graham Formula**, adjusted for local bond yields.
+- **Portfolio Rebalancer (/optimize)**: Automated analysis of your portfolio to find "Alpha Swaps" — identifying low-performing assets to be replaced by high-convinction candidates.
+- **Conviction Sync**: Rebalancer prioritizes symbols with Alpha Score > 80 from your global discovery results.

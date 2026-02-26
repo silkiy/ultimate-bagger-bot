@@ -1,7 +1,7 @@
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IMarketDataProvider } from '../../core/domain/interfaces/ExternalServices';
 import { IStrategy } from '../../core/domain/interfaces/Strategy';
-import { Signal } from '../../core/domain/entities/MarketData';
+import { OHLCV, Signal } from '../../core/domain/entities/MarketData';
 import { logger } from '../../infrastructure/logging/WinstonLogger';
 import { YahooFinanceProvider } from '../../infrastructure/external/YahooFinanceProvider';
 import { DomainMath } from '../../core/domain/logic/Math';
@@ -13,7 +13,7 @@ export class PerformManualAnalysis {
         private strategy: IStrategy
     ) { }
 
-    async execute(symbol: string): Promise<Signal | null> {
+    async execute(symbol: string, indexData?: OHLCV[]): Promise<Signal | null> {
         logger.info(`🔍 Manual Analysis requested for ${symbol}`);
 
         try {
@@ -120,7 +120,7 @@ export class PerformManualAnalysis {
             // 4. Market Regime Check
             let isMarketBullish = true; // Default to allow analysis
             try {
-                const jkseData = await this.marketData.fetchHistoricalData('^JKSE', startDate);
+                const jkseData = indexData || await this.marketData.fetchHistoricalData('^JKSE', startDate);
                 if (jkseData && jkseData.length > 0) {
                     const jkseClose = jkseData[jkseData.length - 1].close || 0;
                     const jkseSMA = jkseData.slice(-50).reduce((a, b) => a + (b.close || 0), 0) / 50;

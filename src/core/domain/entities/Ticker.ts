@@ -1,5 +1,5 @@
 export type SizingMode = 'ALL_IN' | 'RISK_BASED';
-export type EntryRule = 'AGGRESSIVE' | 'STANDARD' | 'PULLBACK';
+export type EntryRule = 'AGGRESSIVE' | 'STANDARD' | 'PULLBACK' | 'CONSERVATIVE';
 
 export interface TickerConfig {
     symbol: string;
@@ -32,6 +32,7 @@ export interface TickerAccount {
 }
 
 export interface DomainTicker {
+    userId?: string; // Optional for in-memory or dynamic tickers
     config: TickerConfig;
     account: TickerAccount;
     state: {

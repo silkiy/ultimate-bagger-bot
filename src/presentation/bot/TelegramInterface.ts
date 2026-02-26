@@ -12,6 +12,9 @@ import { HandleTradingDecision } from '../../application/use-cases/HandleTrading
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IUserRepository } from '../../core/domain/interfaces/UserRepository';
 import { IMarketDataProvider } from '../../core/domain/interfaces/ExternalServices';
+import { ScanWhaleActivity } from '../../application/use-cases/ScanWhaleActivity';
+import { AuditIntrinsicValue } from '../../application/use-cases/AuditIntrinsicValue';
+import { OptimizePortfolio } from '../../application/use-cases/OptimizePortfolio';
 import { logger } from '../../infrastructure/logging/WinstonLogger';
 import { DomainTicker } from '../../core/domain/entities/Ticker';
 import { YahooFinanceProvider } from '../../infrastructure/external/YahooFinanceProvider';
@@ -32,7 +35,10 @@ export class TelegramInterface {
         private analyzeSector: AnalyzeSectorRotation,
         private analyzeRisk: AnalyzeSystemicRisk,
         private auditFundamental: AuditFundamentalHealth,
-        private analyzeSentiment: AnalyzeSentiment
+        private analyzeSentiment: AnalyzeSentiment,
+        private scanWhale: ScanWhaleActivity,
+        private auditIntrinsic: AuditIntrinsicValue,
+        private optimizePortfolio: OptimizePortfolio
     ) { }
 
     // Helper: get admin name string
@@ -145,6 +151,111 @@ export class TelegramInterface {
             );
         });
 
+        // ─── /whale (v12.0) ───────────────────────────────────────────────────
+        this.bot.command('whale', async (ctx) => {
+            const loading = await ctx.reply('🐋 <b>Menjalankan Whale Radar...</b>\n<i>Memindai 70+ saham untuk melacak akumulasi institutional.</i>', { parse_mode: 'HTML' });
+            try {
+                const results = await this.scanWhale.execute();
+                if (results.length === 0) {
+                    return ctx.reply('⏸️ Belum ada pergerakan "Whale" yang signifikan terdeteksi saat ini.');
+                }
+
+                let msg = `🐋 <b>WHALE RADAR Dashboard (v12.0)</b>\n`;
+                msg += `<i>Mencari Akumulasi Institutional & Smart Money Flow</i>\n\n`;
+                msg += `<code>No Saham      Score  Status</code>\n`;
+
+                results.forEach((item, idx) => {
+                    const no = String(idx + 1).padStart(2, ' ');
+                    const sym = item.symbol.replace('.JK', '').padEnd(10, ' ');
+                    const score = item.intensity.toString().padStart(5, ' ');
+                    const status = item.isAccumulating ? '🤫 QUIET ACC' : '🟢 ACTIVE';
+                    msg += `<code>${no}. ${sym} ${score}  </code> ${status}\n`;
+                });
+
+                msg += `\n🤫 <b>QUIET ACC:</b> Akumulasi diam-diam (Volume spike + Harga stabil).\n`;
+                msg += `🟢 <b>ACTIVE:</b> Tekanan beli institusi sangat kuat.\n`;
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk validasi entry.\n\n🔙 Kembali: /back`;
+
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Whale command error:', err);
+                await ctx.reply('❌ Gagal melakukan scanning Whale Radar.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
+
+        // ─── /valuation (v13.0) ────────────────────────────────────────────────
+        this.bot.command('valuation', async (ctx) => {
+            const symbol = ctx.message.text.split(' ')[1]?.toUpperCase();
+            if (!symbol) return ctx.reply('Usage: /valuation <SYMBOL.JK>\nContoh: /valuation BBCA.JK');
+
+            const loading = await ctx.reply(`⚖️ <b>Menganalisis Nilai Intrinsik ${symbol}...</b>\n<i>Menghitung Benjamin Graham Fair Value...</i>`, { parse_mode: 'HTML' });
+            try {
+                const result = await this.auditIntrinsic.execute(symbol);
+                if (!result) return ctx.reply(`❌ Data fundamental tidak cukup untuk menghitung valuasi ${symbol}.`);
+
+                const marginEmoji = result.safetyMargin > 20 ? '✅' : result.safetyMargin < -5 ? '🔴' : '🟡';
+                let msg = `⚖️ <b>Intrinsic Value Audit: ${symbol}</b>\n`;
+                msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+                msg += `💵 Harga Sekarang : <b>Rp ${result.currentPrice.toLocaleString('id-ID')}</b>\n`;
+                msg += `💎 Harga Wajar (IV): <b>Rp ${result.intrinsicValue.toLocaleString('id-ID')}</b>\n`;
+                msg += `${marginEmoji} Safety Margin : <b>${result.safetyMargin.toFixed(1)}%</b>\n\n`;
+
+                msg += `📑 <b>Valuation Metrics:</b>\n`;
+                msg += `• EPS (TTM): <b>${result.eps.toFixed(2)}</b>\n`;
+                msg += `• Growth (g): <b>${result.growthRate}%</b>\n`;
+                msg += `• Yield (Y): <b>${result.bondYield}%</b>\n\n`;
+
+                msg += `📈 <b>Rating: ${result.rating}</b>\n`;
+                if (result.rating === 'UNDERVALUED') msg += `<i>💡 Saham ini diperdagangkan jauh di bawah harga wajarnya. Potensi Margin of Safety tinggi.</i>\n`;
+                else if (result.rating === 'OVERVALUED') msg += `<i>⚠️ Harga pasar sudah melampaui estimasi nilai intrinsik. Resiko tinggi.</i>\n`;
+                else msg += `<i>⚖️ Harga pasar mencerminkan nilai wajar perusahaan saat ini.</i>\n`;
+
+                msg += `\n🔙 Kembali: /back`;
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                await ctx.reply(`❌ Valuation error: ${err.message}`);
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
+
+        // ─── /optimize (v13.0) ────────────────────────────────────────────────
+        this.bot.command('optimize', async (ctx) => {
+            const userId = ctx.from.id.toString();
+            const loading = await ctx.reply('⚖️ <b>Menganalisis Portfolio & Watchlist...</b>\n<i>Mencari "Alpha Swaps" untuk optimalisasi capital...</i>', { parse_mode: 'HTML' });
+            try {
+                const report = await this.optimizePortfolio.execute(userId);
+
+                let msg = `⚖️ <b>Portfolio Rebalancer</b>\n`;
+                msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+                msg += `📊 Portfolio Health: <b>${report.portfolioHealth}α</b>\n`;
+                msg += `<i>(Skala 0-100 Alpha Score)</i>\n\n`;
+
+                if (report.recommendations.length === 0) {
+                    msg += `✅ <b>Portfolio Teroptimal.</b>\nTidak ditemukan peluang swap yang signifikan atau portfolio sudah berisi aset high-conviction.`;
+                } else {
+                    msg += `🚀 <b>REKOMENDASI SWAP (${report.recommendations.length}):</b>\n\n`;
+                    report.recommendations.forEach(r => {
+                        msg += `🔄 <b>SELL</b> ${r.currentSymbol} (${r.currentAlpha}α)\n`;
+                        msg += `➡️ <b>BUY</b>  ${r.recommendedSymbol} (${r.recommendedAlpha}α)\n`;
+                        msg += `💡 <i>${r.reason}</i>\n\n`;
+                    });
+                    msg += `⚠️ <i>Gunakan /analyze pada target sebelum eksekusi.</i>\n`;
+                }
+
+                msg += `\n🔙 Kembali: /back`;
+                await ctx.reply(msg, { parse_mode: 'HTML' });
+            } catch (err: any) {
+                logger.error('Optimize command error:', err);
+                await ctx.reply('❌ Gagal melakukan optimasi portfolio.');
+            } finally {
+                ctx.telegram.deleteMessage(ctx.chat.id, loading.message_id).catch(() => { });
+            }
+        });
+
         // ─── /approve (admin only) ─────────────────────────────────────────────
         this.bot.command('approve', async (ctx) => {
             const telegramId = ctx.from.id.toString();
@@ -254,18 +365,20 @@ export class TelegramInterface {
             '• <b>Trend Deviation</b>: Notifikasi jika harga melenceng > 3% dari trend MA-5.\n\n' +
             '📡 <b>PENCARIAN PELUANG (DISCOVERY)</b>\n' +
             '• <code>/scan</code> — Scan Top Active IDX & Ranking Alpha (α) pasar.\n' +
+            '• <code>/whale</code> — 🐋 <b>Whale Radar.</b> Lacak akumulasi institutional & smart money.\n' +
             '• <code>/hot</code> — ⚡ <b>Fast Money.</b> Deteksi lonjakan volume & momentum instan.\n' +
-            '• <code>/smart</code> — 🤫 <b>Smart Money.</b> Lacak akumulasi diam-diam broker & institusi.\n' +
+            '• <code>/smart</code> — 🤫 <b>Smart Money.</b> Analisis intensitas beli broker.\n' +
             '• <code>/sector</code> — 🧭 <b>Market Heatmap.</b> Analisis rotasi sektor & pimpinan pasar.\n' +
             '• <code>/breadth</code> — 📈 <b>Market Internals.</b> Cek kesehatan ekosistem pasar (Advance/Decline).\n\n' +
             '🔬 <b>ANALISIS MENDALAM (ANALYSIS)</b>\n' +
             '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental (Rating), Sentiment, & Level TP/SL.\n' +
             '• <code>/sentiment [SYM]</code> — 🧠 <b>NLP Intelligence.</b> Analisis mood pasar dari berita & momentum.\n' +
             '• <code>/audit [SYM]</code> — 🏛️ <b>Fund Audit.</b> Cek kesehatan keuangan (F-Score & Z-Score).\n' +
+            '• <code>/valuation [SYM]</code> — ⚖️ <b>Intrinsic Value.</b> Audit nilai wajar (Graham Formula).\n' +
             '• <code>/signals</code> — Hanya menampilkan saham yang lolos 100% filter disiplin BUY.\n\n' +
-            '📂 <b>MANAJEMEN WATCHLIST</b>\n' +
-            '• <code>/add [SYM]</code> — Pantau saham secara otomatis oleh Sentinel.\n' +
+            '📂 <b>MANAJEMEN PORTFOLIO</b>\n' +
             '• <code>/list</code> — Lihat daftar saham yang Anda pantau.\n' +
+            '• <code>/optimize</code> — ⚖️ <b>Portfolio Rebalancer.</b> Saran "Alpha Swaps" untuk optimalisasi capital.\n' +
             '• <code>/remove [SYM]</code> — Berhenti memantau saham.\n' +
             '• <b>Personalized Scan</b>: Laporan otomatis watchlist Anda dikirim pkl 12:00, 16:00, & 19:00 WIB.\n\n' +
             '💡 <i>Tips: Selalu jalankan /analyze sebelum entry untuk melihat trading level (Entry/TP/SL) berbasis volatilitas (ATR).</i>\n\n' +
@@ -842,8 +955,10 @@ export class TelegramInterface {
 
         // ─── /add ─────────────────────────────────────────────────────────────
         this.bot.command('add', async (ctx) => {
-            const symbol = ctx.message.text.split(' ')[1]?.toUpperCase();
+            let symbol = ctx.message.text.split(' ')[1]?.toUpperCase();
             if (!symbol) return ctx.reply('Usage: /add <SYMBOL.JK>\nContoh: /add BBCA.JK');
+
+            if (!symbol.includes('.')) symbol += '.JK';
 
             await ctx.reply(`🔍 Memvalidasi ${symbol} di Yahoo Finance...`);
 
@@ -885,8 +1000,10 @@ export class TelegramInterface {
 
         // ─── /remove ─────────────────────────────────────────────────────────
         this.bot.command('remove', async (ctx) => {
-            const symbol = ctx.message.text.split(' ')[1]?.toUpperCase();
+            let symbol = ctx.message.text.split(' ')[1]?.toUpperCase();
             if (!symbol) return ctx.reply('Usage: /remove <SYMBOL.JK>');
+
+            if (!symbol.includes('.')) symbol += '.JK';
 
             try {
                 const userId = ctx.from.id.toString();
@@ -1283,6 +1400,7 @@ export class TelegramInterface {
             `<i>Institutional Quant Engine — Sovereign Sentinel</i>\n\n` +
             `🎯 <b>DISCOVERY (Cari Peluang)</b>\n` +
             `├ /scan - Discovery Umum (Top Active)\n` +
+            `├ /whale - 🐋 <b>Whale Radar</b> (Smart Money Flow)\n` +
             `├ /hot - ⚡ <b>Fast Money</b> (Volume Breakout)\n` +
             `├ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n` +
             `└ /sector - 🧭 <b>Market Heatmap</b> (Rotasi Sektor)\n\n` +
@@ -1290,9 +1408,11 @@ export class TelegramInterface {
             `├ /analyze [SYM] - Audit Lengkap (Entry/TP/SL)\n` +
             `├ /sentiment [SYM] - 🧠 <b>Sentiment</b> (NLP)\n` +
             `├ /audit [SYM] - 🏛️ <b>Fundamental Audit</b>\n` +
+            `├ /valuation [SYM] - ⚖️ <b>Intrinsic Audit</b> (Graham)\n` +
             `└ /signals - Cari Entry Paling Disiplin\n\n` +
-            `📂 <b>MANAGEMENT (Watchlist)</b>\n` +
+            `📂 <b>MANAGEMENT (Portfolio)</b>\n` +
             `├ /list - Lihat Daftar Pantau & Sentinel\n` +
+            `├ /optimize - ⚖️ <b>Portfolio Rebalancer</b>\n` +
             `├ /myprofile - Cek Profil & Update Modal\n` +
             `└ /portfolio - Positions & Profit/Loss\n\n` +
             (isAdmin ? `🔒 <b>ADMIN</b>: /users, /approve\n` : '') +

@@ -48,6 +48,10 @@ export class UltimateBaggerV7Strategy implements IStrategy {
             } else if (config.entryRule === 'PULLBACK') {
                 trigger = prevPrice <= prevKijun && price > kijun;
                 crossType = 'Price x Kijun';
+            } else if (config.entryRule === 'CONSERVATIVE') {
+                // Requires both Tenkan x Kijun AND Price > Tenkan
+                trigger = (prevTenkan <= prevKijun && tenkan > kijun) && (price > tenkan);
+                crossType = 'Conservative (T x K + P > T)';
             }
 
             if (trigger && aboveCloud && volValid) {

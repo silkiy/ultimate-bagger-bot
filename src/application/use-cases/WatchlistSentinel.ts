@@ -22,14 +22,16 @@ export class WatchlistSentinel {
 
             logger.info(`🚨 [Sentinel] Checking anomalies for ${approvedUsers.length} users...`);
 
-            for (const user of approvedUsers) {
+            // Parallelize across users
+            await Promise.all(approvedUsers.map(async (user) => {
                 const watchlist = await this.tickerRepo.findAll(user.telegramId);
-                if (watchlist.length === 0) continue;
+                if (watchlist.length === 0) return;
 
-                for (const ticker of watchlist) {
-                    await this.checkAnomaly(user.telegramId, ticker.config.symbol);
-                }
-            }
+                // Parallelize across tickers for each user
+                await Promise.all(watchlist.map(ticker =>
+                    this.checkAnomaly(user.telegramId, ticker.config.symbol)
+                ));
+            }));
         } catch (error: any) {
             logger.error(`[Sentinel] Execution failed: ${error.message}`);
         }

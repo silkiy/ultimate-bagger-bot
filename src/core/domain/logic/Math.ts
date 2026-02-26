@@ -512,9 +512,31 @@ export class DomainMath {
      * Returns the percentage of assets trading above their SMA-50.
      * Institutions use this as a "Real Market Health" gauge.
      */
+    /**
+     * Calculate Market Breadth (v11.0).
+     * Returns the percentage of assets trading above their SMA-50.
+     * Institutions use this as a "Real Market Health" gauge.
+     */
     static calculateMarketBreadth(assets: { currentPrice: number, sma50: number }[]): number {
         if (assets.length === 0) return 0;
         const aboveCount = assets.filter(a => a.currentPrice > a.sma50 && a.sma50 > 0).length;
         return Math.round((aboveCount / assets.length) * 100);
+    }
+
+    /**
+     * Calculate Intrinsic Value (v13.0)
+     * Using Benjamin Graham Formula: V = EPS * (8.5 + 2g) * 4.4 / Y
+     * where g = expected growth rate, Y = current yield on AAA corporate bonds
+     */
+    static calculateIntrinsicValue(metrics: {
+        eps: number,
+        growthRate: number, // e.g., 10 for 10%
+        bondYield: number   // e.g., 6.5 for 6.5%
+    }): number {
+        if (metrics.eps <= 0) return 0;
+        // Adjusted Graham Formula for modern times
+        // Safety Margin is usually applied after this calculation
+        const value = (metrics.eps * (8.5 + 2 * metrics.growthRate) * 4.4) / metrics.bondYield;
+        return Math.round(Math.max(0, value));
     }
 }

@@ -1,6 +1,6 @@
-# 🦅 Ultimate Bagger Quant Bot (v11.0) — Prime Dominance
+# 🦅 Ultimate Bagger Quant Bot (v13.0) — Institutional Plus
 
-**Ultimate Bagger v11.0 "Prime Dominance"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Prime Alpha Scoring (α)**, **Market Breadth Analysis**, dan **Sovereign Sentinel** dalam satu ekosistem Telegram yang canggih.
+**Ultimate Bagger v13.0 "Institutional Plus"** adalah platform trading kuantitatif *institutional-grade* yang dirancang khusus untuk pasar saham Indonesia (IDX). Sistem ini menggabungkan **Market Regime Auto-Pilot**, **Intrinsic Value Audit**, **Whale Radar**, dan **Portfolio Rebalancer** dalam satu ekosistem Telegram yang canggih.
 
 ---
 
@@ -36,11 +36,13 @@ src/
 | Perintah | Deskripsi |
 | :--- | :--- |
 | `/scan` | Discovery umum Top Active IDX & Ranking pasar. |
+| `/whale` | 🐋 **Whale Radar**: Lacak akumulasi institutional porsi besar. |
 | `/hot` | **Fast Money**: Scan saham dengan volume melonjak instan. |
 | `/smart` | **Smart Money**: Lacak akumulasi diam-diam modal besar. |
 | `/sector` | **Market Heatmap**: Analisis rotasi & kekuatan sektoral. |
 | `/risk` | **Risk Audit**: Deteksi korelasi portofolio & resiko sistemik. |
 | `/audit [SYM]` | **Fundamental Audit**: Piotroski F-Score & Altman Z-Score. |
+| `/valuation [SYM]` | **Intrinsic Audit**: Valuasi harga wajar Benjamin Graham. |
 | `/sentiment [SYM]` | **Sentiment NLP**: Analisis mood pasar hybrid (NLP + Market). |
 
 ### 🔬 Analysis (Deep Insights)
@@ -53,6 +55,7 @@ src/
 | Perintah | Deskripsi |
 | :--- | :--- |
 | `/list` | Lihat Daftar Pantau (Watchlist). |
+| `/optimize` | ⚖️ **Portfolio Rebalancer**: Saran Alpha-Swap otomatis. |
 | `/portfolio` | Aktif Positions & P/L. |
 | `/back` | 🔙 Kembali ke Dashboard Utama. |
 

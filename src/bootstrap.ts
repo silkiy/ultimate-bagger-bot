@@ -18,6 +18,9 @@ import { AuditFundamentalHealth } from './application/use-cases/AuditFundamental
 import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
 import { ScanPersonalWatchlist } from './application/use-cases/ScanPersonalWatchlist';
 import { WatchlistSentinel } from './application/use-cases/WatchlistSentinel';
+import { ScanWhaleActivity } from './application/use-cases/ScanWhaleActivity';
+import { AuditIntrinsicValue } from './application/use-cases/AuditIntrinsicValue';
+import { OptimizePortfolio } from './application/use-cases/OptimizePortfolio';
 import { TelegramInterface } from './presentation/bot/TelegramInterface';
 import { logger } from './infrastructure/logging/WinstonLogger';
 
@@ -37,6 +40,9 @@ export interface AppContainer {
     analyzeSentiment: AnalyzeSentiment;
     scanPersonalWatchlist: ScanPersonalWatchlist;
     watchlistSentinel: WatchlistSentinel;
+    scanWhale: ScanWhaleActivity;
+    auditIntrinsic: AuditIntrinsicValue;
+    optimizePortfolio: OptimizePortfolio;
     generateEveningSummary: GenerateEveningSummary;
     tickerRepo: MongoTickerRepository;
     userRepo: MongoUserRepository;
@@ -79,6 +85,9 @@ export async function bootstrap(): Promise<AppContainer> {
     );
     const scanPersonalWatchlist = new ScanPersonalWatchlist(tickerRepo, manualAnalysis);
     const watchlistSentinel = new WatchlistSentinel(userRepo, tickerRepo, marketData, messaging);
+    const scanWhale = new ScanWhaleActivity(marketData);
+    const auditIntrinsic = new AuditIntrinsicValue(marketData);
+    const optimizePortfolio = new OptimizePortfolio(tickerRepo, marketData, strategy);
 
     const telegramBot = messaging.getBotInstance();
     const telegramInterface = new TelegramInterface(
@@ -95,7 +104,10 @@ export async function bootstrap(): Promise<AppContainer> {
         analyzeSector,
         analyzeRisk,
         auditFundamental,
-        analyzeSentiment
+        analyzeSentiment,
+        scanWhale,
+        auditIntrinsic,
+        optimizePortfolio
     );
 
     // Initialize but don't start polling (since we'll use webhooks)
@@ -114,6 +126,9 @@ export async function bootstrap(): Promise<AppContainer> {
         analyzeSentiment,
         scanPersonalWatchlist,
         watchlistSentinel,
+        scanWhale,
+        auditIntrinsic,
+        optimizePortfolio,
         generateEveningSummary,
         tickerRepo,
         userRepo,

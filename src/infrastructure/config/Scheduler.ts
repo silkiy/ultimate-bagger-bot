@@ -72,7 +72,8 @@ export class Scheduler {
 
             logger.info(`📋 [Personal Scan ${session}] Scanning watchlists for ${approvedUsers.length} users...`);
 
-            for (const user of approvedUsers) {
+            // Parallelize across users
+            await Promise.all(approvedUsers.map(async (user) => {
                 try {
                     const report = await this.personalWatchlist.execute(user.telegramId, session);
                     if (report) {
@@ -84,7 +85,7 @@ export class Scheduler {
                 } catch (err: any) {
                     logger.error(`[Personal Scan] Failed for ${user.telegramId}: ${err.message}`);
                 }
-            }
+            }));
 
             logger.info(`✅ [Personal Scan ${session}] Complete.`);
         } catch (err: any) {

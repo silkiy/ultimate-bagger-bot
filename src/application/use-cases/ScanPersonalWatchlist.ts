@@ -8,7 +8,7 @@ interface WatchlistScanResult {
     symbol: string;
     price: number;
     changePercent: string;
-    signalType: string;
+    signalType: 'BUY' | 'SELL' | 'HOLD';
     confidence: number;
     entry: number;
     sl: number;
@@ -42,22 +42,24 @@ export class ScanPersonalWatchlist {
         msg += `🕒 ${now}\n`;
         msg += `🔍 Scanning <b>${tickers.length} assets</b> in your vault...\n\n`;
 
-        const results: WatchlistScanResult[] = [];
-        let buyCount = 0, sellCount = 0, holdCount = 0;
+        // Fetch index data once for the entire batch
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 180);
+        const indexData = await (this.manualAnalysis as any).marketData.fetchHistoricalData('^JKSE', startDate).catch(() => null);
 
-        for (const ticker of tickers) {
+        const scanTasks = tickers.map(async (ticker) => {
             try {
-                const signal = await this.manualAnalysis.execute(ticker.config.symbol);
-                if (!signal) continue;
+                const signal = await this.manualAnalysis.execute(ticker.config.symbol, indexData);
+                if (!signal) return null;
 
                 const rt = (signal as any).realTimeData;
                 const lv = rt?.tradingLevels;
 
-                const result: WatchlistScanResult = {
+                return {
                     symbol: ticker.config.symbol,
                     price: signal.price || 0,
                     changePercent: rt?.changePercent || '0',
-                    signalType: signal.type || 'HOLD',
+                    signalType: (signal.type || 'HOLD') as 'BUY' | 'SELL' | 'HOLD',
                     confidence: signal.confidence?.total || 0,
                     entry: lv?.entry || 0,
                     sl: lv?.sl || 0,
@@ -66,18 +68,24 @@ export class ScanPersonalWatchlist {
                     auditBadge: (signal as any).auditBadge || '',
                     sentimentBadge: (signal as any).sentimentBadge || ''
                 };
-
-                results.push(result);
-                if (signal.type === 'BUY') buyCount++;
-                else if (signal.type === 'SELL') sellCount++;
-                else holdCount++;
             } catch (err: any) {
                 logger.warn(`Watchlist scan failed for ${ticker.config.symbol}: ${err.message}`);
+                return null;
             }
-        }
+        });
+
+        const scanResults = await Promise.all(scanTasks);
+        const results = scanResults.filter((r): r is WatchlistScanResult => r !== null);
 
         if (results.length === 0) {
             return null;
+        }
+
+        let buyCount = 0, sellCount = 0, holdCount = 0;
+        for (const r of results) {
+            if (r.signalType === 'BUY') buyCount++;
+            else if (r.signalType === 'SELL') sellCount++;
+            else holdCount++;
         }
 
         // Summary counts

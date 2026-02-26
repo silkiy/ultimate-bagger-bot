@@ -1,7 +1,7 @@
 import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository';
 import { IMarketDataProvider, IMessagingService } from '../../core/domain/interfaces/ExternalServices';
 import { IStrategy } from '../../core/domain/interfaces/Strategy';
-import { DomainTicker } from '../../core/domain/entities/Ticker';
+import { DomainTicker, EntryRule } from '../../core/domain/entities/Ticker';
 import { OHLCV, Signal } from '../../core/domain/entities/MarketData';
 import { RiskEngine } from '../../core/domain/logic/RiskEngine';
 import { MarketRegime, RegimeCapitalAllocator, LosingStreakTracker } from '../../core/domain/logic/CapitalPreservation';
@@ -198,80 +198,93 @@ export class RunScanner {
             report.regime = regime;
             logger.info(`🌐 Market Regime: ${regime}`);
 
+            // 3.1 Regime Auto-Pilot (v13.0)
+            await this.applyRegimeAutoPilot(dbTickers, regime);
+
             const capitalFactor = RegimeCapitalAllocator.getAllowedCapitalFactor(regime);
             const isMarketBullish = regime === MarketRegime.BULL;
 
-            // 4. Pre-Analysis (Ranking) — Paralel fetch semua ticker
-            logger.info(`🔬 Analyzing ${tickers.length} tickers from Yahoo Finance...`);
-            const tickerResults = await Promise.all(tickers.map(async (ticker: DomainTicker) => {
-                try {
-                    logger.debug(`📡 Fetching ${ticker.config.symbol}...`);
-                    const stockData = await this.marketData.fetchHistoricalData(ticker.config.symbol, startDate);
-                    if (!stockData || stockData.length < 50) {
-                        logger.warn(`⚠️ Insufficient data for ${ticker.config.symbol}: ${stockData?.length ?? 0} records`);
-                        return null;
-                    }
+            // 4. Pre-Analysis (Ranking) — Chunked parallel fetch
+            logger.info(`🔬 Analyzing ${tickers.length} tickers in chunks of 5...`);
+            const tickerResults: any[] = [];
+            const chunkSize = 5;
 
-                    const latestBar = stockData[stockData.length - 1];
-                    const currentPrice = latestBar.adjclose || latestBar.close || 0;
+            for (let i = 0; i < tickers.length; i += chunkSize) {
+                const chunk = tickers.slice(i, i + chunkSize);
+                logger.info(`📡 Processing chunk ${Math.floor(i / chunkSize) + 1}/${Math.ceil(tickers.length / chunkSize)}...`);
 
-                    // ── Filter: harga >= 1000 & likuid (avg volume >= 1 juta/hari) ──
-                    const avgVolume = stockData.slice(-20).reduce((s, b) => s + (b.volume || 0), 0) / 20;
-                    if (currentPrice < 1000) {
-                        logger.debug(`⏭️ Skip ${ticker.config.symbol}: harga Rp${currentPrice} < 1000`);
-                        return null;
-                    }
-                    if (avgVolume < 1_000_000) {
-                        logger.debug(`⏭️ Skip ${ticker.config.symbol}: avg volume ${(avgVolume / 1e6).toFixed(2)}M < 1M (tidak likuid)`);
-                        return null;
-                    }
-
-                    const signal = this.strategy.calculateSignal(ticker, stockData, isMarketBullish);
-                    const atr = DomainMath.getATR(stockData, 14);
-                    const adx = DomainMath.getADX(stockData, 14);
-                    const sma50 = DomainMath.getSMA(stockData, 50);
-                    const score = CompoundingOptimizer.calculateRankingScore(ticker, signal, atr);
-
-                    let sector: string | undefined;
-                    let fundamentalRating = 5; // Default neutral
-                    let epsValue = 0;
-                    if (this.marketData.fetchFinancials) {
-                        const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
-                        if (financials) {
-                            if ((financials.eps || 0) < -5000) {
-                                logger.debug(`⏭️ Skip ${ticker.config.symbol}: Extreme negative EPS (${financials.eps})`);
-                                return null;
-                            }
-                            sector = financials.sector;
-                            epsValue = financials.eps || 0;
-                            // Basic normalization for fundamental rating (0-10)
-                            fundamentalRating = financials.pb && financials.pb < 5 ? 7 : 5;
-                            if (financials.pe && financials.pe < 15) fundamentalRating += 1;
+                const chunkResults = await Promise.all(chunk.map(async (ticker: DomainTicker) => {
+                    try {
+                        logger.debug(`📡 Fetching ${ticker.config.symbol}...`);
+                        const stockData = await this.marketData.fetchHistoricalData(ticker.config.symbol, startDate);
+                        if (!stockData || stockData.length < 50) {
+                            logger.warn(`⚠️ Insufficient data for ${ticker.config.symbol}: ${stockData?.length ?? 0} records`);
+                            return null;
                         }
+
+                        const latestBar = stockData[stockData.length - 1];
+                        const currentPrice = latestBar.adjclose || latestBar.close || 0;
+
+                        // ── Filter: harga >= 1000 & likuid (avg volume >= 1 juta/hari) ──
+                        const avgVolume = stockData.slice(-20).reduce((s, b) => s + (b.volume || 0), 0) / 20;
+                        if (currentPrice < 1000) {
+                            logger.debug(`⏭️ Skip ${ticker.config.symbol}: harga Rp${currentPrice} < 1000`);
+                            return null;
+                        }
+                        if (avgVolume < 1_000_000) {
+                            logger.debug(`⏭️ Skip ${ticker.config.symbol}: avg volume ${(avgVolume / 1e6).toFixed(2)}M < 1M (tidak likuid)`);
+                            return null;
+                        }
+
+                        const signal = this.strategy.calculateSignal(ticker, stockData, isMarketBullish);
+                        const atr = DomainMath.getATR(stockData, 14);
+                        const adx = DomainMath.getADX(stockData, 14);
+                        const sma50 = DomainMath.getSMA(stockData, 50);
+                        const score = CompoundingOptimizer.calculateRankingScore(ticker, signal, atr);
+
+                        let sector: string | undefined;
+                        let fundamentalRating = 5; // Default neutral
+                        let epsValue = 0;
+                        if (this.marketData.fetchFinancials) {
+                            const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
+                            if (financials) {
+                                if ((financials.eps || 0) < -5000) {
+                                    logger.debug(`⏭️ Skip ${ticker.config.symbol}: Extreme negative EPS (${financials.eps})`);
+                                    return null;
+                                }
+                                sector = financials.sector;
+                                epsValue = financials.eps || 0;
+                                // Basic normalization for fundamental rating (0-10)
+                                fundamentalRating = financials.pb && financials.pb < 5 ? 7 : 5;
+                                if (financials.pe && financials.pe < 15) fundamentalRating += 1;
+                            }
+                        }
+
+                        const sent = DomainMath.calculateMarketSentiment(stockData);
+                        const intensity = DomainMath.getSmartMoneyIntensity(stockData, 20);
+
+                        const alphaScore = DomainMath.calculatePrimeAlphaScore({
+                            technicalStrength: adx + (signal.type === 'BUY' ? 20 : 0),
+                            fundamentalRating,
+                            sentimentScore: sent.score,
+                            institutionalIntensity: intensity
+                        });
+
+                        // Safety: ensure signal has the latest price
+                        if (!signal.price || signal.price === 0) {
+                            signal.price = currentPrice;
+                        }
+
+                        logger.info(`📊 [Ranking] ${ticker.config.symbol}: Alpha ${alphaScore}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
+                        return { ticker, signal, stockData, score, atr, adx, sector, alphaScore, currentPrice, sma50 };
+                    } catch (err: any) {
+                        logger.error(`❌ Skip ${ticker.config.symbol}: ${err.message}`);
+                        return null;
                     }
+                }));
 
-                    const sent = DomainMath.calculateMarketSentiment(stockData);
-                    const intensity = DomainMath.getSmartMoneyIntensity(stockData, 20);
-
-                    const alphaScore = DomainMath.calculatePrimeAlphaScore({
-                        technicalStrength: adx + (signal.type === 'BUY' ? 20 : 0),
-                        fundamentalRating,
-                        sentimentScore: sent.score,
-                        institutionalIntensity: intensity
-                    });
-
-                    // Safety: ensure signal has the latest price
-                    if (!signal.price || signal.price === 0) {
-                        signal.price = currentPrice;
-                    }
-
-                    logger.info(`📊 [Ranking] ${ticker.config.symbol}: Alpha ${alphaScore}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
-                    return { ticker, signal, stockData, score, atr, adx, sector, alphaScore, currentPrice, sma50 };
-                } catch (err: any) {
-                    logger.error(`❌ Skip ${ticker.config.symbol}: ${err.message}`);
-                    return null;
-                }
-            }));
+                tickerResults.push(...chunkResults);
+            }
 
             const analyzedItems = tickerResults.filter((t) => t !== null) as any[];
             report.totalScanned = analyzedItems.length;
@@ -439,5 +452,36 @@ export class RunScanner {
         }
 
         return report;
+    }
+
+    private async applyRegimeAutoPilot(dbTickers: DomainTicker[], regime: MarketRegime) {
+        if (regime === MarketRegime.SIDEWAYS) return; // Don't auto-adjust in sideways markets
+
+        const targetEntryRule: EntryRule = regime === MarketRegime.BULL ? 'AGGRESSIVE' : 'CONSERVATIVE';
+        const targetRisk = regime === MarketRegime.BULL ? 0.02 : 0.005;
+        const targetTrail = regime === MarketRegime.BULL ? 0.12 : 0.08;
+
+        // Check if any ticker needs an update
+        const tickersToUpdate = dbTickers.filter(t =>
+            t.config.entryRule !== targetEntryRule ||
+            t.config.riskPerTrade !== targetRisk ||
+            t.config.trailPercent !== targetTrail
+        );
+
+        if (tickersToUpdate.length === 0) return;
+
+        logger.info(`🔄 [Regime-AutoPilot] Shift: ${regime} | Target: ${targetEntryRule} | Risk: ${targetRisk * 100}%`);
+        logger.info(`🔄 Updating ${tickersToUpdate.length} tickers in database...`);
+
+        // Update in DB (parallel)
+        await Promise.all(tickersToUpdate.map(async (t) => {
+            t.config.entryRule = targetEntryRule;
+            t.config.riskPerTrade = targetRisk;
+            t.config.trailPercent = targetTrail;
+
+            // the repo save uses (ticker, userId)
+            // if t.userId is missing (unlikely for dbTickers), we use 'global'
+            await this.tickerRepo.save(t, t.userId || 'global');
+        }));
     }
 }
