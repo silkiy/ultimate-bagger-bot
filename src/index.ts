@@ -28,6 +28,9 @@ import { AnalyzeSentiment } from './application/use-cases/AnalyzeSentiment';
 import { GenerateEveningSummary } from './application/use-cases/GenerateEveningSummary';
 import { ScanPersonalWatchlist } from './application/use-cases/ScanPersonalWatchlist';
 import { WatchlistSentinel } from './application/use-cases/WatchlistSentinel';
+import { ScanWhaleActivity } from './application/use-cases/ScanWhaleActivity';
+import { AuditIntrinsicValue } from './application/use-cases/AuditIntrinsicValue';
+import { OptimizePortfolio } from './application/use-cases/OptimizePortfolio';
 
 // Presentation
 import { QuantController } from './presentation/api/QuantController';
@@ -68,6 +71,9 @@ async function main() {
     );
     const scanPersonalWatchlist = new ScanPersonalWatchlist(tickerRepo, manualAnalysis);
     const watchlistSentinel = new WatchlistSentinel(userRepo, tickerRepo, marketData, messaging);
+    const scanWhale = new ScanWhaleActivity(marketData);
+    const auditIntrinsic = new AuditIntrinsicValue(marketData);
+    const optimizePortfolio = new OptimizePortfolio(tickerRepo, marketData, strategy);
 
     // 4. API & Interface Initialization
     const quantController = new QuantController(runScanner, executeBacktest, tickerRepo);
@@ -89,7 +95,10 @@ async function main() {
         analyzeSector,
         analyzeRisk,
         auditFundamental,
-        analyzeSentiment
+        analyzeSentiment,
+        scanWhale,
+        auditIntrinsic,
+        optimizePortfolio
     );
     telegramInterface.init();
 
