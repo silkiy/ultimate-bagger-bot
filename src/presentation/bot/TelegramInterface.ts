@@ -152,17 +152,17 @@ export class TelegramInterface {
             );
         });
 
-        // ─── /whale (v12.0) ───────────────────────────────────────────────────
+        // ─── /whale (v13.2) ───────────────────────────────────────────────────
         this.bot.command('whale', async (ctx) => {
-            const loading = await ctx.reply('🐋 <b>Menjalankan Whale Radar...</b>\n<i>Memindai 70+ saham untuk melacak akumulasi institutional.</i>', { parse_mode: 'HTML' });
+            const loading = await ctx.reply('🐋 <b>Menjalankan Whale Radar V13.2...</b>\n<i>Memindai 70+ saham untuk melacak akumulasi institutional.</i>', { parse_mode: 'HTML' });
             try {
                 const results = await this.scanWhale.execute();
                 if (results.length === 0) {
                     return ctx.reply('⏸️ Belum ada pergerakan "Whale" yang signifikan terdeteksi saat ini.');
                 }
 
-                let msg = `🐋 <b>WHALE RADAR Dashboard (v12.0)</b>\n`;
-                msg += `<i>Mencari Akumulasi Institutional & Smart Money Flow</i>\n\n`;
+                let msg = `🐋 <b>WHALE RADAR Dashboard (v13.2)</b>\n`;
+                msg += `<i>Institutional Sovereign — Smart Money Flow</i>\n\n`;
                 msg += `<code>No Saham      Score  Status</code>\n`;
 
                 results.forEach((item, idx) => {
@@ -173,9 +173,9 @@ export class TelegramInterface {
                     msg += `<code>${no}. ${sym} ${score}  </code> ${status}\n`;
                 });
 
-                msg += `\n🤫 <b>QUIET ACC:</b> Akumulasi diam-diam (Volume spike + Harga stabil).\n`;
-                msg += `🟢 <b>ACTIVE:</b> Tekanan beli institusi sangat kuat.\n`;
-                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk validasi entry.\n\n🔙 Kembali: /back`;
+                msg += `\n🤫 <b>QUIET ACC:</b> Bandar cicil beli (Low Volatility).\n`;
+                msg += `🟢 <b>ACTIVE:</b> Bandar mulai kerek harga (High Intensity).\n`;
+                msg += `\n👉 Gunakan <code>/analyze [Saham]</code> untuk cek Golden Pocket.\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -1411,8 +1411,8 @@ export class TelegramInterface {
         if (!user) {
             return ctx.reply(
                 `👋 Halo, <b>${ctx.from?.first_name}</b>!\n\n` +
-                `🏛️ <b>Ultimate Bagger Bot V12.0</b>\n` +
-                `Institutional Black-Edge — Sovereign Sentinel\n\n` +
+                `🏛️ <b>Ultimate Bagger Bot V13.2</b>\n` +
+                `Institutional Sovereign — Alpha Sentinel\n\n` +
                 `Kamu belum terdaftar. Gunakan:\n` +
                 `👉 /register — Daftar akun baru untuk mendapatkan pelindungan Sentinel`,
                 { parse_mode: 'HTML' }
@@ -1423,8 +1423,8 @@ export class TelegramInterface {
         const isAdmin = this.isAdmin(telegramId);
         return ctx.reply(
             `👋 Selamat datang, <b>${ctx.from?.first_name}</b>! ${statusEmoji}\n` +
-            `🏛️ <b>ULTIMATE BAGGER BOT v12.0</b>\n` +
-            `<i>Institutional Black-Edge — Sovereign Sentinel</i>\n\n` +
+            `🏛️ <b>ULTIMATE BAGGER BOT v13.2</b>\n` +
+            `<i>Institutional Sovereign — Alpha Sentinel</i>\n\n` +
             `🎯 <b>DISCOVERY (Cari Peluang)</b>\n` +
             `├ /scan - Discovery Umum (Top Active)\n` +
             `├ /whale - 🐋 <b>Whale Radar</b> (Smart Money Flow)\n` +
@@ -1432,7 +1432,7 @@ export class TelegramInterface {
             `├ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n` +
             `└ /sector - 🧭 <b>Market Heatmap</b> (Rotasi Sektor)\n\n` +
             `🔬 <b>ANALYSIS (Analisis Mendalam)</b>\n` +
-            `├ /analyze [SYM] - Audit Lengkap (VWAP/POC/V12)\n` +
+            `├ /analyze [SYM] - Audit Lengkap (VWAP/POC/V13)\n` +
             `├ /sentiment [SYM] - 🧠 <b>Sentiment</b> (NLP)\n` +
             `├ /audit [SYM] - 🏛️ <b>Fundamental Audit</b>\n` +
             `├ /valuation [SYM] - ⚖️ <b>Intrinsic Audit</b> (Graham)\n` +

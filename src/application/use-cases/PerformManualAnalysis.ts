@@ -154,6 +154,9 @@ export class PerformManualAnalysis {
                 adx: adx.toFixed(1),
                 patterns,
                 brokerSummary: DomainMath.getBrokerSummaryLabel(stockData),
+                vwap: Math.round(DomainMath.getVWAP(stockData, 20)),
+                poc: Math.round(DomainMath.getVolumePointOfControl(stockData, 50, 20)),
+                isVCP: DomainMath.detectVCP(stockData),
                 smartMoney: {
                     intensity: DomainMath.getSmartMoneyIntensity(stockData, 20),
                     isAccumulating: DomainMath.detectQuietAccumulation(stockData)
