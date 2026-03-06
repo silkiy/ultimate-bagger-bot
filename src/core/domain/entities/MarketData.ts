@@ -10,7 +10,7 @@ export interface OHLCV {
 
 export interface Signal {
     symbol: string;
-    type: 'BUY' | 'SELL' | 'HOLD';
+    type: 'BUY' | 'SELL' | 'HOLD' | 'SELL_PARTIAL';
     price: number;
     reason: string;
     timestamp: Date;

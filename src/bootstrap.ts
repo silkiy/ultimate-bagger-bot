@@ -4,7 +4,7 @@ import { MongoUserRepository } from './infrastructure/persistence/UserRepository
 import { YahooFinanceProvider } from './infrastructure/external/YahooFinanceProvider';
 import { TelegramService } from './infrastructure/external/TelegramService';
 import { SimulatorExecutor } from './infrastructure/external/SimulatorExecutor';
-import { UltimateBaggerV7Strategy } from './core/domain/logic/UltimateBaggerV7Strategy';
+import { UltimateBaggerV13Strategy } from './core/domain/logic/UltimateBaggerV13Strategy';
 import { RunScanner } from './application/use-cases/RunScanner';
 import { ExecuteBacktest } from './application/use-cases/ExecuteBacktest';
 import { PerformManualAnalysis } from './application/use-cases/PerformManualAnalysis';
@@ -65,7 +65,7 @@ export async function bootstrap(): Promise<AppContainer> {
     const marketData = new YahooFinanceProvider();
     const messaging = new TelegramService(userRepo);
     const simulator = new SimulatorExecutor();
-    const strategy = new UltimateBaggerV7Strategy();
+    const strategy = new UltimateBaggerV13Strategy();
 
     const runScanner = new RunScanner(tickerRepo, marketData, strategy, messaging);
     const executeBacktest = new ExecuteBacktest(marketData, strategy);

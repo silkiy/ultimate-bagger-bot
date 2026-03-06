@@ -56,50 +56,80 @@ export class PerformanceCalculator {
     }
 
     /**
-     * Standard Sharpe Ratio (Risk-free rate assumed 0%)
+     * Institutional Sharpe Ratio (Adjusted for Risk-Free Rate)
      */
     static calculateSharpe(returns: number[]): number {
-        if (returns.length < 2) return 0;
+        if (returns.length < 5) return 0;
+        const rfRate = 0.06 / 252; // 6% Annual proxy
         const avg = returns.reduce((a, b) => a + b, 0) / returns.length;
-        const variance = returns.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / returns.length;
+        const excessReturns = returns.map(r => r - rfRate);
+        const avgExcess = excessReturns.reduce((a, b) => a + b, 0) / excessReturns.length;
+        
+        const variance = excessReturns.reduce((a, b) => a + Math.pow(b - avgExcess, 2), 0) / excessReturns.length;
         const stdDev = Math.sqrt(variance);
-        return stdDev === 0 ? 0 : (avg / stdDev) * Math.sqrt(252); // Annualized (252 trading days)
+        return stdDev === 0 ? 0 : (avgExcess / stdDev) * Math.sqrt(252);
     }
 
     /**
-     * Sortino Ratio (Only penalizes downside volatility)
+     * Institutional Sortino Ratio (Penalizes only bad volatility)
      */
     static calculateSortino(returns: number[]): number {
-        if (returns.length < 2) return 0;
+        if (returns.length < 5) return 0;
+        const rfRate = 0.06 / 252;
         const avg = returns.reduce((a, b) => a + b, 0) / returns.length;
-        const downsideReturns = returns.filter(r => r < 0);
-        if (downsideReturns.length === 0) return 100; // Infinity proxy
-        const variance = downsideReturns.reduce((a, b) => a + Math.pow(b, 2), 0) / returns.length;
+        const downsideReturns = returns.filter(r => r < rfRate);
+        
+        if (downsideReturns.length === 0) return 99; // Alpha God mode
+        
+        const variance = downsideReturns.reduce((a, b) => a + Math.pow(b - rfRate, 2), 0) / returns.length;
         const downsideDev = Math.sqrt(variance);
-        return downsideDev === 0 ? 0 : (avg / downsideDev) * Math.sqrt(252);
+        return downsideDev === 0 ? 0 : (avg - rfRate) / downsideDev * Math.sqrt(252);
     }
 }
 
 export class MonteCarloSimulator {
     /**
-     * Shuffle trades 500 times to determine statistical drawdown risk
+     * Institutional Stress Test: 10,000 Iterations
+     * Finds the "95% Confidence" Maximum Drawdown and Risk of Ruin.
      */
-    static run(trades: number[], initialCapital: number): number[] {
+    static run(tradeReturns: number[], initialCapital: number): { riskOfRuin: number, p95Drawdown: number, medianReturn: number } {
+        const iterations = 10000;
+        const ruinThreshold = 0.5; // 50% loss is Ruin
+        let ruinCount = 0;
         const results: number[] = [];
-        for (let run = 0; run < 500; run++) {
-            const shuffled = [...trades].sort(() => Math.random() - 0.5);
+        const drawdowns: number[] = [];
+
+        for (let run = 0; run < iterations; run++) {
             let balance = initialCapital;
             let peak = initialCapital;
             let maxDD = 0;
 
-            for (const tradeReturn of shuffled) {
-                balance *= (1 + tradeReturn);
+            // Simulate 50 trades by sampling from historical returns
+            for (let t = 0; t < 50; t++) {
+                const randomIdx = Math.floor(Math.random() * tradeReturns.length);
+                const ret = tradeReturns[randomIdx] || 0;
+                
+                balance *= (1 + ret);
                 if (balance > peak) peak = balance;
                 const dd = (peak - balance) / peak;
                 if (dd > maxDD) maxDD = dd;
+
+                if (balance < initialCapital * ruinThreshold) {
+                    ruinCount++;
+                    break;
+                }
             }
-            results.push(maxDD);
+            results.push((balance - initialCapital) / initialCapital);
+            drawdowns.push(maxDD);
         }
-        return results.sort((a, b) => a - b);
+
+        results.sort((a, b) => a - b);
+        drawdowns.sort((a, b) => a - b);
+
+        return {
+            riskOfRuin: (ruinCount / iterations) * 100,
+            p95Drawdown: drawdowns[Math.floor(iterations * 0.95)] * 100,
+            medianReturn: results[Math.floor(iterations / 2)] * 100
+        };
     }
 }

@@ -71,7 +71,15 @@ function buildDefaultTicker(symbol: string): DomainTicker {
             useTrailing: true,
             volEntryMult: 1.2,
             volDistMult: 1.5,
-            atrMultiplier: 2.0
+            atrMultiplier: 2.0,
+            // V10 Defaults
+            volMemory: 3,
+            useIHSG: true,
+            useMTF: true,
+            usePartialTP: true,
+            tpTargetPct: 0.10,
+            atrLength: 14,
+            atrTrailMult: 2.5
         },
         account: {
             initialCapital: 10000000,
@@ -92,7 +100,10 @@ function buildDefaultTicker(symbol: string): DomainTicker {
             consecutiveLosses: 0,
             equityHistory: [],
             pyramidEntries: 0,
-            atrHistory: []
+            atrHistory: [],
+            // V10 Defaults
+            hasScaledOut: false,
+            trailingStopPrice: 0
         },
         analytics: {
             totalTrades: 0,
@@ -121,17 +132,23 @@ export class RunScanner {
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - 365); // 1 year for weekly
             const weeklyData = await this.marketData.fetchHistoricalData(ticker.config.symbol, startDate, '1wk');
-            if (!weeklyData || weeklyData.length < 20) return true; // Fallback if no data
+            if (!weeklyData || weeklyData.length < ticker.config.spanBPeriod + 26) return true; // Fallback
 
             const latest = weeklyData[weeklyData.length - 1];
             const close = latest.adjclose || latest.close || 0;
-            const sma50 = DomainMath.getSMA(weeklyData, 50);
+            
+            // Weekly Ichimoku Cloud
+            const pastData = weeklyData.slice(0, -26); // Displacement 26
+            const tenkan = DomainMath.getDonchian(pastData.slice(-ticker.config.tenkanPeriod));
+            const kijun = DomainMath.getDonchian(pastData.slice(-ticker.config.kijunPeriod));
+            const spanA = (tenkan + kijun) / 2;
+            const spanB = DomainMath.getDonchian(pastData.slice(-ticker.config.spanBPeriod));
+            const cloudUpper = Math.max(spanA, spanB);
 
-            // Weekly Trend: Price > SMA50 Weekly
-            return sma50 === 0 || close > sma50;
+            return close > cloudUpper;
         } catch (err) {
             logger.warn(`⚠️ Weekly trend check failed for ${ticker.config.symbol}: ${err}`);
-            return true; // Conservative fallback
+            return true; 
         }
     }
 
@@ -179,9 +196,13 @@ export class RunScanner {
             startDate.setDate(startDate.getDate() - 150);
 
             let regime = MarketRegime.SIDEWAYS;
+            let jkseData: OHLCV[] = [];
+            let isHighStress = false;
+            let stressScore = 0;
+
             try {
                 logger.info('📊 Fetching Market Index (^JKSE)...');
-                const jkseData = await this.marketData.fetchHistoricalData('^JKSE', startDate);
+                jkseData = await this.marketData.fetchHistoricalData('^JKSE', startDate);
                 logger.info(`✅ Index Data Received: ${jkseData.length} records`);
                 if (jkseData && jkseData.length > 0) {
                     const jkseClose = jkseData[jkseData.length - 1].close || 0;
@@ -190,6 +211,15 @@ export class RunScanner {
 
                     if (jkseClose > jkseSMA && jkseClose > jkseSMA200) regime = MarketRegime.BULL;
                     else if (jkseClose < jkseSMA && jkseClose < jkseSMA200) regime = MarketRegime.BEAR;
+
+                    // 3.2 Market Stress Index (V12 Black-Edge)
+                    const stress = DomainMath.calculateMarketStressIndex(jkseData);
+                    isHighStress = stress.isHighStress;
+                    stressScore = stress.stressScore;
+
+                    if (isHighStress) {
+                        logger.warn(`🚨 BLACK SWAN DETECTED: Market Stress Index at ${stressScore.toFixed(2)}. Halting all BUY signals.`);
+                    }
                 }
             } catch {
                 logger.warn('⚠️ JKSE Unavailable. Defaulting to SIDEWAYS.');
@@ -204,59 +234,43 @@ export class RunScanner {
             const capitalFactor = RegimeCapitalAllocator.getAllowedCapitalFactor(regime);
             const isMarketBullish = regime === MarketRegime.BULL;
 
-            // 4. Pre-Analysis (Ranking) — Chunked parallel fetch
-            logger.info(`🔬 Analyzing ${tickers.length} tickers in chunks of 5...`);
+            // 4. Pre-Analysis (Ranking) — Increased concurrency for speed
+            logger.info(`🔬 Analyzing ${tickers.length} tickers with High Concurrency...`);
             const tickerResults: any[] = [];
-            const chunkSize = 5;
+            const chunkSize = 15; // Increased from 5 to 15 for Vercel speed
 
             for (let i = 0; i < tickers.length; i += chunkSize) {
                 const chunk = tickers.slice(i, i + chunkSize);
-                logger.info(`📡 Processing chunk ${Math.floor(i / chunkSize) + 1}/${Math.ceil(tickers.length / chunkSize)}...`);
-
+                
                 const chunkResults = await Promise.all(chunk.map(async (ticker: DomainTicker) => {
                     try {
-                        logger.debug(`📡 Fetching ${ticker.config.symbol}...`);
                         const stockData = await this.marketData.fetchHistoricalData(ticker.config.symbol, startDate);
-                        if (!stockData || stockData.length < 50) {
-                            logger.warn(`⚠️ Insufficient data for ${ticker.config.symbol}: ${stockData?.length ?? 0} records`);
-                            return null;
-                        }
+                        if (!stockData || stockData.length < 50) return null;
 
                         const latestBar = stockData[stockData.length - 1];
                         const currentPrice = latestBar.adjclose || latestBar.close || 0;
 
-                        // ── Filter: harga >= 1000 & likuid (avg volume >= 1 juta/hari) ──
+                        // Basic filtering
                         const avgVolume = stockData.slice(-20).reduce((s, b) => s + (b.volume || 0), 0) / 20;
-                        if (currentPrice < 1000) {
-                            logger.debug(`⏭️ Skip ${ticker.config.symbol}: harga Rp${currentPrice} < 1000`);
-                            return null;
-                        }
-                        if (avgVolume < 1_000_000) {
-                            logger.debug(`⏭️ Skip ${ticker.config.symbol}: avg volume ${(avgVolume / 1e6).toFixed(2)}M < 1M (tidak likuid)`);
-                            return null;
-                        }
+                        if (currentPrice < 500 || avgVolume < 500_000) return null;
 
                         const signal = this.strategy.calculateSignal(ticker, stockData, isMarketBullish);
                         const atr = DomainMath.getATR(stockData, 14);
                         const adx = DomainMath.getADX(stockData, 14);
                         const sma50 = DomainMath.getSMA(stockData, 50);
-                        const score = CompoundingOptimizer.calculateRankingScore(ticker, signal, atr);
 
-                        let sector: string | undefined;
-                        let fundamentalRating = 5; // Default neutral
-                        let epsValue = 0;
-                        if (this.marketData.fetchFinancials) {
-                            const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
-                            if (financials) {
-                                if ((financials.eps || 0) < -5000) {
-                                    logger.debug(`⏭️ Skip ${ticker.config.symbol}: Extreme negative EPS (${financials.eps})`);
-                                    return null;
+                        // OPTIMIZATION: Use cached financials if available
+                        let sector = 'Unknown';
+                        let fundamentalRating = 5;
+                        
+                        // Only fetch financials if it's a BUY signal or we don't have it (saves API calls)
+                        if (signal.type === 'BUY' || !ticker.config.useIHSG) {
+                            if (this.marketData.fetchFinancials) {
+                                const financials = await this.marketData.fetchFinancials(ticker.config.symbol);
+                                if (financials) {
+                                    sector = financials.sector || 'Unknown';
+                                    fundamentalRating = (financials.pb || 1) < 3 ? 8 : 5;
                                 }
-                                sector = financials.sector;
-                                epsValue = financials.eps || 0;
-                                // Basic normalization for fundamental rating (0-10)
-                                fundamentalRating = financials.pb && financials.pb < 5 ? 7 : 5;
-                                if (financials.pe && financials.pe < 15) fundamentalRating += 1;
                             }
                         }
 
@@ -270,15 +284,8 @@ export class RunScanner {
                             institutionalIntensity: intensity
                         });
 
-                        // Safety: ensure signal has the latest price
-                        if (!signal.price || signal.price === 0) {
-                            signal.price = currentPrice;
-                        }
-
-                        logger.info(`📊 [Ranking] ${ticker.config.symbol}: Alpha ${alphaScore}, Signal: ${signal.type}, ADX: ${adx.toFixed(1)}, Price: Rp${currentPrice.toFixed(0)}`);
-                        return { ticker, signal, stockData, score, atr, adx, sector, alphaScore, currentPrice, sma50 };
+                        return { ticker, signal, stockData, atr, adx, sector, alphaScore, currentPrice, sma50 };
                     } catch (err: any) {
-                        logger.error(`❌ Skip ${ticker.config.symbol}: ${err.message}`);
                         return null;
                     }
                 }));
@@ -300,6 +307,9 @@ export class RunScanner {
             const rankedTickers = [...analyzedItems]
                 .sort((a, b) => b.alphaScore - a.alphaScore)
                 .slice(0, 20);
+
+            // 4.2 Correlation Pre-Check (For existing holdings vs potentials)
+            const currentHoldings = analyzedItems.filter(item => item.ticker.state.isHolding);
 
             // Populate rankedItems for Telegram display
             report.rankedItems = rankedTickers.map(({ ticker, signal, score, adx, sector, alphaScore }) => ({
@@ -333,6 +343,11 @@ export class RunScanner {
                 const canAccelerate = AccelerationGuard.canAccelerate(ticker, regime, heat) && !isVolatile;
                 const price = stockData[stockData.length - 1].adjclose || stockData[stockData.length - 1].close || 0;
 
+                // Update V10 Trailing Stop State
+                if (ticker.state.isHolding && signal.breakdown?.stopLoss) {
+                    ticker.state.trailingStopPrice = Math.max(ticker.state.trailingStopPrice || 0, signal.breakdown.stopLoss);
+                }
+
                 // PYRAMIDING
                 if (ticker.state.isHolding && PyramidingLogic.canPyramid(ticker, signal, price) && canAccelerate) {
                     const action = RiskEngine.calculateATRPositionSize(ticker, stockData, price, regime, true);
@@ -347,9 +362,34 @@ export class RunScanner {
                     }
                 }
 
+                if (signal.type === 'SELL_PARTIAL' && ticker.state.isHolding && !ticker.state.hasScaledOut) {
+                    const halfLots = Math.floor(ticker.state.lots / 2);
+                    if (halfLots > 0) {
+                        ticker.state.lots -= halfLots;
+                        ticker.state.hasScaledOut = true;
+                        ticker.account.currentBalance += (halfLots * 100 * price);
+                        
+                        await this.messenger.sendAlert(`💰 <b>PARTIAL TP EXECUTED (50%)</b>\nStock: ${ticker.config.symbol}\nPrice: ${price}\nLots Sold: ${halfLots}\nRemaining: ${ticker.state.lots}`);
+                        if (dbSymbols.has(ticker.config.symbol)) await this.tickerRepo.save(ticker);
+                    }
+                }
+
                 if (signal.type === 'BUY' && !ticker.state.isHolding) {
+                    // MSI HALT Check
+                    if (isHighStress) {
+                        logger.warn(`🛑 BUY Blocked ${ticker.config.symbol}: Market Stress too high (${stressScore.toFixed(2)})`);
+                        continue;
+                    }
+
                     const eliteSymbols = report.elitePicks.map(e => e.symbol);
                     if (!eliteSymbols.includes(ticker.config.symbol)) continue;
+
+                    // CORRELATION Guard
+                    const correlationCheck = RiskEngine.checkSystemicRisk(ticker, stockData, currentHoldings);
+                    if (!correlationCheck.canProceed) {
+                        logger.warn(`🛑 BUY Blocked ${ticker.config.symbol}: ${correlationCheck.reason}`);
+                        continue;
+                    }
 
                     // TREND STRENGTH (ADX) Filter
                     if (adx < 20) {

@@ -12,7 +12,7 @@ import { TelegramService } from './infrastructure/external/TelegramService';
 import { SimulatorExecutor } from './infrastructure/external/SimulatorExecutor';
 
 // Logic
-import { UltimateBaggerV7Strategy } from './core/domain/logic/UltimateBaggerV7Strategy';
+import { UltimateBaggerV13Strategy } from './core/domain/logic/UltimateBaggerV13Strategy';
 
 // Use Cases
 import { RunScanner } from './application/use-cases/RunScanner';
@@ -50,7 +50,7 @@ async function main() {
     const marketData = new YahooFinanceProvider();
     const messaging = new TelegramService(userRepo);
     const simulator = new SimulatorExecutor();
-    const strategy = new UltimateBaggerV7Strategy();
+    const strategy = new UltimateBaggerV13Strategy();
 
     // 3. Use Case Initialization
     const runScanner = new RunScanner(tickerRepo, marketData, strategy, messaging);

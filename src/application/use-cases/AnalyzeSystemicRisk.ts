@@ -3,6 +3,7 @@ import { ITickerRepository } from '../../core/domain/interfaces/TickerRepository
 import { DomainMath } from '../../core/domain/logic/Math';
 import { logger } from '../../infrastructure/logging/WinstonLogger';
 import { DomainTicker } from '../../core/domain/entities/Ticker';
+import { OHLCV } from '../../core/domain/entities/MarketData';
 
 export interface SystemicRiskReport {
     totalPositions: number;
@@ -34,7 +35,7 @@ export class AnalyzeSystemicRisk {
             };
         }
 
-        const priceHistory: { [symbol: string]: Map<string, number> } = {};
+        const priceHistory: { [symbol: string]: OHLCV[] } = {};
         const matrix: { [pair: string]: number } = {};
 
         // Fetch 30 days of data for correlation analysis
@@ -43,13 +44,7 @@ export class AnalyzeSystemicRisk {
                 const startDate = new Date();
                 startDate.setDate(startDate.getDate() - 40); // 40 days to ensure enough trading days
                 const history = await this.marketData.fetchHistoricalData(t.config.symbol, startDate);
-
-                const historyMap = new Map<string, number>();
-                history.forEach(h => {
-                    const dateStr = h.date.toISOString().split('T')[0];
-                    historyMap.set(dateStr, h.close);
-                });
-                priceHistory[t.config.symbol] = historyMap;
+                priceHistory[t.config.symbol] = history;
             } catch (err) {
                 logger.warn(`Failed to fetch history for ${t.config.symbol} during risk audit`);
             }
@@ -69,16 +64,7 @@ export class AnalyzeSystemicRisk {
                 const historyA = priceHistory[symA];
                 const historyB = priceHistory[symB];
 
-                const commonDates = Array.from(historyA.keys())
-                    .filter(date => historyB.has(date))
-                    .sort();
-
-                if (commonDates.length < 5) continue; // Not enough data points to correlate
-
-                const pricesA = commonDates.map(d => historyA.get(d)!);
-                const pricesB = commonDates.map(d => historyB.get(d)!);
-
-                const corr = DomainMath.calculateCorrelation(pricesA, pricesB);
+                const corr = DomainMath.calculateCorrelation(historyA, historyB);
 
                 const pair = `${symA.replace('.JK', '')}/${symB.replace('.JK', '')}`;
                 matrix[pair] = corr;

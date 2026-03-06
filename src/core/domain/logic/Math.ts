@@ -234,16 +234,71 @@ export class DomainMath {
     }
 
     /**
+     * Calculate Fibonacci Retracement Levels
+     * Levels: 0, 0.236, 0.382, 0.5, 0.618, 0.786, 1
+     */
+    static calculateFibLevels(high: number, low: number): { [key: string]: number } {
+        const diff = high - low;
+        return {
+            '0': high,
+            '0.236': high - (diff * 0.236),
+            '0.382': high - (diff * 0.382),
+            '0.5': high - (diff * 0.5),
+            '0.618': high - (diff * 0.618),
+            '0.786': high - (diff * 0.786),
+            '1': low,
+            'extension1.618': high + (diff * 0.618)
+        };
+    }
+
+    /**
+     * Calculate Pivot Points (Classic)
+     * Returns Pivot, R1, R2, S1, S2
+     */
+    static calculatePivotPoints(high: number, low: number, close: number): { P: number, R1: number, R2: number, S1: number, S2: number } {
+        const P = (high + low + close) / 3;
+        const R1 = (2 * P) - low;
+        const S1 = (2 * P) - high;
+        const R2 = P + (high - low);
+        const S2 = P - (high - low);
+        
+        return { P, R1, R2, S1, S2 };
+    }
+
+    /**
+     * Detect Market Stress Index (MSI)
+     * Detects if market volatility is spiking (Panic/Black Swan)
+     */
+    static calculateMarketStressIndex(indexData: OHLCV[], period: number = 20): { isHighStress: boolean, stressScore: number } {
+        if (indexData.length < period + 5) return { isHighStress: false, stressScore: 0 };
+        
+        const recentATR = this.getATR(indexData, 5);
+        const avgATR = this.getATR(indexData.slice(0, -5), period);
+        
+        const stressScore = avgATR > 0 ? recentATR / avgATR : 1;
+        // If current volatility is 1.6x higher than average, it's a panic market
+        return {
+            isHighStress: stressScore > 1.6,
+            stressScore
+        };
+    }
+
+    /**
      * Calculates the correlation between two sets of price returns (Pearson's coefficient).
      * Institutional use: Detect systemic risk and ensure diversification.
      */
-    static calculateCorrelation(dataA: number[], dataB: number[]): number {
-        if (dataA.length !== dataB.length || dataA.length < 2) return 0;
+    static calculateCorrelation(dataA: OHLCV[], dataB: OHLCV[]): number {
+        const pricesA = dataA.map(d => d.adjclose || d.close);
+        const pricesB = dataB.map(d => d.adjclose || d.close);
+        
+        const minLen = Math.min(pricesA.length, pricesB.length);
+        const sliceA = pricesA.slice(-minLen);
+        const sliceB = pricesB.slice(-minLen);
 
-        const returnsA = this.calculateReturns(dataA);
-        const returnsB = this.calculateReturns(dataB);
+        if (sliceA.length < 5) return 0;
 
-        if (returnsA.length === 0 || returnsB.length === 0) return 0;
+        const returnsA = this.calculateReturns(sliceA);
+        const returnsB = this.calculateReturns(sliceB);
 
         const meanA = returnsA.reduce((a, b) => a + b, 0) / returnsA.length;
         const meanB = returnsB.reduce((a, b) => a + b, 0) / returnsB.length;
@@ -261,10 +316,7 @@ export class DomainMath {
         }
 
         const Den = Math.sqrt(denA * denB);
-        if (Den === 0 || isNaN(Den)) return 0;
-
-        const result = num / Den;
-        return isNaN(result) ? 0 : result;
+        return Den === 0 ? 0 : num / Den;
     }
 
     private static calculateReturns(prices: number[]): number[] {
@@ -538,6 +590,76 @@ export class DomainMath {
         // Safety Margin is usually applied after this calculation
         const value = (metrics.eps * (8.5 + 2 * metrics.growthRate) * 4.4) / metrics.bondYield;
         return Math.round(Math.max(0, value));
+    }
+
+    /**
+     * Calculate VWAP (Volume Weighted Average Price) for a given window
+     */
+    static getVWAP(data: OHLCV[], period: number): number {
+        if (data.length < period) return 0;
+        const slice = data.slice(-period);
+        let cumulativeTPV = 0; // Typical Price x Volume
+        let cumulativeVolume = 0;
+
+        for (const bar of slice) {
+            const typicalPrice = (bar.high + bar.low + bar.close) / 3;
+            cumulativeTPV += typicalPrice * bar.volume;
+            cumulativeVolume += bar.volume;
+        }
+
+        return cumulativeVolume > 0 ? cumulativeTPV / cumulativeVolume : 0;
+    }
+
+    /**
+     * Calculate Volume Profile (Point of Control)
+     * Finds the price level with the highest traded volume in the lookback period.
+     */
+    static getVolumePointOfControl(data: OHLCV[], period: number = 50, bins: number = 20): number {
+        if (data.length < period) return 0;
+        const slice = data.slice(-period);
+        
+        let highest = Math.max(...slice.map(d => d.high));
+        let lowest = Math.min(...slice.map(d => d.low));
+        
+        if (highest === lowest) return highest;
+
+        const binSize = (highest - lowest) / bins;
+        const profile = new Array(bins).fill(0);
+
+        for (const bar of slice) {
+            const typicalPrice = (bar.high + bar.low + bar.close) / 3;
+            const binIndex = Math.min(Math.floor((typicalPrice - lowest) / binSize), bins - 1);
+            profile[binIndex] += bar.volume;
+        }
+
+        let maxVol = 0;
+        let pocBin = 0;
+        for (let i = 0; i < bins; i++) {
+            if (profile[i] > maxVol) {
+                maxVol = profile[i];
+                pocBin = i;
+            }
+        }
+
+        // Return the price representing the center of the POC bin
+        return lowest + (pocBin * binSize) + (binSize / 2);
+    }
+
+    /**
+     * Detect Volatility Contraction Pattern (VCP)
+     * Checks if volatility is shrinking over recent periods while volume dries up, indicating accumulation before breakout.
+     */
+    static detectVCP(data: OHLCV[]): boolean {
+        if (data.length < 20) return false;
+        
+        const recentATR = this.getATR(data, 5);
+        const pastATR = this.getATR(data.slice(0, -5), 15);
+        
+        const recentVol = this.getVolumeSMA(data, 5);
+        const pastVol = this.getVolumeSMA(data.slice(0, -5), 15);
+
+        // Volatility is shrinking AND volume is drying up (Supply is exhausted)
+        return (recentATR < pastATR * 0.7) && (recentVol < pastVol * 0.7);
     }
 
     /**

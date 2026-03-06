@@ -18,6 +18,14 @@ export interface TickerConfig {
     volEntryMult: number;
     volDistMult: number;
     atrMultiplier: number; // For ATR-based sizing (e.g., 2.0)
+    // V10 Specific
+    volMemory: number;       // Days to look back for volume spike
+    useIHSG: boolean;        // Macro filter
+    useMTF: boolean;         // Weekly cloud filter
+    usePartialTP: boolean;   // Scaling out logic
+    tpTargetPct: number;     // Target for 50% TP
+    atrLength: number;       // Period for ATR
+    atrTrailMult: number;    // Multiplier for ATR trailing stop
 }
 
 export interface TickerAccount {
@@ -45,6 +53,9 @@ export interface DomainTicker {
         equityHistory: { date: Date, equity: number }[]; // For momentum calculation
         pyramidEntries: number; // Scale-in count
         atrHistory: number[];   // For volatility expansion check
+        // V10 Specific State
+        hasScaledOut: boolean;
+        trailingStopPrice: number;
     };
     analytics: {
         totalTrades: number;

@@ -36,6 +36,14 @@ export class ExecuteBacktest {
                 const current = data[i];
                 const price = current.adjclose || current.close || 0;
 
+                // Update V10 State for simulation
+                if (holding) {
+                    ticker.state.highestPrice = Math.max(ticker.state.highestPrice || 0, price);
+                    if (signal.breakdown?.stopLoss) {
+                        ticker.state.trailingStopPrice = Math.max(ticker.state.trailingStopPrice || 0, signal.breakdown.stopLoss);
+                    }
+                }
+
                 if (!holding && signal.type === 'BUY') {
                     // Backtest simple sizing (1% risk proxy)
                     const cost = balance * 0.99;
@@ -44,8 +52,30 @@ export class ExecuteBacktest {
                         balance -= (lots * 100 * price);
                         reservedCash = balance;
                         holding = true;
+                        ticker.state.isHolding = true;
                         ticker.state.entryPrice = price;
+                        ticker.state.highestPrice = price;
                         ticker.state.lots = lots;
+                        ticker.state.hasScaledOut = false;
+                        ticker.state.trailingStopPrice = signal.breakdown?.stopLoss || 0;
+                    }
+                } else if (holding && signal.type === 'SELL_PARTIAL' && !ticker.state.hasScaledOut) {
+                    const halfLots = Math.floor(lots / 2);
+                    if (halfLots > 0) {
+                        lots -= halfLots;
+                        ticker.state.lots = lots;
+                        ticker.state.hasScaledOut = true;
+                        balance += (halfLots * 100 * price);
+                        
+                        trades.push({
+                            symbol: ticker.config.symbol,
+                            type: 'SELL', // Signal is SELL_PARTIAL, but execution is a SELL
+                            executedPrice: price,
+                            lots: halfLots,
+                            totalValue: (halfLots * 100 * price),
+                            timestamp: current.date,
+                            reason: 'Partial TP (50%)'
+                        } as any);
                     }
                 } else if (holding && signal.type === 'SELL') {
                     const proceeds = lots * 100 * price;
@@ -54,6 +84,7 @@ export class ExecuteBacktest {
 
                     balance += proceeds;
                     holding = false;
+                    ticker.state.isHolding = false;
 
                     trades.push({
                         symbol: ticker.config.symbol,
@@ -61,8 +92,15 @@ export class ExecuteBacktest {
                         executedPrice: price,
                         lots: lots,
                         totalValue: proceeds,
-                        timestamp: current.date
+                        timestamp: current.date,
+                        reason: signal.reason
                     } as any);
+                    
+                    ticker.state.entryPrice = 0;
+                    ticker.state.highestPrice = 0;
+                    ticker.state.lots = 0;
+                    ticker.state.hasScaledOut = false;
+                    ticker.state.trailingStopPrice = 0;
                 }
 
                 equityCurve.push(holding ? (lots * 100 * price + balance) : balance);
@@ -73,13 +111,13 @@ export class ExecuteBacktest {
 
             // Monte Carlo
             const mcResults = MonteCarloSimulator.run(tradeReturns, ticker.account.initialCapital);
-            const p95Drawdown = mcResults[Math.floor(mcResults.length * 0.95)];
+            const p95Drawdown = mcResults.p95Drawdown;
 
-            logger.info(`✅ Backtest Complete for ${ticker.config.symbol}. CAGR: ${(report.cagr * 100).toFixed(2)}%, P95 Drawdown: ${(p95Drawdown * 100).toFixed(2)}%`);
+            logger.info(`✅ Backtest Complete for ${ticker.config.symbol}. CAGR: ${(report.cagr * 100).toFixed(2)}%, P95 Drawdown: ${p95Drawdown.toFixed(2)}%`);
 
             return {
                 ...report,
-                p95Drawdown: p95Drawdown * 100,
+                p95Drawdown: p95Drawdown,
                 equityCurve
             } as any;
         } catch (error) {

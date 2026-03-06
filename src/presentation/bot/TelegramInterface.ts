@@ -19,6 +19,7 @@ import { logger } from '../../infrastructure/logging/WinstonLogger';
 import { DomainTicker } from '../../core/domain/entities/Ticker';
 import { YahooFinanceProvider } from '../../infrastructure/external/YahooFinanceProvider';
 import { ENV } from '../../infrastructure/config/env';
+import { PerformanceCalculator, MonteCarloSimulator } from '../../core/domain/logic/PerformanceAnalytics';
 
 export class TelegramInterface {
     constructor(
@@ -801,12 +802,21 @@ export class TelegramInterface {
                     msg += `\n`;
                 }
 
-                msg += `📡 <b>Sinyal V7: ${signal.type}</b>\n`;
+                msg += `📡 <b>Sinyal V12 Black-Edge: ${signal.type}</b>\n`;
                 msg += `📝 Alasan: ${signal.reason}\n`;
                 if (signal.confidence) {
                     msg += `🎯 Confidence: <b>${signal.confidence.total.toFixed(1)}%</b>\n`;
                 }
                 msg += `\n`;
+
+                // V12 Institutional Logic Injection
+                if (rtData) {
+                    msg += `🐋 <b>Whale Context (V12):</b>\n`;
+                    msg += `<code>• VWAP (20d)  : Rp ${rtData.vwap?.toLocaleString('id-ID') || '-'}\n`;
+                    msg += `• POC (50d)   : Rp ${rtData.poc?.toLocaleString('id-ID') || '-'}\n`;
+                    const vcpStatus = rtData.isVCP ? '✅ DETECTED' : '❌ No';
+                    msg += `• VCP Pattern : ${vcpStatus}</code>\n\n`;
+                }
 
                 if (b) {
                     msg += `<b>📐 Ichimoku Breakdown:</b>\n`;
@@ -815,20 +825,24 @@ export class TelegramInterface {
                     msg += `- Volume Breakout: ${b.isVolumeBreakout ? '✅ Ya' : '❌ Tidak'}\n\n`;
                 }
 
-                // Trading Levels (v10.1 institutional Logic)
+                // Trading Levels (v13 IPA institutional Logic)
                 if (rtData?.tradingLevels) {
                     const lv = rtData.tradingLevels;
-                    msg += `🎯 <b>Level Trading (v10.1 Tuned):</b>\n`;
+                    msg += `🎯 <b>Institutional Levels (v13 IPA):</b>\n`;
                     msg += `<code>`;
                     msg += `📍 Entry   : Rp ${lv.entry.toLocaleString('id-ID')}\n`;
                     msg += `🛑 StopLoss: Rp ${lv.sl.toLocaleString('id-ID')} (-${lv.riskPercent}%)\n`;
-                    msg += `✅ TP1 1:1 : Rp ${lv.tp1.toLocaleString('id-ID')}\n`;
-                    msg += `✅ TP2 1:2 : Rp ${lv.tp2.toLocaleString('id-ID')}\n`;
-                    msg += `✅ TP3 1:3 : Rp ${lv.tp3.toLocaleString('id-ID')}\n`;
-                    msg += `</code>`;
-                    msg += `📏 ATR(14): Rp ${lv.atr.toLocaleString('id-ID')}`;
-                    if (lv.kijun) msg += ` | Kijun: Rp ${lv.kijun.toLocaleString('id-ID')}`;
-                    msg += `\n💡 <i>Tips: SL (Safe Risk) diset pada jarak teraman antara ATR & Kijun-Sen.</i>\n\n`;
+                    msg += `✅ TP1 (R1): Rp ${lv.tp1.toLocaleString('id-ID')}\n`;
+                    msg += `✅ TP2 (R2): Rp ${lv.tp2.toLocaleString('id-ID')}\n`;
+                    msg += `💎 TP3 (Fib): Rp ${lv.tp3.toLocaleString('id-ID')}\n`;
+                    msg += `</code>\n`;
+                    
+                    if (lv.fibLevels) {
+                        msg += `📏 <b>Fibonacci Retracement:</b>\n`;
+                        msg += `<code>• 0.500: Rp ${Math.round(lv.fibLevels['0.5']).toLocaleString('id-ID')}\n`;
+                        msg += `• 0.618: Rp ${Math.round(lv.fibLevels['0.618']).toLocaleString('id-ID')} (Golden)</code>\n`;
+                    }
+                    msg += `\n💡 <i>Tips: Entry terbaik di Golden Pocket (0.5-0.618). SL diletakkan di bawah Support Pivot terdekat.</i>\n\n`;
                 } else if (b) {
                     msg += `<b>📏 Level Kunci:</b>\n`;
                     msg += `- Kijun-Sen: Rp ${b.kijunLevel.toFixed(0)}\n`;
@@ -1138,8 +1152,21 @@ export class TelegramInterface {
                     const pct = `${pnlSign}${r.pnlPct.toFixed(2)}%`.padStart(6);
                     msg += `${sym} ${harga} ${avg} ${lot} ${inv} ${pnl} ${pct}\n`;
                 }
-                msg += `</code>`;
-                msg += `\n💡 /scan — cari sinyal | /status — ringkasan\n\n🔙 Kembali: /back`;
+                // ── Institutional Performance Polish (V13.2) ──
+                const returns = rows.map(r => r.pnlPct / 100);
+                const sharpe = PerformanceCalculator.calculateSharpe(returns);
+                const sortino = PerformanceCalculator.calculateSortino(returns);
+                const mc = MonteCarloSimulator.run(returns.length > 0 ? returns : [0], capital);
+
+                msg += `\n📊 <b>Institutional Risk Metrics:</b>\n`;
+                msg += `<code>`;
+                msg += `• Sharpe Ratio  : ${sharpe.toFixed(2)}\n`;
+                msg += `• Sortino Ratio : ${sortino.toFixed(2)}\n`;
+                msg += `• Risk of Ruin  : ${mc.riskOfRuin.toFixed(2)}%\n`;
+                msg += `• Max DD (95%)  : ${mc.p95Drawdown.toFixed(2)}%</code>\n`;
+
+                msg += `\n💡 <i>Fund Manager Note: Sharpe > 1.0 is Good. Risk of Ruin < 1% is Institutional Standard.</i>\n`;
+                msg += `\n/scan — cari sinyal | /status — ringkasan\n\n🔙 Kembali: /back`;
 
                 await ctx.reply(msg, { parse_mode: 'HTML' });
             } catch (err: any) {
@@ -1384,8 +1411,8 @@ export class TelegramInterface {
         if (!user) {
             return ctx.reply(
                 `👋 Halo, <b>${ctx.from?.first_name}</b>!\n\n` +
-                `🏛️ <b>Ultimate Bagger Bot V9.2</b>\n` +
-                `Institutional Quant Engine — Sovereign Sentinel\n\n` +
+                `🏛️ <b>Ultimate Bagger Bot V12.0</b>\n` +
+                `Institutional Black-Edge — Sovereign Sentinel\n\n` +
                 `Kamu belum terdaftar. Gunakan:\n` +
                 `👉 /register — Daftar akun baru untuk mendapatkan pelindungan Sentinel`,
                 { parse_mode: 'HTML' }
@@ -1396,8 +1423,8 @@ export class TelegramInterface {
         const isAdmin = this.isAdmin(telegramId);
         return ctx.reply(
             `👋 Selamat datang, <b>${ctx.from?.first_name}</b>! ${statusEmoji}\n` +
-            `🏛️ <b>ULTIMATE BAGGER BOT v9.2</b>\n` +
-            `<i>Institutional Quant Engine — Sovereign Sentinel</i>\n\n` +
+            `🏛️ <b>ULTIMATE BAGGER BOT v12.0</b>\n` +
+            `<i>Institutional Black-Edge — Sovereign Sentinel</i>\n\n` +
             `🎯 <b>DISCOVERY (Cari Peluang)</b>\n` +
             `├ /scan - Discovery Umum (Top Active)\n` +
             `├ /whale - 🐋 <b>Whale Radar</b> (Smart Money Flow)\n` +
@@ -1405,10 +1432,11 @@ export class TelegramInterface {
             `├ /smart - 🤫 <b>Smart Money</b> (Accumulation)\n` +
             `└ /sector - 🧭 <b>Market Heatmap</b> (Rotasi Sektor)\n\n` +
             `🔬 <b>ANALYSIS (Analisis Mendalam)</b>\n` +
-            `├ /analyze [SYM] - Audit Lengkap (Entry/TP/SL)\n` +
+            `├ /analyze [SYM] - Audit Lengkap (VWAP/POC/V12)\n` +
             `├ /sentiment [SYM] - 🧠 <b>Sentiment</b> (NLP)\n` +
             `├ /audit [SYM] - 🏛️ <b>Fundamental Audit</b>\n` +
             `├ /valuation [SYM] - ⚖️ <b>Intrinsic Audit</b> (Graham)\n` +
+            `├ /risk - 🧨 <b>Systemic Risk Audit</b>\n` +
             `└ /signals - Cari Entry Paling Disiplin\n\n` +
             `📂 <b>MANAGEMENT (Portfolio)</b>\n` +
             `├ /list - Lihat Daftar Pantau & Sentinel\n` +

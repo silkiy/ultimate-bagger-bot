@@ -13,7 +13,7 @@ export interface TradeLog {
 
 export interface SignalHistory {
     symbol: string;
-    type: 'BUY' | 'SELL' | 'HOLD';
+    type: 'BUY' | 'SELL' | 'HOLD' | 'SELL_PARTIAL';
     price: number;
     confidence: number;
     timestamp: Date;

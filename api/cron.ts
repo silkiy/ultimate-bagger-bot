@@ -16,9 +16,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         await watchlistSentinel.execute();
 
         const nowWib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
-        const hourWib = new Date(nowWib).getHours();
+        const now = new Date(nowWib);
+        const hourWib = now.getHours();
+        const minuteWib = now.getMinutes();
 
-        // ─── Personalized Watchlist Scan (12:00, 16:00, 19:00) ────────────
+        // Helper for running personal scans
         const runPersonalScan = async (session: 'MIDDAY' | 'CLOSING' | 'EVENING') => {
             const users = await userRepo.findAll();
             const approved = users.filter(u => u.status === 'APPROVED');
@@ -33,8 +35,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return sent;
         };
 
-        // ─── Evening: 18-20 Window ────────────────────────────────────────
-        if (hourWib >= 18 && hourWib <= 20) {
+        // ─── Morning Session (08:50 - 09:30 Window) ──────────────────────────────
+        if (hourWib === 8 || (hourWib === 9 && minuteWib <= 30)) {
+            logger.info(`⏰ Starting Morning Market Scan at ${startTime}`);
+            const report = await runScanner.execute();
+            const msg = `🌅 <b>Morning Market Open Scan</b>\n` +
+                        `📊 Analyzed: ${report.totalScanned} stocks\n` +
+                        `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})`;
+            await messaging.broadcast(msg);
+            return res.status(200).json({ success: true, type: 'MORNING_SCAN' });
+        }
+
+        // ─── Midday Session (11:50 - 12:45 Window) ──────────────────────────────
+        if (hourWib === 11 || (hourWib === 12 && minuteWib <= 45)) {
+            logger.info(`🕐 Triggering Midday Personal Watchlist at ${startTime}`);
+            const sent = await runPersonalScan('MIDDAY');
+            return res.status(200).json({ success: true, type: 'MIDDAY_WATCHLIST', personalSent: sent });
+        }
+
+        // ─── Closing Session (15:50 - 16:45 Window) ──────────────────────────────
+        if (hourWib === 15 || (hourWib === 16 && minuteWib <= 45)) {
+            logger.info(`🕓 Triggering Closing Scan + Personal Watchlist at ${startTime}`);
+            const report = await runScanner.execute();
+            const sent = await runPersonalScan('CLOSING');
+            const msg = `🏁 <b>Closing Market Scan</b>\n` +
+                        `📊 Analyzed: ${report.totalScanned} stocks\n` +
+                        `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})`;
+            await messaging.broadcast(msg);
+            return res.status(200).json({ success: true, type: 'CLOSING_SCAN', totalScanned: report.totalScanned });
+        }
+
+        // ─── Evening Session (18:50 - 21:00 Window) ──────────────────────────────
+        if (hourWib >= 18 && hourWib <= 21) {
             logger.info(`🌚 Triggering Evening Summary + Personal Watchlist at ${startTime}`);
             const summary = await generateEveningSummary.execute();
             await messaging.broadcast(summary);
@@ -42,62 +74,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(200).json({ success: true, type: 'EVENING_SUMMARY', personalSent: sent });
         }
 
-        // ─── Midday: 11-12 Window ─────────────────────────────────────────
-        if (hourWib >= 11 && hourWib <= 12) {
-            logger.info(`🕐 Triggering Midday Personal Watchlist at ${startTime}`);
-            const sent = await runPersonalScan('MIDDAY');
-            return res.status(200).json({ success: true, type: 'MIDDAY_WATCHLIST', personalSent: sent });
-        }
-
-        // ─── Closing: 15-16 Window ────────────────────────────────────────
-        if (hourWib >= 15 && hourWib <= 16) {
-            logger.info(`🕓 Triggering Closing Scan + Personal Watchlist at ${startTime}`);
-
-            // Global market scan
-            const report = await runScanner.execute();
-            const endTime = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-            const durationSec = Math.floor((Date.now() - startTs) / 1000);
-
-            const message = `🏁 <b>Scheduled Scan Complete</b>\n` +
-                `📊 Analyzed: ${report.totalScanned} stocks\n` +
-                `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})\n\n` +
-                `🕒 Start: ${startTime}\n` +
-                `🕒 End: ${endTime}\n` +
-                `⏱️ Duration: ${durationSec}s`;
-            await messaging.broadcast(message);
-
-            // Personal watchlist
-            const sent = await runPersonalScan('CLOSING');
-
-            return res.status(200).json({
-                success: true,
-                type: 'CLOSING_SCAN',
-                totalScanned: report.totalScanned,
-                buySignals: report.buySignals.length,
-                personalSent: sent
-            });
-        }
-
-        // ─── Morning: Default fallback ────────────────────────────────────
-        logger.info(`⏰ Starting Morning Market Scan at ${startTime}`);
-        const report = await runScanner.execute();
-        const endTime = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-        const durationSec = Math.floor((Date.now() - startTs) / 1000);
-
-        const message = `🏁 <b>Scheduled Scan Complete</b>\n` +
-            `📊 Analyzed: ${report.totalScanned} stocks\n` +
-            `📈 Signals: BUY(${report.buySignals.length}), SELL(${report.sellSignals.length})\n\n` +
-            `🕒 Start: ${startTime}\n` +
-            `🕒 End: ${endTime}\n` +
-            `⏱️ Duration: ${durationSec}s`;
-        await messaging.broadcast(message);
-
-        return res.status(200).json({
-            success: true,
-            type: 'MORNING_SCAN',
-            totalScanned: report.totalScanned,
-            buySignals: report.buySignals.length
+        return res.status(200).json({ 
+            success: true, 
+            message: 'Cron hit but no specific session window matched.',
+            time: startTime,
+            hour: hourWib
         });
+
     } catch (error: any) {
         logger.error('Cron Execution Error:', error);
         return res.status(500).json({ success: false, error: error.message });

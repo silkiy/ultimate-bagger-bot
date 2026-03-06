@@ -175,33 +175,36 @@ export class PerformManualAnalysis {
                     sentimentScore: DomainMath.calculateMarketSentiment(stockData).score,
                     institutionalIntensity: DomainMath.getSmartMoneyIntensity(stockData, 20)
                 }),
-                // Trading Levels (v10.1 Tuned Logic)
+                // Trading Levels (v13 Sovereign Elite Logic)
                 tradingLevels: (() => {
                     const atr = DomainMath.getATR(stockData, 14);
                     const entry = realTimePrice || stockData[stockData.length - 1]?.close || 0;
+                    
+                    const swingHigh = Math.max(...stockData.slice(-60).map(d => d.high));
+                    const swingLow = Math.min(...stockData.slice(-60).map(d => d.low));
+                    const fib = DomainMath.calculateFibLevels(swingHigh, swingLow);
+                    const pivot = DomainMath.calculatePivotPoints(
+                        stockData[stockData.length - 2].high, 
+                        stockData[stockData.length - 2].low, 
+                        stockData[stockData.length - 2].close
+                    );
 
-                    // V10.1: Institutional Risk Distance
-                    // Safe Risk Distance = Max(2.5x ATR, Distance to Kijun-sen)
-                    const stopDistanceATR = atr * 2.5;
-                    const kijunLevel = signal.breakdown?.kijunLevel || 0;
-                    const stopDistanceKijun = kijunLevel > 0 ? Math.abs(entry - kijunLevel) : 0;
-
-                    // Logic: Use 2.5x ATR as the floor, but if Kijun is further away, it's safer for trend-following
-                    const stopDistance = Math.max(stopDistanceATR, stopDistanceKijun);
-
-                    const sl = Math.round(entry - stopDistance);
+                    // V13 Strategy: Smart S/R Selection
+                    const sl = Math.min(entry - (atr * 2.5), pivot.S2, fib['0.786']);
                     const risk = entry - sl;
 
                     return {
                         entry: Math.round(entry),
-                        sl,
-                        tp1: Math.round(entry + risk * 1),     // RR 1:1
-                        tp2: Math.round(entry + risk * 2),     // RR 1:2
-                        tp3: Math.round(entry + risk * 3),     // RR 1:3
+                        sl: Math.round(sl),
+                        tp1: Math.round(pivot.R1),
+                        tp2: Math.round(pivot.R2),
+                        tp3: Math.round(fib['extension1.618']),
                         atr: Math.round(atr),
-                        kijun: Math.round(kijunLevel),
-                        riskPercent: entry > 0 ? ((stopDistance / entry) * 100).toFixed(2) : '0',
-                        isV10Logical: true
+                        kijun: Math.round(signal.breakdown?.kijunLevel || 0),
+                        riskPercent: entry > 0 ? ((risk / entry) * 100).toFixed(2) : '0',
+                        isV13Logical: true,
+                        pivots: pivot,
+                        fibLevels: fib
                     };
                 })()
             };

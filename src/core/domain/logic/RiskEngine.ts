@@ -20,7 +20,49 @@ export class RiskEngine {
     private static readonly FEE_BUFFER = 0.01; // 1% fee buffer
 
     /**
-     * Institutional Position Sizing: ATR-based + Growth Acceleration (V7.1)
+     * Calculate optimal fraction of capital to risk using the Kelly Criterion.
+     * f* = W - [(1 - W) / R]
+     * where W = Win probability, R = Win/Loss Ratio
+     */
+    static calculateKellyFraction(winRate: number, profitFactor: number): number {
+        if (profitFactor <= 0 || winRate <= 0) return 0;
+        
+        // Safety bounds for incomplete analytics
+        const safeWinRate = Math.min(Math.max(winRate, 0.1), 0.9);
+        const safeProfitFactor = Math.min(Math.max(profitFactor, 0.5), 5.0);
+
+        const kelly = safeWinRate - ((1 - safeWinRate) / safeProfitFactor);
+        
+        // Half-Kelly is standard in quant trading to manage variance/drawdown
+        const halfKelly = kelly / 2;
+        
+        // Cap maximum risk per trade at 5% even if Kelly suggests more
+        return Math.max(0, Math.min(halfKelly, 0.05));
+    }
+
+    /**
+     * Systemic Risk Guard (V12): Correlation Check
+     * Prevents buying assets that are too correlated with existing holdings.
+     */
+    static checkSystemicRisk(
+        newTicker: DomainTicker,
+        newData: OHLCV[],
+        existingHoldings: { ticker: DomainTicker, data: OHLCV[] }[]
+    ): { canProceed: boolean, reason?: string } {
+        for (const holding of existingHoldings) {
+            const correlation = DomainMath.calculateCorrelation(newData, holding.data);
+            if (correlation > 0.80) {
+                return {
+                    canProceed: false,
+                    reason: `Systemic Risk: High Correlation (${(correlation * 100).toFixed(0)}%) with ${holding.ticker.config.symbol}`
+                };
+            }
+        }
+        return { canProceed: true };
+    }
+
+    /**
+     * Institutional Position Sizing: ATR-based + Growth Acceleration (V7.1) + Kelly (V11)
      */
     static calculateATRPositionSize(
         ticker: DomainTicker,
@@ -29,7 +71,7 @@ export class RiskEngine {
         regime: MarketRegime = MarketRegime.SIDEWAYS,
         isPyramid: boolean = false
     ): PositionAction {
-        const { account, config } = ticker;
+        const { account, config, analytics } = ticker;
 
         // 1. System Halt Checks
         const systemCheck = this.checkSystemHalt(ticker);
@@ -43,6 +85,16 @@ export class RiskEngine {
 
         // 3. Adaptive Risk Scaling (Compounding Engines Baseline)
         let baseRisk = CompoundingOptimizer.calculateAdaptiveRisk(ticker);
+        
+        // V11: DYNAMIC KELLY CRITERION OVERRIDE
+        if (analytics && analytics.totalTrades > 5) {
+             const kellyRisk = this.calculateKellyFraction(analytics.winRate, analytics.profitFactor);
+             if (kellyRisk > 0) {
+                 // Blend base risk and Kelly for smooth transition
+                 baseRisk = (baseRisk * 0.4) + (kellyRisk * 0.6);
+             }
+        }
+        
         let maxRiskCap = 0.025; // 2.5% Default
 
         // 4. Growth Acceleration (V7.1)
