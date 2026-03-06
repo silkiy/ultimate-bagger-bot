@@ -359,26 +359,33 @@ export class TelegramInterface {
         this.bot.command('help', (ctx) => ctx.reply(
             '📖 <b>PANDUAN ULTIMATE BAGGER BOT — Sovereign Sentinel</b>\n\n' +
             'Bot ini adalah asisten kuantitatif institusional yang bekerja secara proaktif untuk menjaga dan mencari peluang di pasar IDX.\n\n' +
+            '🏛️ <b>SOVEREIGN ALPHA SCORE (α) GUIDE</b>\n' +
+            'Alpha Score adalah metrik tunggal kecerdasan bot (0-100):\n' +
+            '• <b>70-100 💎 DIAMOND</b>: High Conviction. Agresif BUY pada pantulan.\n' +
+            '• <b>50-69 🛡️ SHIELD</b>: Quality Asset. Selective BUY di Golden Pocket.\n' +
+            '• <b>30-49 ⚪ NEUTRAL</b>: Wait & See. Monitor konfirmasi volume.\n' +
+            '• <b>&lt; 30 ⚠️ WARNING</b>: Systemic Risk. Hindari/Exit segera.\n\n' +
+            '🔍 <b>TRIPLE CHECK CONFLUENCE:</b>\n' +
+            '1. <b>Whale Context</b>: Harga wajib dekat VWAP/POC.\n' +
+            '2. <b>Golden Pocket</b>: Retrace sehat ke area Fib 0.5 - 0.618.\n' +
+            '3. <b>Broker Summary</b>: Wajib ACCUM atau BIG ACCUM.\n\n' +
             '🛡️ <b>SOVEREIGN SENTINEL (Anomaly Detection)</b>\n' +
             'Penjaga otomatis yang memantau watchlist Anda setiap 30 menit:\n' +
             '• <b>Volume Spike</b>: Notifikasi jika volume > 1.5x rata-rata 1 bulan.\n' +
-            '• <b>Price Jump</b>: Notifikasi jika harga melonjak/anjlok > 5% dari closing kemarin.\n' +
-            '• <b>Trend Deviation</b>: Notifikasi jika harga melenceng > 3% dari trend MA-5.\n\n' +
+            '• <b>Price Jump</b>: Notifikasi jika harga melonjak/anjlok > 5%.\n' +
+            '• <b>Trend Deviation</b>: Notifikasi jika harga melenceng > 3% dari MA-5.\n\n' +
             '📡 <b>PENCARIAN PELUANG (DISCOVERY)</b>\n' +
-            '• <code>/scan</code> — Scan Top Active IDX & Ranking Alpha (α) pasar.\n' +
-            '• <code>/whale</code> — 🐋 <b>Whale Radar.</b> Lacak akumulasi institutional & smart money.\n' +
-            '• <code>/hot</code> — ⚡ <b>Fast Money.</b> Deteksi lonjakan volume & momentum instan.\n' +
-            '• <code>/smart</code> — 🤫 <b>Smart Money.</b> Analisis intensitas beli broker.\n' +
-            '• <code>/sector</code> — 🧭 <b>Market Heatmap.</b> Analisis rotasi sektor & pimpinan pasar.\n' +
-            '• <code>/breadth</code> — 📈 <b>Market Internals.</b> Cek kesehatan ekosistem pasar (Advance/Decline).\n\n' +
+            '• <code>/scan</code> — Scan Top Active IDX & Ranking Alpha.\n' +
+            '• <code>/whale</code> — 🐋 Whale Radar. Lacak akumulasi institutional.\n' +
+            '• <code>/hot</code> — ⚡ Fast Money. Deteksi lonjakan volume instan.\n' +
+            '• <code>/sector</code> — 🧭 Market Heatmap. Analisis rotasi sektor.\n\n' +
             '🔬 <b>ANALISIS MENDALAM (ANALYSIS)</b>\n' +
-            '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental, Sentiment, & <b>Broker Summary.</b>\n• <code>/sentiment [SYM]</code> — 🧠 <b>NLP Intelligence.</b> Analisis mood pasar dari berita & momentum.\n• <code>/audit [SYM]</code> — 🏛️ <b>Fund Audit.</b> Cek kesehatan keuangan (F-Score & Z-Score).\n• <code>/valuation [SYM]</code> — ⚖️ <b>Intrinsic Value.</b> Audit nilai wajar (Graham Formula).\n• <code>/signals</code> — Hanya menampilkan saham yang lolos 100% filter disiplin BUY.\n\n' +
+            '• <code>/analyze [SYM]</code> — <b>Audit 360°.</b> Teknikal, Fundamental, & S/R.\n' +
+            '• <code>/risk</code> — Audit korelasi & risiko sistemik portofolio.\n' +
+            '• <code>/valuation [SYM]</code> — Audit nilai wajar (Graham Formula).\n\n' +
             '📂 <b>MANAJEMEN PORTFOLIO</b>\n' +
-            '• <code>/list</code> — Lihat daftar saham yang Anda pantau.\n' +
-            '• <code>/optimize</code> — ⚖️ <b>Portfolio Rebalancer.</b> Saran "Alpha Swaps" untuk optimalisasi capital.\n' +
-            '• <code>/remove [SYM]</code> — Berhenti memantau saham.\n' +
-            '• <b>Personalized Scan</b>: Laporan otomatis watchlist Anda dikirim pkl 12:00, 16:00, & 19:00 WIB.\n\n' +
-            '💡 <i>Tips: Selalu jalankan /analyze sebelum entry untuk melihat trading level (Entry/TP/SL) berbasis volatilitas (ATR).</i>\n\n' +
+            '• <code>/portfolio</code> — Pantau P/L & Metrik Risk (Monte Carlo).\n' +
+            '• <code>/optimize</code> — ⚖️ Rebalancer. Saran "Alpha Swaps".\n\n' +
             '🔙 Kembali: /back',
             { parse_mode: 'HTML' }
         ));
