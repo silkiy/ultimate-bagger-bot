@@ -802,16 +802,16 @@ export class TelegramInterface {
                     msg += `\n`;
                 }
 
-                msg += `📡 <b>Sinyal V12 Black-Edge: ${signal.type}</b>\n`;
+                msg += `📡 <b>Sinyal V13.2 Sovereign: ${signal.type}</b>\n`;
                 msg += `📝 Alasan: ${signal.reason}\n`;
                 if (signal.confidence) {
                     msg += `🎯 Confidence: <b>${signal.confidence.total.toFixed(1)}%</b>\n`;
                 }
                 msg += `\n`;
 
-                // V12 Institutional Logic Injection
+                // V13 Institutional Logic Injection
                 if (rtData) {
-                    msg += `🐋 <b>Whale Context (V12):</b>\n`;
+                    msg += `🐋 <b>Whale Context (V13.2):</b>\n`;
                     msg += `<code>• VWAP (20d)  : Rp ${rtData.vwap?.toLocaleString('id-ID') || '-'}\n`;
                     msg += `• POC (50d)   : Rp ${rtData.poc?.toLocaleString('id-ID') || '-'}\n`;
                     const vcpStatus = rtData.isVCP ? '✅ DETECTED' : '❌ No';
